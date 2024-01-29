@@ -25,7 +25,9 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"spl_asset": resourceAsset(),
+			"spl_asset":           resourceAsset(),
+			"spl_asset_attribute": resourceAttribute(),
+			"spl_asset_metadata":  resourceMetadata(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
