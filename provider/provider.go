@@ -25,10 +25,11 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"spl_asset":           resourceAsset(),
-			"spl_asset_attribute": resourceAssetAttribute(),
-			"spl_asset_metadata":  resourceAssetMetadata(),
-			"spl_component":       resourceComponent(),
+			"spl_asset":             resourceAsset(),
+			"spl_asset_attribute":   resourceAssetAttribute(),
+			"spl_asset_metadata":    resourceAssetMetadata(),
+			"spl_component":         resourceComponent(),
+			"spl_component_routine": resourceComponentRoutine(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
