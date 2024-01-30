@@ -9,7 +9,7 @@ import (
 	"github.com/splightplatform/splight-terraform-provider/verify"
 )
 
-func resourceAttribute() *schema.Resource {
+func resourceAssetAttribute() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -31,81 +31,81 @@ func resourceAttribute() *schema.Resource {
 				Optional: true,
 			},
 		},
-		Create: resourceCreateAttribute,
-		Read:   resourceReadAttribute,
-		Update: resourceUpdateAttribute,
-		Delete: resourceDeleteAttribute,
-		Exists: resourceExistsAttribute,
+		Create: resourceCreateAssetAttribute,
+		Read:   resourceReadAssetAttribute,
+		Update: resourceUpdateAssetAttribute,
+		Delete: resourceDeleteAssetAttribute,
+		Exists: resourceExistsAssetAttribute,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 	}
 }
 
-func resourceCreateAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceCreateAssetAttribute(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
-	item := client.AttributeParams{
+	item := client.AssetAttributeParams{
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Asset: d.Get("asset").(string),
 		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
 	}
-	createdAttribute, err := apiClient.CreateAttribute(&item)
+	createdAssetAttribute, err := apiClient.CreateAssetAttribute(&item)
 	if err != nil {
 		return fmt.Errorf("Error creating asset %s", err)
 	}
-	d.SetId(createdAttribute.ID)
+	d.SetId(createdAssetAttribute.ID)
 	return nil
 }
 
-func resourceUpdateAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceUpdateAssetAttribute(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 	itemId := d.Id()
-	item := client.AttributeParams{
+	item := client.AssetAttributeParams{
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Asset: d.Get("asset").(string),
 		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
 	}
-	updatedAttribute, err := apiClient.UpdateAttribute(itemId, &item)
+	updatedAssetAttribute, err := apiClient.UpdateAssetAttribute(itemId, &item)
 
 	if err != nil {
 		return err
 	}
-	d.Set("name", updatedAttribute.Name)
-	d.Set("type", updatedAttribute.Type)
-	d.Set("asset", updatedAttribute.Asset)
-	d.Set("unit", updatedAttribute.Unit)
+	d.Set("name", updatedAssetAttribute.Name)
+	d.Set("type", updatedAssetAttribute.Type)
+	d.Set("asset", updatedAssetAttribute.Asset)
+	d.Set("unit", updatedAssetAttribute.Unit)
 	return nil
 }
 
-func resourceReadAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceReadAssetAttribute(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
-	retrievedAttribute, err := apiClient.RetrieveAttribute(itemId)
+	retrievedAssetAttribute, err := apiClient.RetrieveAssetAttribute(itemId)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			d.SetId("")
 		} else {
-			return fmt.Errorf("error finding Attribute with ID %s", itemId)
+			return fmt.Errorf("error finding AssetAttribute with ID %s", itemId)
 		}
 	}
 
-	d.SetId(retrievedAttribute.ID)
-	d.Set("name", retrievedAttribute.Name)
-	d.Set("type", retrievedAttribute.Type)
-	d.Set("unit", retrievedAttribute.Unit)
-	d.Set("asset", retrievedAttribute.Asset)
+	d.SetId(retrievedAssetAttribute.ID)
+	d.Set("name", retrievedAssetAttribute.Name)
+	d.Set("type", retrievedAssetAttribute.Type)
+	d.Set("unit", retrievedAssetAttribute.Unit)
+	d.Set("asset", retrievedAssetAttribute.Asset)
 	return nil
 }
 
-func resourceDeleteAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceDeleteAssetAttribute(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
 
-	err := apiClient.DeleteAttribute(itemId)
+	err := apiClient.DeleteAssetAttribute(itemId)
 	if err != nil {
 		return err
 	}
@@ -113,11 +113,11 @@ func resourceDeleteAttribute(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceExistsAttribute(d *schema.ResourceData, m interface{}) (bool, error) {
+func resourceExistsAssetAttribute(d *schema.ResourceData, m interface{}) (bool, error) {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
-	_, err := apiClient.RetrieveAttribute(itemId)
+	_, err := apiClient.RetrieveAssetAttribute(itemId)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			return false, nil

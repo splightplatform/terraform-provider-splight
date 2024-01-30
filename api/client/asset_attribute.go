@@ -6,24 +6,24 @@ import (
 	"fmt"
 )
 
-type AttributeParams struct {
+type AssetAttributeParams struct {
 	Asset string  `json:"asset"`
 	Name  string  `json:"name"`
 	Type  string  `json:"type"`
 	Unit  *string `json:"unit"`
 }
 
-type Attribute struct {
-	AttributeParams
+type AssetAttribute struct {
+	AssetAttributeParams
 	ID string `json:"id"`
 }
 
-func (c *Client) ListAttributes() (*map[string]Attribute, error) {
+func (c *Client) ListAssetAttributes() (*map[string]AssetAttribute, error) {
 	body, err := c.httpRequest("v2/engine/asset/attributes/", "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	items := map[string]Attribute{}
+	items := map[string]AssetAttribute{}
 	err = json.NewDecoder(body).Decode(&items)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func (c *Client) ListAttributes() (*map[string]Attribute, error) {
 	return &items, nil
 }
 
-func (c *Client) CreateAttribute(item *AttributeParams) (*Attribute, error) {
+func (c *Client) CreateAssetAttribute(item *AssetAttributeParams) (*AssetAttribute, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *Client) CreateAttribute(item *AttributeParams) (*Attribute, error) {
 		return nil, err
 	}
 
-	data := &Attribute{}
+	data := &AssetAttribute{}
 	err = json.NewDecoder(body).Decode(data)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (c *Client) CreateAttribute(item *AttributeParams) (*Attribute, error) {
 	return data, nil
 }
 
-func (c *Client) UpdateAttribute(id string, item *AttributeParams) (*Attribute, error) {
+func (c *Client) UpdateAssetAttribute(id string, item *AssetAttributeParams) (*AssetAttribute, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -60,7 +60,7 @@ func (c *Client) UpdateAttribute(id string, item *AttributeParams) (*Attribute, 
 	if err != nil {
 		return nil, err
 	}
-	data := &Attribute{}
+	data := &AssetAttribute{}
 	err = json.NewDecoder(body).Decode(data)
 	if err != nil {
 		return nil, err
@@ -68,12 +68,12 @@ func (c *Client) UpdateAttribute(id string, item *AttributeParams) (*Attribute, 
 	return data, nil
 }
 
-func (c *Client) RetrieveAttribute(id string) (*Attribute, error) {
+func (c *Client) RetrieveAssetAttribute(id string) (*AssetAttribute, error) {
 	body, err := c.httpRequest(fmt.Sprintf("v2/engine/asset/attributes/%s/", id), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	data := &Attribute{}
+	data := &AssetAttribute{}
 	err = json.NewDecoder(body).Decode(data)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (c *Client) RetrieveAttribute(id string) (*Attribute, error) {
 	return data, nil
 }
 
-func (c *Client) DeleteAttribute(id string) error {
+func (c *Client) DeleteAssetAttribute(id string) error {
 	_, err := c.httpRequest(fmt.Sprintf("v2/engine/asset/attributes/%s/", id), "DELETE", bytes.Buffer{})
 	if err != nil {
 		return err

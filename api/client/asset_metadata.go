@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-type MetadataParams struct {
+type AssetMetadataParams struct {
 	Asset string  `json:"asset"`
 	Name  string  `json:"name"`
 	Type  string  `json:"type"`
@@ -14,17 +14,17 @@ type MetadataParams struct {
 	Unit  *string `json:"unit"`
 }
 
-type Metadata struct {
-	MetadataParams
+type AssetMetadata struct {
+	AssetMetadataParams
 	ID string `json:"id"`
 }
 
-func (c *Client) ListMetadatas() (*map[string]Metadata, error) {
+func (c *Client) ListAssetMetadatas() (*map[string]AssetMetadata, error) {
 	body, err := c.httpRequest("v2/engine/asset/metadata/", "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	items := map[string]Metadata{}
+	items := map[string]AssetMetadata{}
 	err = json.NewDecoder(body).Decode(&items)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (c *Client) ListMetadatas() (*map[string]Metadata, error) {
 	return &items, nil
 }
 
-func (c *Client) CreateMetadata(item *MetadataParams) (*Metadata, error) {
+func (c *Client) CreateAssetMetadata(item *AssetMetadataParams) (*AssetMetadata, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -43,7 +43,7 @@ func (c *Client) CreateMetadata(item *MetadataParams) (*Metadata, error) {
 		return nil, err
 	}
 
-	data := &Metadata{}
+	data := &AssetMetadata{}
 	err = json.NewDecoder(body).Decode(data)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (c *Client) CreateMetadata(item *MetadataParams) (*Metadata, error) {
 	return data, nil
 }
 
-func (c *Client) UpdateMetadata(id string, item *MetadataParams) (*Metadata, error) {
+func (c *Client) UpdateAssetMetadata(id string, item *AssetMetadataParams) (*AssetMetadata, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -61,7 +61,7 @@ func (c *Client) UpdateMetadata(id string, item *MetadataParams) (*Metadata, err
 	if err != nil {
 		return nil, err
 	}
-	data := &Metadata{}
+	data := &AssetMetadata{}
 	err = json.NewDecoder(body).Decode(data)
 	if err != nil {
 		return nil, err
@@ -69,12 +69,12 @@ func (c *Client) UpdateMetadata(id string, item *MetadataParams) (*Metadata, err
 	return data, nil
 }
 
-func (c *Client) RetrieveMetadata(id string) (*Metadata, error) {
+func (c *Client) RetrieveAssetMetadata(id string) (*AssetMetadata, error) {
 	body, err := c.httpRequest(fmt.Sprintf("v2/engine/asset/metadata/%s/", id), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	data := &Metadata{}
+	data := &AssetMetadata{}
 	err = json.NewDecoder(body).Decode(data)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (c *Client) RetrieveMetadata(id string) (*Metadata, error) {
 	return data, nil
 }
 
-func (c *Client) DeleteMetadata(id string) error {
+func (c *Client) DeleteAssetMetadata(id string) error {
 	_, err := c.httpRequest(fmt.Sprintf("v2/engine/asset/metadata/%s/", id), "DELETE", bytes.Buffer{})
 	if err != nil {
 		return err

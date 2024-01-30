@@ -6,14 +6,14 @@ import (
 	"fmt"
 )
 
-type Geometry struct {
+type AssetGeometryParams struct {
 	Type        string    `json:"type"`
 	Coordinates []float64 `json:"coordinates"`
 }
 
 type AssetGeometry struct {
-	Type       string     `json:"type"`
-	Geometries []Geometry `json:"geometries"`
+	Type       string                `json:"type"`
+	Geometries []AssetGeometryParams `json:"geometries"`
 }
 
 type AssetParams struct {

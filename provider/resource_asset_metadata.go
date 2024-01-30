@@ -9,7 +9,7 @@ import (
 	"github.com/splightplatform/splight-terraform-provider/verify"
 )
 
-func resourceMetadata() *schema.Resource {
+func resourceAssetMetadata() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"asset": {
@@ -35,85 +35,85 @@ func resourceMetadata() *schema.Resource {
 				Optional: true,
 			},
 		},
-		Create: resourceCreateMetadata,
-		Read:   resourceReadMetadata,
-		Update: resourceUpdateMetadata,
-		Delete: resourceDeleteMetadata,
-		Exists: resourceExistsMetadata,
+		Create: resourceCreateAssetMetadata,
+		Read:   resourceReadAssetMetadata,
+		Update: resourceUpdateAssetMetadata,
+		Delete: resourceDeleteAssetMetadata,
+		Exists: resourceExistsAssetMetadata,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 	}
 }
 
-func resourceCreateMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceCreateAssetMetadata(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
-	item := client.MetadataParams{
+	item := client.AssetMetadataParams{
 		Asset: d.Get("asset").(string),
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Value: d.Get("value").(string),
 		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
 	}
-	createdMetadata, err := apiClient.CreateMetadata(&item)
+	createdAssetMetadata, err := apiClient.CreateAssetMetadata(&item)
 	if err != nil {
 		return fmt.Errorf("Error creating asset %s", err)
 	}
-	d.SetId(createdMetadata.ID)
+	d.SetId(createdAssetMetadata.ID)
 	return nil
 }
 
-func resourceUpdateMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceUpdateAssetMetadata(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 	itemId := d.Id()
-	item := client.MetadataParams{
+	item := client.AssetMetadataParams{
 		Asset: d.Get("asset").(string),
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Value: d.Get("value").(string),
 		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
 	}
-	updatedMetadata, err := apiClient.UpdateMetadata(itemId, &item)
+	updatedAssetMetadata, err := apiClient.UpdateAssetMetadata(itemId, &item)
 
 	if err != nil {
 		return err
 	}
-	d.Set("asset", updatedMetadata.Asset)
-	d.Set("name", updatedMetadata.Name)
-	d.Set("type", updatedMetadata.Type)
-	d.Set("value", updatedMetadata.Value)
-	d.Set("unit", updatedMetadata.Unit)
+	d.Set("asset", updatedAssetMetadata.Asset)
+	d.Set("name", updatedAssetMetadata.Name)
+	d.Set("type", updatedAssetMetadata.Type)
+	d.Set("value", updatedAssetMetadata.Value)
+	d.Set("unit", updatedAssetMetadata.Unit)
 	return nil
 }
 
-func resourceReadMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceReadAssetMetadata(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
-	retrievedMetadata, err := apiClient.RetrieveMetadata(itemId)
+	retrievedAssetMetadata, err := apiClient.RetrieveAssetMetadata(itemId)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			d.SetId("")
 		} else {
-			return fmt.Errorf("error finding Metadata with ID %s", itemId)
+			return fmt.Errorf("error finding AssetMetadata with ID %s", itemId)
 		}
 	}
 
-	d.SetId(retrievedMetadata.ID)
-	d.Set("asset", retrievedMetadata.Asset)
-	d.Set("name", retrievedMetadata.Name)
-	d.Set("type", retrievedMetadata.Type)
-	d.Set("value", retrievedMetadata.Value)
-	d.Set("unit", retrievedMetadata.Unit)
+	d.SetId(retrievedAssetMetadata.ID)
+	d.Set("asset", retrievedAssetMetadata.Asset)
+	d.Set("name", retrievedAssetMetadata.Name)
+	d.Set("type", retrievedAssetMetadata.Type)
+	d.Set("value", retrievedAssetMetadata.Value)
+	d.Set("unit", retrievedAssetMetadata.Unit)
 	return nil
 }
 
-func resourceDeleteMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceDeleteAssetMetadata(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
 
-	err := apiClient.DeleteMetadata(itemId)
+	err := apiClient.DeleteAssetMetadata(itemId)
 	if err != nil {
 		return err
 	}
@@ -121,11 +121,11 @@ func resourceDeleteMetadata(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceExistsMetadata(d *schema.ResourceData, m interface{}) (bool, error) {
+func resourceExistsAssetMetadata(d *schema.ResourceData, m interface{}) (bool, error) {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
-	_, err := apiClient.RetrieveMetadata(itemId)
+	_, err := apiClient.RetrieveAssetMetadata(itemId)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			return false, nil
