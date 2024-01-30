@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/splight-terraform-provider/api/client"
+	"github.com/splightplatform/splight-terraform-provider/verify"
 )
 
 func resourceMetadata() *schema.Resource {
@@ -52,7 +53,7 @@ func resourceCreateMetadata(d *schema.ResourceData, m interface{}) error {
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Value: d.Get("value").(string),
-		Unit:  strPtrOrNil(d.Get("unit").(string)),
+		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
 	}
 	createdMetadata, err := apiClient.CreateMetadata(&item)
 	if err != nil {
@@ -70,7 +71,7 @@ func resourceUpdateMetadata(d *schema.ResourceData, m interface{}) error {
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Value: d.Get("value").(string),
-		Unit:  strPtrOrNil(d.Get("unit").(string)),
+		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
 	}
 	updatedMetadata, err := apiClient.UpdateMetadata(itemId, &item)
 
