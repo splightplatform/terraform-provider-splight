@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/splight-terraform-provider/api/client"
+	"github.com/splightplatform/splight-terraform-provider/verify"
 )
 
 func resourceComponentRoutine() *schema.Resource {
@@ -94,8 +95,9 @@ func resourceComponentRoutine() *schema.Resource {
 							Required: true,
 						},
 						"value": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:             schema.TypeString,
+							Required:         true,
+							DiffSuppressFunc: verify.JSONStringEqualSupressFunc,
 						},
 					},
 				},
@@ -266,14 +268,54 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	outputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Output))
+	for i, outputDictItem := range retrievedComponentRoutine.Output {
+		outputValue, _ := json.Marshal(outputDictItem.Value)
+		// return fmt.Errorf("%s", outputValue)
+		outputDict[i] = map[interface{}]interface{}{
+			"name":        outputDictItem.Name,
+			"description": outputDictItem.Description,
+			"multiple":    outputDictItem.Multiple,
+			"required":    outputDictItem.Required,
+			"type":        outputDictItem.Type,
+			"value_type":  outputDictItem.ValueType,
+			"value":       string(outputValue),
+		}
+	}
+	inputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Input))
+	for i, inputDictItem := range retrievedComponentRoutine.Input {
+		inputValue, _ := json.Marshal(inputDictItem.Value)
+		inputDict[i] = map[interface{}]interface{}{
+			"name":        inputDictItem.Name,
+			"description": inputDictItem.Description,
+			"multiple":    inputDictItem.Multiple,
+			"required":    inputDictItem.Required,
+			"type":        inputDictItem.Type,
+			"value_type":  inputDictItem.ValueType,
+			"value":       string(inputValue),
+		}
+	}
+	configDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Config))
+	for i, configDictItem := range retrievedComponentRoutine.Config {
+		configDict[i] = map[interface{}]interface{}{
+			"name":        configDictItem.Name,
+			"description": configDictItem.Description,
+			"multiple":    configDictItem.Multiple,
+			"required":    configDictItem.Required,
+			"sensitive":   configDictItem.Sensitive,
+			"type":        configDictItem.Type,
+			"value":       configDictItem.Value,
+		}
+	}
+
 	d.SetId(retrievedComponentRoutine.ID)
 	d.Set("name", retrievedComponentRoutine.Name)
 	d.Set("description", retrievedComponentRoutine.Description)
 	d.Set("type", retrievedComponentRoutine.Type)
 	d.Set("component_id", retrievedComponentRoutine.ComponentId)
-	d.Set("config", retrievedComponentRoutine.Config)
-	d.Set("input", retrievedComponentRoutine.Input)
-	d.Set("output", retrievedComponentRoutine.Output)
+	d.Set("config", configDict)
+	d.Set("input", inputDict)
+	d.Set("output", outputDict)
 	return nil
 }
 
