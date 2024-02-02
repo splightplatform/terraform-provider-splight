@@ -212,6 +212,7 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_dow", createdAlert.CronDOW)
 	d.Set("cron_year", createdAlert.CronYear)
 	d.Set("alert_items", createdAlert.AlertItems)
+	d.Set("severity", createdAlert.Severity)
 	return nil
 }
 
@@ -286,6 +287,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_dow", updateAlert.CronDOW)
 	d.Set("cron_year", updateAlert.CronYear)
 	d.Set("alert_items", updateAlert.AlertItems)
+	d.Set("severity", updateAlert.Severity)
 	return nil
 }
 
@@ -314,7 +316,7 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 
 	thresholdsDict := make([]map[interface{}]interface{}, len(retrievedAlert.Thresholds))
 	for i, thresholdItem := range retrievedAlert.Thresholds {
-		alertItemsDict[i] = map[interface{}]interface{}{
+		thresholdsDict[i] = map[interface{}]interface{}{
 			"value":       thresholdItem.Value,
 			"status":      thresholdItem.Status,
 			"status_text": thresholdItem.StatusText,
@@ -338,6 +340,7 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_dow", retrievedAlert.CronDOW)
 	d.Set("cron_year", retrievedAlert.CronYear)
 	d.Set("alert_items", alertItemsDict)
+	d.Set("severity", retrievedAlert.Severity)
 	return nil
 }
 
