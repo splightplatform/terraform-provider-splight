@@ -8,15 +8,10 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"address": {
-				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("SERVICE_ADDRESS", ""),
-			},
-			"port": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("SERVICE_PORT", ""),
+			"hostname": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "https://api.splight-ai.com",
 			},
 			"token": {
 				Type:        schema.TypeString,
@@ -25,6 +20,8 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"spl_function":          resourceFunction(),
+			"spl_alert":             resourceAlert(),
 			"spl_asset":             resourceAsset(),
 			"spl_asset_attribute":   resourceAssetAttribute(),
 			"spl_asset_metadata":    resourceAssetMetadata(),
@@ -36,9 +33,8 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	address := d.Get("address").(string)
-	port := d.Get("port").(int)
+	hostname := d.Get("hostname").(string)
 	token := d.Get("token").(string)
-	return client.NewClient(address, port, token), nil
+	return client.NewClient(hostname, token), nil
 
 }

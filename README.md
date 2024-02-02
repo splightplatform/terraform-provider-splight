@@ -1,5 +1,11 @@
 ## Splight Terraform Provider
 
+### How to install this Golang?
+
+```
+brew install go
+```
+
 ### How to install this locally?
 
 Check your architecture details with
@@ -22,6 +28,12 @@ cp terraform-provider-spl_v0.1.0  ~/.terraform.d/plugins/local/splight/spl/0.1.0
 ```
 
 and start using it with any tf file.
+
+In case you have the provider already installed run
+
+```
+rm -rf .terraform .terraform.lock.hcl
+```
 
 ### How to create a sample main.tf file.
 

@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/splight-terraform-provider/api/client"
-	"github.com/splightplatform/splight-terraform-provider/verify"
 )
 
 func resourceComponentRoutine() *schema.Resource {
@@ -78,11 +77,39 @@ func resourceComponentRoutine() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
+						"multiple": {
+							Type:     schema.TypeBool,
+							Required: true,
+						},
+						"required": {
+							Type:     schema.TypeBool,
+							Required: true,
+						},
+						"value_type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
 						"type": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"value_type": {
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+					},
+				},
+			},
+			"input": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"name": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"description": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
@@ -94,10 +121,17 @@ func resourceComponentRoutine() *schema.Resource {
 							Type:     schema.TypeBool,
 							Required: true,
 						},
+						"value_type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
 						"value": {
-							Type:             schema.TypeString,
-							Required:         true,
-							DiffSuppressFunc: verify.JSONStringEqualSupressFunc,
+							Type:     schema.TypeString,
+							Required: true,
 						},
 					},
 				},
@@ -151,10 +185,33 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 			Name:        componentOutputItem["name"].(string),
 			Description: componentOutputItem["description"].(string),
 			Type:        componentOutputItem["type"].(string),
-			ValueType:   componentOutputItem["value_type"].(string),
 			Multiple:    componentOutputItem["multiple"].(bool),
 			Required:    componentOutputItem["required"].(bool),
+			ValueType:   componentOutputItem["value_type"].(string),
 			Value:       outputValue,
+		}
+	}
+
+	componentInputInterface := d.Get("input").([]interface{})
+	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
+	for i, componentInputInterfaceItem := range componentInputInterface {
+		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
+	}
+	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterfaceList))
+	for i, componentInputItem := range componentInputInterfaceList {
+		inputValue := client.ComponentRoutineDataAddress{}
+		err := json.Unmarshal([]byte(componentInputItem["value"].(string)), &inputValue)
+		if err != nil {
+			return err
+		}
+		componentInput[i] = client.ComponentRoutineIOParam{
+			Name:        componentInputItem["name"].(string),
+			Description: componentInputItem["description"].(string),
+			Type:        componentInputItem["type"].(string),
+			Multiple:    componentInputItem["multiple"].(bool),
+			Required:    componentInputItem["required"].(bool),
+			ValueType:   componentInputItem["value_type"].(string),
+			Value:       inputValue,
 		}
 	}
 
@@ -164,7 +221,7 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 		Type:        d.Get("type").(string),
 		ComponentId: d.Get("component_id").(string),
 		Config:      componentConfig,
-		Input:       make([]client.ComponentRoutineIOParam, 0), //TODO
+		Input:       componentInput,
 		Output:      componentOutput,
 	}
 
@@ -223,10 +280,33 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 			Name:        componentOutputItem["name"].(string),
 			Description: componentOutputItem["description"].(string),
 			Type:        componentOutputItem["type"].(string),
-			ValueType:   componentOutputItem["value_type"].(string),
 			Multiple:    componentOutputItem["multiple"].(bool),
 			Required:    componentOutputItem["required"].(bool),
+			ValueType:   componentOutputItem["value_type"].(string),
 			Value:       outputValue,
+		}
+	}
+
+	componentInputInterface := d.Get("input").([]interface{})
+	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
+	for i, componentInputInterfaceItem := range componentInputInterface {
+		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
+	}
+	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterfaceList))
+	for i, componentInputItem := range componentInputInterfaceList {
+		inputValue := client.ComponentRoutineDataAddress{}
+		err := json.Unmarshal([]byte(componentInputItem["value"].(string)), &inputValue)
+		if err != nil {
+			return err
+		}
+		componentInput[i] = client.ComponentRoutineIOParam{
+			Name:        componentInputItem["name"].(string),
+			Description: componentInputItem["description"].(string),
+			Type:        componentInputItem["type"].(string),
+			Multiple:    componentInputItem["multiple"].(bool),
+			Required:    componentInputItem["required"].(bool),
+			ValueType:   componentInputItem["value_type"].(string),
+			Value:       inputValue,
 		}
 	}
 
@@ -236,7 +316,7 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 		Type:        d.Get("type").(string),
 		ComponentId: d.Get("component_id").(string),
 		Config:      componentConfig,
-		Input:       make([]client.ComponentRoutineIOParam, 0), //TODO
+		Input:       componentInput,
 		Output:      componentOutput,
 	}
 
@@ -268,6 +348,18 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	configDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Config))
+	for i, configDictItem := range retrievedComponentRoutine.Config {
+		configDict[i] = map[interface{}]interface{}{
+			"name":        configDictItem.Name,
+			"description": configDictItem.Description,
+			"multiple":    configDictItem.Multiple,
+			"required":    configDictItem.Required,
+			"sensitive":   configDictItem.Sensitive,
+			"type":        configDictItem.Type,
+			"value":       configDictItem.Value,
+		}
+	}
 	outputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Output))
 	for i, outputDictItem := range retrievedComponentRoutine.Output {
 		outputValue, _ := json.Marshal(outputDictItem.Value)
@@ -293,18 +385,6 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"type":        inputDictItem.Type,
 			"value_type":  inputDictItem.ValueType,
 			"value":       string(inputValue),
-		}
-	}
-	configDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Config))
-	for i, configDictItem := range retrievedComponentRoutine.Config {
-		configDict[i] = map[interface{}]interface{}{
-			"name":        configDictItem.Name,
-			"description": configDictItem.Description,
-			"multiple":    configDictItem.Multiple,
-			"required":    configDictItem.Required,
-			"sensitive":   configDictItem.Sensitive,
-			"type":        configDictItem.Type,
-			"value":       configDictItem.Value,
 		}
 	}
 
