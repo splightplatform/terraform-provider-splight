@@ -27,6 +27,9 @@ func Provider() *schema.Provider {
 			"spl_asset_metadata":    resourceAssetMetadata(),
 			"spl_component":         resourceComponent(),
 			"spl_component_routine": resourceComponentRoutine(),
+			"spl_dashboard":         resourceDashboard(),
+			"spl_dashboard_tab":     resourceDashboardTab(),
+			"spl_dashboard_chart":   resourceDashboardChart(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

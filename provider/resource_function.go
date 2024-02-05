@@ -83,9 +83,8 @@ func resourceFunction() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"function_items": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Description: "The input based on hubcomponent spec",
+				Type:     schema.TypeList,
+				Required: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ref_id": {
