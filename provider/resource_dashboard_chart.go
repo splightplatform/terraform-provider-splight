@@ -31,6 +31,16 @@ func resourceDashboardChart() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"height": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  10,
+			},
+			"width": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  20,
+			},
 			"chart_items": {
 				Type:     schema.TypeSet,
 				Required: true,
@@ -166,6 +176,8 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 		Type:          d.Get("type").(string),
 		TimestampGTE:  d.Get("timestamp_gte").(string),
 		TimestampLTE:  d.Get("timestamp_lte").(string),
+		Height:        d.Get("height").(int),
+		Width:         d.Get("width").(int),
 		ChartItems:    chartItems,
 		ValueMappings: valueMappings,
 		Thresholds:    thresholds,
@@ -241,6 +253,8 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 		Type:          d.Get("type").(string),
 		TimestampGTE:  d.Get("timestamp_gte").(string),
 		TimestampLTE:  d.Get("timestamp_lte").(string),
+		Height:        d.Get("height").(int),
+		Width:         d.Get("width").(int),
 		ValueMappings: valueMappings,
 		Thresholds:    thresholds,
 		ChartItems:    chartItems,
@@ -254,6 +268,8 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdDashboardChart.Name)
 	d.Set("tab", createdDashboardChart.Tab)
 	d.Set("type", createdDashboardChart.Type)
+	d.Set("height", createdDashboardChart.Height)
+	d.Set("width", createdDashboardChart.Width)
 	d.Set("timestamp_gte", createdDashboardChart.TimestampGTE)
 	d.Set("timestamp_lte", createdDashboardChart.TimestampLTE)
 	d.Set("chart_items", createdDashboardChart.ChartItems)
@@ -308,6 +324,8 @@ func resourceReadDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("type", retrievedDashboardChart.Type)
 	d.Set("timestamp_gte", retrievedDashboardChart.TimestampGTE)
 	d.Set("timestamp_lte", retrievedDashboardChart.TimestampLTE)
+	d.Set("height", retrievedDashboardChart.Height)
+	d.Set("width", retrievedDashboardChart.Width)
 	d.Set("chart_items", chartItemsDict)
 	d.Set("value_mappings", chartItemsDict)
 	d.Set("thresholds", chartItemsDict)

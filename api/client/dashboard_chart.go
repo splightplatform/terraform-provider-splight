@@ -33,6 +33,8 @@ type DashboardChartParams struct {
 	Type          string                  `json:"type"`
 	TimestampGTE  string                  `json:"timestamp_gte"`
 	TimestampLTE  string                  `json:"timestamp_lte"`
+	Height        int                     `json:"height"`
+	Width         int                     `json:"width"`
 	ChartItems    []DashboardChartItem    `json:"chart_items"`
 	Thresholds    []DashboardThreshold    `json:"thresholds"`
 	ValueMappings []DashboardValueMapping `json:"value_mappings"`
