@@ -26,7 +26,7 @@ func resourceDashboard() *schema.Resource {
 		Delete: resourceDeleteDashboard,
 		Exists: resourceExistsDashboard,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

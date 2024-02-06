@@ -30,7 +30,7 @@ func resourceDashboardTab() *schema.Resource {
 		Delete: resourceDeleteDashboardTab,
 		Exists: resourceExistsDashboardTab,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

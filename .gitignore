@@ -1,8 +1,7 @@
 .idea/*
-.terraform/*
-.terraform.lock.hcl
+*/.terraform/*
+*/.terraform.lock.hcl
 terraform-provider*
-terraform.tfstate*
-*.tf
+*.tfstate*
 *.tfvars
 .DS_Store

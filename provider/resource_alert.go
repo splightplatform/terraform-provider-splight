@@ -138,7 +138,7 @@ func resourceAlert() *schema.Resource {
 		Delete: resourceDeleteAlert,
 		Exists: resourceExistsAlert,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

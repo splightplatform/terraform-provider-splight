@@ -26,7 +26,7 @@ func resourceFileFolder() *schema.Resource {
 		Delete: resourceDeleteFileFolder,
 		Exists: resourceExistsFileFolder,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

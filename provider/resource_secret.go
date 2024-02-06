@@ -35,7 +35,7 @@ func resourceSecret() *schema.Resource {
 		Delete: resourceDeleteSecret,
 		Exists: resourceExistsSecret,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

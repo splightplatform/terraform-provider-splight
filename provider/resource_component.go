@@ -70,7 +70,7 @@ func resourceComponent() *schema.Resource {
 		Delete: resourceDeleteComponent,
 		Exists: resourceExistsComponent,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

@@ -120,7 +120,7 @@ func resourceDashboardChart() *schema.Resource {
 		Delete: resourceDeleteDashboardChart,
 		Exists: resourceExistsDashboardChart,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

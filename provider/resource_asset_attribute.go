@@ -37,7 +37,7 @@ func resourceAssetAttribute() *schema.Resource {
 		Delete: resourceDeleteAssetAttribute,
 		Exists: resourceExistsAssetAttribute,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

@@ -36,7 +36,7 @@ func resourceFile() *schema.Resource {
 		Delete: resourceDeleteFile,
 		Exists: resourceExistsFile,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

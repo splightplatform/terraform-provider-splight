@@ -41,7 +41,7 @@ func resourceAssetMetadata() *schema.Resource {
 		Delete: resourceDeleteAssetMetadata,
 		Exists: resourceExistsAssetMetadata,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

@@ -113,7 +113,7 @@ func resourceFunction() *schema.Resource {
 		Delete: resourceDeleteFunction,
 		Exists: resourceExistsFunction,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
