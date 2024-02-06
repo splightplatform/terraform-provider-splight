@@ -34,22 +34,20 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 	req.Header.Add("Content-Type", "application/json")
 	statusCodeAccepted := http.StatusOK
 	switch method {
-	case "GET":
-		statusCodeAccepted = http.StatusOK
 	case "DELETE":
 		statusCodeAccepted = http.StatusNoContent
 	case "POST":
 		statusCodeAccepted = http.StatusCreated
-	case "PUT":
-		statusCodeAccepted = http.StatusOK
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
-
-	if resp.StatusCode != statusCodeAccepted && resp.StatusCode != http.StatusNotFound {
+	if resp.StatusCode == http.StatusNotFound && method != "POST" {
+		return nil, nil
+	}
+	if resp.StatusCode != statusCodeAccepted {
 		respBody := new(bytes.Buffer)
 		_, err := respBody.ReadFrom(resp.Body)
 		if err != nil {

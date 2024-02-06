@@ -30,7 +30,9 @@ func Provider() *schema.Provider {
 			"spl_dashboard_tab":     resourceDashboardTab(),
 			"spl_dashboard_chart":   resourceDashboardChart(),
 			"spl_file":              resourceFile(),
+			"spl_file_folder":       resourceFileFolder(),
 			"spl_function":          resourceFunction(),
+			"spl_secret":            resourceSecret(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

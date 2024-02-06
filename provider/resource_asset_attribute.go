@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/splight-terraform-provider/api/client"
-	"github.com/splightplatform/splight-terraform-provider/verify"
+	"github.com/splightplatform/splight-terraform-provider/utils"
 )
 
 func resourceAssetAttribute() *schema.Resource {
@@ -48,7 +48,7 @@ func resourceCreateAssetAttribute(d *schema.ResourceData, m interface{}) error {
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Asset: d.Get("asset").(string),
-		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
+		Unit:  utils.ValidateNullableString(d.Get("unit").(string)),
 	}
 	createdAssetAttribute, err := apiClient.CreateAssetAttribute(&item)
 	if err != nil {
@@ -65,7 +65,7 @@ func resourceUpdateAssetAttribute(d *schema.ResourceData, m interface{}) error {
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Asset: d.Get("asset").(string),
-		Unit:  verify.ValidateNullableString(d.Get("unit").(string)),
+		Unit:  utils.ValidateNullableString(d.Get("unit").(string)),
 	}
 	updatedAssetAttribute, err := apiClient.UpdateAssetAttribute(itemId, &item)
 

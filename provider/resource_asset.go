@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/splight-terraform-provider/api/client"
-	"github.com/splightplatform/splight-terraform-provider/verify"
+	"github.com/splightplatform/splight-terraform-provider/utils"
 )
 
 func resourceAsset() *schema.Resource {
@@ -27,7 +27,7 @@ func resourceAsset() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				Description:      "Geometry of the resource",
-				DiffSuppressFunc: verify.JSONStringEqualSupressFunc,
+				DiffSuppressFunc: utils.JSONStringEqualSupressFunc,
 			},
 		},
 		Create: resourceCreateAsset,

@@ -1,4 +1,4 @@
-package verify
+package utils
 
 import (
 	"bytes"

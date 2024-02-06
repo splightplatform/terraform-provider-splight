@@ -4,4 +4,4 @@
 terraform-provider*
 terraform.tfstate*
 *.tf
-
+*.tfvars
