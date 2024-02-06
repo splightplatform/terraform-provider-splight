@@ -3,20 +3,21 @@ package provider
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/splight-terraform-provider/api/client"
+	"github.com/splightplatform/splight-terraform-provider/utils"
 )
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"hostname": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "https://api.splight-ai.com",
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: utils.HostnameDefaultFunc(),
 			},
 			"token": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("SERVICE_TOKEN", ""),
+				Optional:    true,
+				DefaultFunc: utils.TokenDefaultFunc(),
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{

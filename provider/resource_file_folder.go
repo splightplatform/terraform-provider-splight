@@ -14,6 +14,7 @@ func resourceFileFolder() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"parent": {
 				Type:     schema.TypeString,

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     spl = {
       source  = "local/splight/spl"
-      version = "0.1.0"
+      version = "0.1.1"
     }
   }
 }
@@ -344,7 +344,7 @@ resource "spl_dashboard_chart" "DashboardChartTest" {
 
 # FILES
 resource "spl_file" "FileTest" {
-  file        = ".idea/FileTF"
+  file        = "./main.tf"
   description = "Sample file for testing"
 }
 
@@ -352,15 +352,10 @@ resource "spl_file_folder" "FileFolderTest" {
   name = "FolderTF"
 }
 
-resource "spl_file_folder" "FileFolderInnerTest" {
-  name   = "InnerFolderTF"
-  parent = spl_file_folder.FileFolderTest.id
-}
-
 resource "spl_file" "FileInnerTest" {
-  file        = ".idea/FileTFCopy"
+  file        = "./variables.tf"
   description = "Sample file for testing inner file"
-  parent      = spl_file_folder.FileFolderInnerTest.id
+  parent      = spl_file_folder.FileFolderTest.id
 }
 
 # SECRETS

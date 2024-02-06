@@ -2,7 +2,10 @@ module github.com/splightplatform/splight-terraform-provider
 
 go 1.18
 
-require github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
+require (
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
