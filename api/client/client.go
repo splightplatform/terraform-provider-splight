@@ -31,11 +31,17 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		return nil, err
 	}
 	req.Header.Add("Authorization", c.authToken)
+	req.Header.Add("Content-Type", "application/json")
+	statusCodeAccepted := http.StatusOK
 	switch method {
 	case "GET":
+		statusCodeAccepted = http.StatusOK
 	case "DELETE":
-	default:
-		req.Header.Add("Content-Type", "application/json")
+		statusCodeAccepted = http.StatusNoContent
+	case "POST":
+		statusCodeAccepted = http.StatusCreated
+	case "PUT":
+		statusCodeAccepted = http.StatusOK
 	}
 
 	resp, err := c.httpClient.Do(req)
@@ -43,7 +49,7 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		return nil, err
 	}
 
-	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+	if resp.StatusCode != statusCodeAccepted && resp.StatusCode != http.StatusNotFound {
 		respBody := new(bytes.Buffer)
 		_, err := respBody.ReadFrom(resp.Body)
 		if err != nil {

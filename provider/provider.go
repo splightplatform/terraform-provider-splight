@@ -20,7 +20,6 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"spl_function":          resourceFunction(),
 			"spl_alert":             resourceAlert(),
 			"spl_asset":             resourceAsset(),
 			"spl_asset_attribute":   resourceAssetAttribute(),
@@ -30,6 +29,8 @@ func Provider() *schema.Provider {
 			"spl_dashboard":         resourceDashboard(),
 			"spl_dashboard_tab":     resourceDashboardTab(),
 			"spl_dashboard_chart":   resourceDashboardChart(),
+			"spl_file":              resourceFile(),
+			"spl_function":          resourceFunction(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
