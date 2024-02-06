@@ -17,9 +17,17 @@ func resourceFile() *schema.Resource {
 				Description: "The path for the file resource",
 				ForceNew:    true,
 			},
+			"parent": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
+			},
+			"checksum": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 		Create: resourceCreateFile,
@@ -37,6 +45,7 @@ func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 	item := client.FileParams{
 		Description: d.Get("description").(string),
+		Parent:      d.Get("parent").(string),
 	}
 	filepath := d.Get("file").(string)
 	createdFile, err := apiClient.CreateFile(&item, filepath)
@@ -49,6 +58,7 @@ func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	// Update json fields
 	updatedFile, err := apiClient.UpdateFile(createdFile.ID, &item)
 	d.Set("description", updatedFile.Description)
+	d.Set("parent", updatedFile.Parent)
 	return nil
 }
 
@@ -58,6 +68,7 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 	itemId := d.Id()
 	item := client.FileParams{
 		Description: d.Get("description").(string),
+		Parent:      d.Get("parent").(string),
 	}
 
 	updatedFile, err := apiClient.UpdateFile(itemId, &item)
@@ -67,6 +78,7 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("checksum", updatedFile.Checksum)
 	d.Set("description", updatedFile.Description)
+	d.Set("parent", updatedFile.Parent)
 	return nil
 }
 
@@ -82,9 +94,15 @@ func resourceReadFile(d *schema.ResourceData, m interface{}) error {
 			return fmt.Errorf("error finding File with ID %s", itemId)
 		}
 	}
+	storedValue := d.Get("checksum")
+	if retrievedFile.Checksum != storedValue.(string) {
+		d.Set("file", nil)
+		return nil
+	}
 
 	d.SetId(retrievedFile.ID)
 	d.Set("checksum", retrievedFile.Checksum)
+	d.Set("parent", retrievedFile.Parent)
 	d.Set("description", retrievedFile.Description)
 	return nil
 }

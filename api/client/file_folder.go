@@ -7,7 +7,8 @@ import (
 )
 
 type FileFolderParams struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	Parent string `json:"parent"`
 }
 
 type FileFolder struct {

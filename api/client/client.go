@@ -44,8 +44,8 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode == http.StatusNotFound && method != "POST" {
-		return nil, nil
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, fmt.Errorf("Element not found: %v", resp.StatusCode)
 	}
 	if resp.StatusCode != statusCodeAccepted {
 		respBody := new(bytes.Buffer)

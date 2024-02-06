@@ -14,10 +14,14 @@ func resourceFileFolder() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
+			},
+			"parent": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 		Create: resourceCreateFileFolder,
+		Update: resourceUpdateFileFolder,
 		Read:   resourceReadFileFolder,
 		Delete: resourceDeleteFileFolder,
 		Exists: resourceExistsFileFolder,
@@ -30,7 +34,8 @@ func resourceFileFolder() *schema.Resource {
 func resourceCreateFileFolder(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 	item := client.FileFolderParams{
-		Name: d.Get("name").(string),
+		Name:   d.Get("name").(string),
+		Parent: d.Get("parent").(string),
 	}
 	createdFileFolder, err := apiClient.CreateFileFolder(&item)
 	if err != nil {
@@ -39,9 +44,26 @@ func resourceCreateFileFolder(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(createdFileFolder.ID)
 	d.Set("name", createdFileFolder.Name)
+	d.Set("parent", createdFileFolder.Parent)
 	return nil
 }
 
+func resourceUpdateFileFolder(d *schema.ResourceData, m interface{}) error {
+	apiClient := m.(*client.Client)
+
+	itemId := d.Id()
+	item := client.FileFolderParams{
+		Parent: d.Get("parent").(string),
+	}
+
+	updatedFile, err := apiClient.UpdateFileFolder(itemId, &item)
+	if err != nil {
+		return err
+	}
+	d.Set("name", updatedFile.Name)
+	d.Set("parent", updatedFile.Parent)
+	return nil
+}
 func resourceReadFileFolder(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
@@ -57,6 +79,7 @@ func resourceReadFileFolder(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(retrievedFileFolder.ID)
 	d.Set("name", retrievedFileFolder.Name)
+	d.Set("parent", retrievedFileFolder.Parent)
 	return nil
 }
 

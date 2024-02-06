@@ -13,6 +13,7 @@ import (
 
 type FileParams struct {
 	Description string `json:"description"`
+	Parent      string `json:"parent"`
 }
 
 type File struct {
