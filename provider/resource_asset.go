@@ -29,6 +29,11 @@ func resourceAsset() *schema.Resource {
 				Description:      "Geometry of the resource",
 				DiffSuppressFunc: utils.JSONStringEqualSupressFunc,
 			},
+			"related_assets": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 		},
 		Create: resourceCreateAsset,
 		Read:   resourceReadAsset,
@@ -43,16 +48,28 @@ func resourceAsset() *schema.Resource {
 
 func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
+
 	assetGeometry := client.AssetGeometry{}
 	err := json.Unmarshal([]byte(d.Get("geometry").(string)), &assetGeometry)
 	if err != nil {
 		return err
 	}
+
+	assetRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	assetRelatedAssets := make([]client.RelatedAsset, len(assetRelatedAssetsSet))
+	for i, relatedAsset := range assetRelatedAssetsSet {
+		assetRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
 		AssetGeometry: assetGeometry,
+		RelatedAssets: assetRelatedAssets,
 	}
+
 	createdAsset, err := apiClient.CreateAsset(&item)
 	if err != nil {
 		return err
@@ -66,6 +83,7 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	d.SetId(createdAsset.ID)
 	d.Set("name", createdAsset.Name)
 	d.Set("description", createdAsset.Description)
+	d.Set("related_assets", createdAsset.RelatedAssets)
 	d.Set("geometry", string(geometry))
 	return nil
 }
@@ -74,15 +92,26 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
 	assetGeometry := client.AssetGeometry{}
 	err := json.Unmarshal([]byte(d.Get("geometry").(string)), &assetGeometry)
 	if err != nil {
 		return err
 	}
+
+	assetRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	assetRelatedAssets := make([]client.RelatedAsset, len(assetRelatedAssetsSet))
+	for i, relatedAsset := range assetRelatedAssetsSet {
+		assetRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
 		AssetGeometry: assetGeometry,
+		RelatedAssets: assetRelatedAssets,
 	}
 
 	updatedAsset, err := apiClient.UpdateAsset(itemId, &item)
@@ -97,6 +126,7 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("name", updatedAsset.Name)
 	d.Set("description", updatedAsset.Description)
+	d.Set("related_assets", updatedAsset.RelatedAssets)
 	d.Set("geometry", string(geometry))
 	return nil
 }
@@ -122,6 +152,7 @@ func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
 	d.SetId(retrievedAsset.ID)
 	d.Set("name", retrievedAsset.Name)
 	d.Set("description", retrievedAsset.Description)
+	d.Set("related_assets", retrievedAsset.RelatedAssets)
 	d.Set("geometry", string(geometry))
 	return nil
 }

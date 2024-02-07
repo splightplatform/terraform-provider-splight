@@ -43,5 +43,4 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	hostname := d.Get("hostname").(string)
 	token := d.Get("token").(string)
 	return client.NewClient(hostname, token), nil
-
 }

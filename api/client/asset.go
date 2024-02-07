@@ -16,10 +16,15 @@ type AssetGeometry struct {
 	Geometries []AssetGeometryParams `json:"geometries"`
 }
 
+type RelatedAsset struct {
+	Id string `json:"id"`
+}
+
 type AssetParams struct {
 	AssetGeometry `json:"geometry"`
-	Name          string `json:"name"`
-	Description   string `json:"description"`
+	Name          string         `json:"name"`
+	Description   string         `json:"description"`
+	RelatedAssets []RelatedAsset `json:"assets"`
 }
 
 type Asset struct {

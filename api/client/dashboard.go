@@ -7,8 +7,9 @@ import (
 )
 
 type DashboardParams struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name          string         `json:"name"`
+	Description   string         `json:"description"`
+	RelatedAssets []RelatedAsset `json:"assets"`
 }
 
 type Dashboard struct {

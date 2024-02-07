@@ -19,6 +19,11 @@ func resourceDashboard() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"related_assets": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 		},
 		Create: resourceCreateDashboard,
 		Read:   resourceReadDashboard,
@@ -33,9 +38,19 @@ func resourceDashboard() *schema.Resource {
 
 func resourceCreateDashboard(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
+
+	dashboardRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	dashboardRelatedAssets := make([]client.RelatedAsset, len(dashboardRelatedAssetsSet))
+	for i, relatedAsset := range dashboardRelatedAssetsSet {
+		dashboardRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.DashboardParams{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
+		Name:          d.Get("name").(string),
+		Description:   d.Get("description").(string),
+		RelatedAssets: dashboardRelatedAssets,
 	}
 	createdDashboard, err := apiClient.CreateDashboard(&item)
 	if err != nil {
@@ -44,6 +59,7 @@ func resourceCreateDashboard(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(createdDashboard.ID)
 	d.Set("name", createdDashboard.Name)
+	d.Set("related_assets", createdDashboard.RelatedAssets)
 	d.Set("description", createdDashboard.Description)
 	return nil
 }
@@ -52,9 +68,19 @@ func resourceUpdateDashboard(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
+	dashboardRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	dashboardRelatedAssets := make([]client.RelatedAsset, len(dashboardRelatedAssetsSet))
+	for i, relatedAsset := range dashboardRelatedAssetsSet {
+		dashboardRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.DashboardParams{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
+		Name:          d.Get("name").(string),
+		Description:   d.Get("description").(string),
+		RelatedAssets: dashboardRelatedAssets,
 	}
 
 	updatedDashboard, err := apiClient.UpdateDashboard(itemId, &item)
@@ -64,6 +90,7 @@ func resourceUpdateDashboard(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("name", updatedDashboard.Name)
 	d.Set("description", updatedDashboard.Description)
+	d.Set("related_assets", updatedDashboard.RelatedAssets)
 	return nil
 }
 
@@ -83,6 +110,7 @@ func resourceReadDashboard(d *schema.ResourceData, m interface{}) error {
 	d.SetId(retrievedDashboard.ID)
 	d.Set("name", retrievedDashboard.Name)
 	d.Set("description", retrievedDashboard.Description)
+	d.Set("related_assets", retrievedDashboard.RelatedAssets)
 	return nil
 }
 

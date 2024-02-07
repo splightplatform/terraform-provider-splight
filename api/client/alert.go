@@ -44,6 +44,7 @@ type AlertParams struct {
 	CronDOW        int              `json:"cron_dow"`
 	CronYear       int              `json:"cron_year"`
 	AlertItems     []AlertItem      `json:"alert_items"`
+	RelatedAssets  []RelatedAsset   `json:"assets"`
 }
 
 type Alert struct {

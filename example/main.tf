@@ -71,6 +71,14 @@ provider "spl" {
 }
 
 # ASSETS
+resource "spl_asset" "AssetMainTest" {
+  name        = "AssetTF"
+  description = "Created with Terraform"
+  geometry = jsonencode({
+    type       = "GeometryCollection"
+    geometries = []
+  })
+}
 resource "spl_asset" "AssetTest" {
   for_each    = local.assets
   name        = each.key
@@ -79,6 +87,9 @@ resource "spl_asset" "AssetTest" {
     type       = "GeometryCollection"
     geometries = each.value.geometries
   })
+  related_assets = [
+    spl_asset.AssetMainTest.id
+  ]
 }
 
 resource "spl_asset_attribute" "AssetTestAttribute" {
@@ -236,7 +247,7 @@ resource "spl_function" "FunctionTest" {
 }
 
 resource "spl_alert" "AlertTest" {
-  for_each        = local.assets
+  for_each        = spl_asset.AssetTest
   name            = "AlertTest-${each.key}"
   description     = "Created with Terraform"
   type            = "rate"
@@ -278,13 +289,18 @@ resource "spl_alert" "AlertTest" {
       }
     ])
   }
-
+  related_assets = [
+    spl_asset.AssetMainTest.id
+  ]
 }
 
 # DASHBOARDS
 resource "spl_dashboard" "DashboardTest" {
   for_each = local.assets
   name     = "DashboardTest-${each.key}"
+  related_assets = [
+    spl_asset.AssetMainTest.id
+  ]
 }
 
 resource "spl_dashboard_tab" "DashboardTabTest" {
@@ -346,6 +362,9 @@ resource "spl_dashboard_chart" "DashboardChartTest" {
 resource "spl_file" "FileTest" {
   file        = "./main.tf"
   description = "Sample file for testing"
+  related_assets = [
+    spl_asset.AssetMainTest.id
+  ]
 }
 
 resource "spl_file_folder" "FileFolderTest" {

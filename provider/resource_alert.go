@@ -131,6 +131,11 @@ func resourceAlert() *schema.Resource {
 					},
 				},
 			},
+			"related_assets": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 		},
 		Create: resourceCreateAlert,
 		Read:   resourceReadAlert,
@@ -175,6 +180,14 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	alertRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	alertRelatedAssets := make([]client.RelatedAsset, len(alertRelatedAssetsSet))
+	for i, relatedAsset := range alertRelatedAssetsSet {
+		alertRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.AlertParams{
 		Name:           d.Get("name").(string),
 		Description:    d.Get("description").(string),
@@ -188,6 +201,7 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 		Thresholds:     alertThresholds,
 		TargetVariable: d.Get("target_variable").(string),
 		AlertItems:     alertItems,
+		RelatedAssets:  alertRelatedAssets,
 	}
 
 	createdAlert, err := apiClient.CreateAlert(&item)
@@ -213,6 +227,7 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_year", createdAlert.CronYear)
 	d.Set("alert_items", createdAlert.AlertItems)
 	d.Set("severity", createdAlert.Severity)
+	d.Set("related_assets", createdAlert.RelatedAssets)
 	return nil
 }
 
@@ -250,6 +265,14 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	alertRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	alertRelatedAssets := make([]client.RelatedAsset, len(alertRelatedAssetsSet))
+	for i, relatedAsset := range alertRelatedAssetsSet {
+		alertRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.AlertParams{
 		Name:           d.Get("name").(string),
 		Description:    d.Get("description").(string),
@@ -263,6 +286,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 		Thresholds:     alertThresholds,
 		TargetVariable: d.Get("target_variable").(string),
 		AlertItems:     alertItems,
+		RelatedAssets:  alertRelatedAssets,
 	}
 
 	updateAlert, err := apiClient.UpdateAlert(itemId, &item)
@@ -288,6 +312,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_year", updateAlert.CronYear)
 	d.Set("alert_items", updateAlert.AlertItems)
 	d.Set("severity", updateAlert.Severity)
+	d.Set("related_assets", updateAlert.RelatedAssets)
 	return nil
 }
 
@@ -341,6 +366,7 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_year", retrievedAlert.CronYear)
 	d.Set("alert_items", alertItemsDict)
 	d.Set("severity", retrievedAlert.Severity)
+	d.Set("related_assets", retrievedAlert.RelatedAssets)
 	return nil
 }
 

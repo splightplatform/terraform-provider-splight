@@ -29,6 +29,11 @@ func resourceFile() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"related_assets": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 		},
 		Create: resourceCreateFile,
 		Read:   resourceReadFile,
@@ -43,9 +48,19 @@ func resourceFile() *schema.Resource {
 
 func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
+
+	fileRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	fileRelatedAssets := make([]client.RelatedAsset, len(fileRelatedAssetsSet))
+	for i, relatedAsset := range fileRelatedAssetsSet {
+		fileRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.FileParams{
-		Description: d.Get("description").(string),
-		Parent:      d.Get("parent").(string),
+		Description:   d.Get("description").(string),
+		Parent:        d.Get("parent").(string),
+		RelatedAssets: fileRelatedAssets,
 	}
 	filepath := d.Get("file").(string)
 	createdFile, err := apiClient.CreateFile(&item, filepath)
@@ -59,6 +74,7 @@ func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	updatedFile, err := apiClient.UpdateFile(createdFile.ID, &item)
 	d.Set("description", updatedFile.Description)
 	d.Set("parent", updatedFile.Parent)
+	d.Set("related_assets", updatedFile.RelatedAssets)
 	return nil
 }
 
@@ -66,9 +82,19 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
+	fileRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	fileRelatedAssets := make([]client.RelatedAsset, len(fileRelatedAssetsSet))
+	for i, relatedAsset := range fileRelatedAssetsSet {
+		fileRelatedAssets[i] = client.RelatedAsset{
+			Id: relatedAsset.(string),
+		}
+	}
+
 	item := client.FileParams{
-		Description: d.Get("description").(string),
-		Parent:      d.Get("parent").(string),
+		Description:   d.Get("description").(string),
+		Parent:        d.Get("parent").(string),
+		RelatedAssets: fileRelatedAssets,
 	}
 
 	updatedFile, err := apiClient.UpdateFile(itemId, &item)
@@ -79,6 +105,8 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 	d.Set("checksum", updatedFile.Checksum)
 	d.Set("description", updatedFile.Description)
 	d.Set("parent", updatedFile.Parent)
+	d.Set("related_assets", updatedFile.RelatedAssets)
+
 	return nil
 }
 
@@ -104,6 +132,8 @@ func resourceReadFile(d *schema.ResourceData, m interface{}) error {
 	d.Set("checksum", retrievedFile.Checksum)
 	d.Set("parent", retrievedFile.Parent)
 	d.Set("description", retrievedFile.Description)
+	d.Set("related_assets", retrievedFile.RelatedAssets)
+
 	return nil
 }
 

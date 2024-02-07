@@ -12,8 +12,9 @@ import (
 )
 
 type FileParams struct {
-	Description string `json:"description"`
-	Parent      string `json:"parent"`
+	Description   string         `json:"description"`
+	Parent        string         `json:"parent"`
+	RelatedAssets []RelatedAsset `json:"assets"`
 }
 
 type File struct {
