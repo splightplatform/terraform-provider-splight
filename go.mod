@@ -1,6 +1,6 @@
 module github.com/splightplatform/splight-terraform-provider
 
-go 1.18
+go 1.21.6
 
 require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
