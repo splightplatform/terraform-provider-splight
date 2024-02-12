@@ -1,0 +1,1 @@
+terraform import [options] spl_secret.<name> <secret_id>

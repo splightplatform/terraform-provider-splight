@@ -5,3 +5,4 @@ terraform-provider*
 *.tfstate*
 *.tfvars
 .DS_Store
+bin/*

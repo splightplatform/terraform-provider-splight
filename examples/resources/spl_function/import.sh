@@ -1,0 +1,1 @@
+terraform import [options] spl_function.<name> <function_id>

@@ -1,0 +1,1 @@
+terraform import [options] spl_dashbaord_chart.<name> <dashboard_chart_id>
