@@ -1,1 +1,1 @@
-terraform import [options] spl_file_folder.<name> <file_folder_id>
+terraform import [options] spl_file.<name> <file_id>

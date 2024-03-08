@@ -3,24 +3,31 @@ package client
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
-	"mime/multipart"
 	"net/http"
 	"os"
 )
 
 type FileParams struct {
+	Name          string         `json:"name"`
 	Description   string         `json:"description"`
 	Parent        string         `json:"parent"`
 	RelatedAssets []RelatedAsset `json:"assets"`
 }
 
+type FileURL struct {
+	URL string `json:"url"`
+}
+
+type FileDetails struct {
+	Checksum     string `json:"checksum"`
+	LastModified string `json:"last_modified"`
+	Size         string `json:"size"`
+}
+
 type File struct {
 	FileParams
-	Checksum string `json:"checksum"`
-	ID       string `json:"id"`
+	ID string `json:"id"`
 }
 
 func (c *Client) ListFiles() (*map[string]File, error) {
@@ -37,60 +44,61 @@ func (c *Client) ListFiles() (*map[string]File, error) {
 }
 
 func (c *Client) CreateFile(item *FileParams, filepath string) (*File, error) {
+	// Create the File instance
+	buf := bytes.Buffer{}
+	err := json.NewEncoder(&buf).Encode(item)
+	if err != nil {
+		return nil, err
+	}
+	body, err := c.httpRequest("v2/engine/file/files/", "POST", buf)
+	if err != nil {
+		return nil, err
+	}
+	fileResponse := &File{}
+	err = json.NewDecoder(body).Decode(fileResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	// Request File upload_url
+	body, err = c.httpRequest(fmt.Sprintf("v2/engine/file/files/%s/upload_url/", fileResponse.ID), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, err
+	}
+	fileURL := &FileURL{}
+	err = json.NewDecoder(body).Decode(fileURL)
+	if err != nil {
+		return nil, err
+	}
+
+	// Upload File content
 	// Open the file
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-
-	// Create a new multipart writer
-	buf := &bytes.Buffer{}
-	writer := multipart.NewWriter(buf)
-
-	// Create a part for the file content
-	part, err := writer.CreateFormFile("file", filepath)
+	// Getting size
+	fileStat, err := file.Stat()
 	if err != nil {
 		return nil, err
 	}
-
-	// Copy the file content to the part
-	_, err = io.Copy(part, file)
+	fileSize := fileStat.Size()
+	// Do the request
+	req, err := http.NewRequest("PUT", fileURL.URL, file)
 	if err != nil {
 		return nil, err
 	}
-
-	// Close the multipart writer
-	err = writer.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	// Make the HTTP request
-	req, err := http.NewRequest("POST", c.requestPath("v2/engine/file/files/"), buf)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-	req.Header.Set("Authorization", c.authToken)
-
+	req.ContentLength = fileSize
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
+	statusCode := resp.StatusCode
+	if statusCode != 200 {
+		return nil, fmt.Errorf("wrong status code uploading file %d", statusCode)
+	}
 	defer resp.Body.Close()
-
-	// Check the response status code
-	if resp.StatusCode != http.StatusCreated {
-		return nil, errors.New("Unexpected status code: " + resp.Status)
-	}
-
-	// Decode the response body
-	fileResponse := &File{}
-	err = json.NewDecoder(resp.Body).Decode(fileResponse)
-	if err != nil {
-		return nil, err
-	}
 
 	return fileResponse, nil
 }
@@ -132,4 +140,17 @@ func (c *Client) DeleteFile(id string) error {
 		return err
 	}
 	return nil
+}
+
+func (c *Client) RetrieveFileDetails(id string) (*FileDetails, error) {
+	body, err := c.httpRequest(fmt.Sprintf("v2/engine/file/files/%s/details", id), "GET", bytes.Buffer{})
+	if err != nil {
+		return nil, nil
+	}
+	fileDetails := &FileDetails{}
+	err = json.NewDecoder(body).Decode(fileDetails)
+	if err != nil {
+		return nil, err
+	}
+	return fileDetails, nil
 }
