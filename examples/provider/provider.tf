@@ -2,7 +2,7 @@ terraform {
   required_providers {
     spl = {
       source  = "splightplatform/splight"
-      version = "0.1.1"
+      version = "0.1.4"
     }
   }
 }
