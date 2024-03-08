@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -34,6 +35,7 @@ func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	}
 
 	item := client.FileParams{
+		Name:          filepath.Base(d.Get("file").(string)),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
 		RelatedAssets: fileRelatedAssets,
@@ -43,14 +45,16 @@ func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
+	fileDetails, err := apiClient.RetrieveFileDetails(createdFile.ID)
+	if err != nil {
+		return err
+	}
 
 	d.SetId(createdFile.ID)
-	d.Set("checksum", createdFile.Checksum)
-	// Update json fields
-	updatedFile, err := apiClient.UpdateFile(createdFile.ID, &item)
-	d.Set("description", updatedFile.Description)
-	d.Set("parent", updatedFile.Parent)
-	d.Set("related_assets", updatedFile.RelatedAssets)
+	d.Set("checksum", fileDetails.Checksum)
+	d.Set("description", createdFile.Description)
+	d.Set("parent", createdFile.Parent)
+	d.Set("related_assets", createdFile.RelatedAssets)
 	return nil
 }
 
@@ -68,6 +72,7 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 	}
 
 	item := client.FileParams{
+		Name:          filepath.Base(d.Get("file").(string)),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
 		RelatedAssets: fileRelatedAssets,
@@ -78,7 +83,12 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	d.Set("checksum", updatedFile.Checksum)
+	fileDetails, err := apiClient.RetrieveFileDetails(updatedFile.ID)
+	if err != nil {
+		return err
+	}
+
+	d.Set("checksum", fileDetails.Checksum)
 	d.Set("description", updatedFile.Description)
 	d.Set("parent", updatedFile.Parent)
 	d.Set("related_assets", updatedFile.RelatedAssets)
@@ -98,14 +108,18 @@ func resourceReadFile(d *schema.ResourceData, m interface{}) error {
 			return fmt.Errorf("error finding File with ID %s", itemId)
 		}
 	}
+	fileDetails, err := apiClient.RetrieveFileDetails(retrievedFile.ID)
+	if err != nil {
+		return err
+	}
 	storedValue := d.Get("checksum")
-	if retrievedFile.Checksum != storedValue.(string) {
+	if fileDetails.Checksum != storedValue.(string) {
 		d.Set("file", nil)
 		return nil
 	}
 
 	d.SetId(retrievedFile.ID)
-	d.Set("checksum", retrievedFile.Checksum)
+	d.Set("checksum", fileDetails.Checksum)
 	d.Set("parent", retrievedFile.Parent)
 	d.Set("description", retrievedFile.Description)
 	d.Set("related_assets", retrievedFile.RelatedAssets)
