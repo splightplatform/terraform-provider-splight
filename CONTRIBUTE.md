@@ -16,7 +16,7 @@ make install
 
 You must do this each time you want to test new changes.
 
-In case you already have the provider installed from the registry run
+If you already have the provider installed from the registry, delete it from the lockfile with:
 
 ```sh
 rm -rf .terraform .terraform.lock.hcl
@@ -54,7 +54,7 @@ terraform init
 terraform apply
 ```
 
-Check the examples folder for a complete file with all the available resources
+Check the examples folder for a complete file with all the available resources.
 
 ### Import resources
 
