@@ -18,7 +18,7 @@ You must do this each time you want to test new changes.
 
 This will install the plugin inside the terraform folder of your home directory.
 
-```bash
+```
 ❯ tree ~/.terraform.d
 .terraform.d
 ├── checkpoint_cache
@@ -63,7 +63,9 @@ resource "spl_asset" "AssetTest" {
   description = "Created with Terraform"
 }
 ```
+
 and a ```variables.tf``` file
+
 ```hcl
 variable "spl_secret" {
   type      = string
@@ -89,7 +91,7 @@ terraform init
 
 You can see the cached provider in your workspace pointing to the plugin we built previously.
 
-```bash
+```
 ❯ tree .terraform
 .terraform
 └── providers
@@ -112,19 +114,19 @@ Explore the examples folder for a complete file with all available resources.
 
 ### Import resources
 
-```sh
+```bash
 terraform import <STATE_REFERENCE> <RESOURCE_ID>
 ```
 
 Examples
 
-```sh
+```bash
 terraform import -var-file variables.tfvars spl_secret.SecretImportTest 3e408b18-79df-465b-850d-6629088224de
 terraform import -var-file variables.tfvars spl_asset.AssetImportTest 4e408b18-79df-465b-850d-6629088224de
 ```
 
 ### Generate docs
 
-```
+```bash
 go generate
 ```
