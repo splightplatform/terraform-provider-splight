@@ -82,7 +82,7 @@ You can see the cached provider in your workspace pointing to the plugin we buil
 7 directories, 0 files
 ```
 
-Finally run
+Finally run:
 
 ```bash
 terraform plan
