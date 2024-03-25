@@ -1,33 +1,20 @@
 ## Splight Terraform Provider
 
-### How to install this Golang?
+### Installation
+
+Install golang (MacOS)
 
 ```
 brew install go
 ```
 
-### How to install this locally?
-
-Check your architecture details with
+Run
 
 ```bash
-$ terraform version
-Terraform v1.4.6
-on <YOUR_ARCHITECTURE>
-+ provider local/splight/spl v<VERSION>
-
-Your version of Terraform is out of date! The latest version
-is 1.7.1. You can update by downloading from https://www.terraform.io/downloads.html
+make install
 ```
 
-Then copy the provider to sources folder indicating `local/splight/spl` same as `source = "local/splight/spl"` in TF file.
-
-```sh
-make build
-cp terraform-provider-spl_v<VERSION>  ~/.terraform.d/plugins/local/splight/spl/<VERSION>/<YOUR_ARCHITECTURE>
-```
-
-and start using it with any tf file.
+You must run this each time you want to test new changes.
 
 In case you have the provider already installed run
 
