@@ -13,11 +13,11 @@ fmt:
 build: fmt
 	./scripts/build.sh
 
-clean:
+clean-provider-cache:
 	rm -rf $(LOCAL_PROVIDER_PATH)
 	rm .terraform.lock.hcl
 
-install: build clean
+install: build
 	mkdir -p $(PLUGIN_PATH)
 	cp terraform-provider-spl_v$(VERSION) $(PLUGIN_PATH)
 

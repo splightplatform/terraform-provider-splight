@@ -33,12 +33,14 @@ This will install the plugin inside the terraform folder of your home directory.
 
 7 directories, 3 files
 ```
-
-It will also delete your .terraform.lock.hcl and the symlink inside the .terraform folder in your workspace.
+If you are rebuilding the same version, ensure to clean the provider cache from the .terraform 
+folder and remove the lockfile .terraform.lock.hcl from your project's working directory.
+For your convenience, a make clean-provider-cache command is provided to execute these tasks when
+testing the provider with a main.tf file inside the repository folder.
 
 ### Usage
 
-Create a main.tf file as follows:
+To utilize the Splight Terraform Provider, create a main.tf file with the following content:
 
 ```hcl
 terraform {
@@ -82,13 +84,13 @@ You can see the cached provider in your workspace pointing to the plugin we buil
 7 directories, 0 files
 ```
 
-Finally run:
+Finally run
 
 ```bash
 terraform plan
 ```
 
-Check the examples folder for a complete file with all the available resources.
+Explore the examples folder for a complete file with all available resources.
 
 ### Import resources
 
