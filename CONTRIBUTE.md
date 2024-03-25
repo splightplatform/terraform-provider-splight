@@ -2,10 +2,10 @@
 
 ### Installation
 
-Install golang (MacOS)
+Install golang and terraform (MacOS)
 
 ```
-brew install go
+brew install go terraform
 ```
 
 Run
@@ -14,17 +14,17 @@ Run
 make install
 ```
 
-You must run this each time you want to test new changes.
+You must do this each time you want to test new changes.
 
-In case you have the provider already installed run
+In case you already have the provider installed from the registry run
 
 ```sh
 rm -rf .terraform .terraform.lock.hcl
 ```
 
-### How to create a sample main.tf file.
+### Usage
 
-Here is a sample TF file to test the provider
+Create a main.tf file as follows:
 
 ```
 terraform {
@@ -47,16 +47,16 @@ resource "spl_asset" "AssetTest" {
 }
 ```
 
-Just run
+then
 
 ```sh
 terraform init
 terraform apply
 ```
 
-If you want a complete example just go inside example folder and see a complete file with all resources
+Check the examples folder for a complete file with all the available resources
 
-### How to import resources
+### Import resources
 
 ```sh
 terraform import <STATE_REFERENCE> <RESOURCE_ID>
@@ -69,7 +69,7 @@ terraform import -var-file variables.tfvars spl_secret.SecretImportTest 3e408b18
 terraform import -var-file variables.tfvars spl_asset.AssetImportTest 4e408b18-79df-465b-850d-6629088224de
 ```
 
-### How to regenerate documantation
+### Generate docs
 
 ```
 go generate
