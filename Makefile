@@ -1,4 +1,4 @@
-GOFMT_FILES := $$(find . -name '*.go' | grep -v vendor)
+GOFMT_FILES ?= $$(find . -name '*.go' | grep -v vendor)
 VERSION := $$(cat version)
 ARCH := $$(terraform version | grep -o '^on [^\s]\+' | cut -d ' ' -f2)
 PLUGIN_PATH := ~/.terraform.d/plugins/local/splight/spl/$(VERSION)/$(ARCH)
