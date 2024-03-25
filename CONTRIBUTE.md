@@ -33,10 +33,10 @@ This will install the plugin inside the terraform folder of your home directory.
 
 7 directories, 3 files
 ```
-If you are rebuilding the same version, ensure to clean the provider cache from the _.terraform_ 
-folder and remove the lockfile _.terraform.lock.hcl_ from your project's working directory.
+If you are rebuilding the same version, ensure to clean the provider cache from the ```.terraform```
+folder and remove the lockfile ```.terraform.lock.hcl``` from your project's working directory.
 
-For your convenience, a make _clean-provider-cache_ command is provided to execute these tasks when
+For your convenience, a ```make clean-provider-cache``` command is provided to execute these tasks when
 testing the provider with a main.tf file inside the repository folder.
 
 ### Usage
