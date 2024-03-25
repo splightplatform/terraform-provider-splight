@@ -20,4 +20,3 @@ clean-provider-cache:
 install: build
 	mkdir -p $(PLUGIN_PATH)
 	cp terraform-provider-spl_v$(VERSION) $(PLUGIN_PATH)
-
