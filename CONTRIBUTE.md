@@ -37,7 +37,7 @@ If you are rebuilding the same version, ensure to clean the provider cache from 
 folder and remove the lockfile ```.terraform.lock.hcl``` from your project's working directory.
 
 For your convenience, a ```make clean-provider-cache``` command is provided to execute these tasks when
-testing the provider with a main.tf file inside the repository folder.
+testing the provider with a ```main.tf``` file inside the repository folder.
 
 ### Usage
 
