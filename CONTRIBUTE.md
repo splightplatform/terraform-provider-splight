@@ -37,11 +37,11 @@ If you are rebuilding the same version, ensure to clean the provider cache from 
 folder and remove the lockfile ```.terraform.lock.hcl``` from your project's working directory.
 
 For your convenience, a ```make clean-provider-cache``` command is provided to execute these tasks when
-testing the provider with a ```main.tf``` file inside the repository folder.
+testing the provider inside the repository folder.
 
 ### Usage
 
-To utilize the Splight Terraform Provider, create a main.tf file with the following content:
+To utilize the Splight Terraform Provider, create a ```main.tf``` file with the following content:
 
 ```hcl
 terraform {
@@ -61,6 +61,23 @@ provider "spl" {
 resource "spl_asset" "AssetTest" {
   name = "Asset1"
   description = "Created with Terraform"
+}
+```
+and a ```variables.tf``` file
+```hcl
+variable "spl_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "spl_api_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "spl_hostname" {
+  type = string
+
 }
 ```
 
