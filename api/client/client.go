@@ -7,16 +7,12 @@ import (
 	"net/http"
 )
 
-// Client holds all of the information required to connect to a server
 type Client struct {
 	hostname   string
 	authToken  string
 	httpClient *http.Client
 }
 
-// NewClient returns a new client configured to communicate on a server with the
-// given hostname and port and to send an Authorization Header with the value of
-// token
 func NewClient(hostname string, token string) *Client {
 	return &Client{
 		hostname:   hostname,
@@ -25,14 +21,23 @@ func NewClient(hostname string, token string) *Client {
 	}
 }
 
+func (c *Client) requestPath(path string) string {
+	return fmt.Sprintf("%s/%s", c.hostname, path)
+}
+
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.ReadCloser, err error) {
 	req, err := http.NewRequest(method, c.requestPath(path), &body)
+
 	if err != nil {
 		return nil, err
 	}
+
+	// Add Splight auth token
 	req.Header.Add("Authorization", c.authToken)
 	req.Header.Add("Content-Type", "application/json")
+
 	statusCodeAccepted := http.StatusOK
+
 	switch method {
 	case "DELETE":
 		statusCodeAccepted = http.StatusNoContent
@@ -56,8 +61,4 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (closer io.
 		return nil, fmt.Errorf("Got a non valid status code: %v - %s", resp.StatusCode, respBody.String())
 	}
 	return resp.Body, nil
-}
-
-func (c *Client) requestPath(path string) string {
-	return fmt.Sprintf("%s/%s", c.hostname, path)
 }
