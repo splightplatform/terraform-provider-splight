@@ -1,14 +1,32 @@
 package main
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"context"
+	"flag"
+	"log"
+
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/splightplatform/terraform-provider-splight/internal/provider"
 )
 
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate -provider-name "spl"
+var version string = "dev"
 
 func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: provider.Provider,
-	})
+	var debug bool
+
+	flag.BoolVar(&debug, "debug", false, "Set to true to run the provider with support for debuggers")
+	flag.Parse()
+
+	opts := providerserver.ServeOpts{
+		// Also update the tfplugindocs generate command to either remove the
+		// -provider-name flag or set its value to the updated provider name.
+		Address: "registry.terraform.io/hashicorp/splight",
+		Debug:   debug,
+	}
+
+	err := providerserver.Serve(context.Background(), provider.NewSplightProvider(version), opts)
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
