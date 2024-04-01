@@ -2,7 +2,7 @@ package provider
 
 import (
 	"context"
-	"terraform-provider-hashicups/api/client"
+	"github.com/splightplatform/terraform-provider-splight/api/client"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -29,7 +29,7 @@ type SplightProvider struct {
 func (p *SplightProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		// TODO: fill
-		NewExampleResource,
+		NewAssetResource,
 	}
 }
 
@@ -111,7 +111,7 @@ func (p *SplightProvider) Configure(ctx context.Context, req provider.ConfigureR
 	resp.ResourceData = client
 }
 
-func New(version string) func() provider.Provider {
+func NewSplightProvider(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &SplightProvider{
 			version: version,
