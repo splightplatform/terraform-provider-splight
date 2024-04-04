@@ -20,7 +20,7 @@ func main() {
 	opts := providerserver.ServeOpts{
 		// Also update the tfplugindocs generate command to either remove the
 		// -provider-name flag or set its value to the updated provider name.
-		Address: "registry.terraform.io/hashicorp/splight",
+		Address: "registry.terraform.io/splightplatform/splight",
 		Debug:   debug,
 	}
 
