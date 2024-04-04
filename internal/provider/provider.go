@@ -28,16 +28,12 @@ type SplightProvider struct {
 
 func (p *SplightProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		// TODO: fill
 		NewAssetResource,
 	}
 }
 
 func (p *SplightProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		// TODO: fill
-		NewExampleDataSource,
-	}
+	return []func() datasource.DataSource{}
 }
 
 // This is the prefix for each resource and data source
