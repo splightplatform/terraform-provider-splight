@@ -40,20 +40,6 @@ func (a *Asset) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (a Asset) MarshalJSON() ([]byte, error) {
-
-	// Create an alias to avoid infinite recursion
-	type Alias Asset
-
-	return json.Marshal(&struct {
-		Geometry string `json:"geometry"`
-		Alias
-	}{
-		Geometry: a.Geometry,
-		Alias:    (Alias)(a),
-	})
-}
-
 func (c *Client) ListAssets() (*map[string]Asset, error) {
 	body, err := c.httpRequest("v2/engine/asset/assets/", "GET", bytes.Buffer{})
 	if err != nil {
