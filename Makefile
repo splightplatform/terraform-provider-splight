@@ -5,6 +5,7 @@ BASE_NAME := terraform-provider-spl_${ARCH}_${VERSION}
 default: install
 
 format:
+	go mod tidy
 	gofmt -w .
 
 build: format
@@ -13,5 +14,8 @@ build: format
 install: format
 	go install .
 
-debug: format
+debug-build: format
 	go build -gcflags="all=-N -l" -o $(BASE_NAME)_debug
+
+debug-start: debug-build
+	dlv exec $(BASE_NAME)_debug -- -debug
