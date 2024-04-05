@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"runtime"
 )
 
 type RelatedAsset struct {
@@ -59,7 +58,6 @@ func (c *Client) CreateAsset(item *Asset) (*Asset, error) {
 	if err != nil {
 		return nil, err
 	}
-	runtime.Breakpoint()
 	body, err := c.httpRequest("v2/engine/asset/assets/", "POST", buf)
 	if err != nil {
 		return nil, err
