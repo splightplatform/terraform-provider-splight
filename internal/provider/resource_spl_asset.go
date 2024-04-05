@@ -3,12 +3,13 @@ package provider
 import (
 	"context"
 	"fmt"
-	"runtime"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -44,7 +45,9 @@ func (r *AssetResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 				Required:            false,
 				Optional:            false,
 				Computed:            true,
-				// FIXME: hidden: https://github.com/hashicorp/terraform-plugin-framework/issues/898
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "name of the resource",
@@ -59,7 +62,7 @@ func (r *AssetResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 				Optional:            true,
 				MarkdownDescription: "geojson compliant geometry collection JSON (see: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.8)",
 				Validators: []validator.String{
-					geoJSONValidator{},
+					geoJSONGeometryCollectionValidator{},
 				},
 			},
 			"related_assets": schema.SetAttribute{
@@ -112,6 +115,14 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 
 	// Convert related assets input set to the API format
+	// from: {id1, id2, id3}
+	// to:
+	// [
+	// 	{
+	// 		id: <id>
+	// 	},
+	// 	...
+	// ]
 	var relatedAssetsSet []types.String
 	data.RelatedAssets.ElementsAs(ctx, &relatedAssetsSet, false)
 	assetRelatedAssets := make([]client.RelatedAsset, len(relatedAssetsSet))
@@ -121,15 +132,12 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 		}
 	}
 
-	// Validate geometry collection against RFC7946
-
 	item := client.Asset{
 		Name:          data.Name.ValueString(),
 		Description:   data.Description.ValueString(),
 		Geometry:      data.Geometry.ValueString(),
 		RelatedAssets: assetRelatedAssets,
 	}
-	runtime.Breakpoint()
 
 	createdAsset, err := r.client.CreateAsset(&item)
 	if err != nil {
@@ -137,11 +145,11 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	runtime.Breakpoint()
-
 	data.Id = types.StringValue(createdAsset.Id)
 	data.Name = types.StringValue(createdAsset.Name)
 	data.Description = types.StringValue(createdAsset.Description)
+
+	// We have to normalize the geometry again to prevent diffs with the plan
 	data.Geometry = jsontypes.NewNormalizedValue(createdAsset.Geometry)
 
 	tflog.Trace(ctx, "created an asset")
