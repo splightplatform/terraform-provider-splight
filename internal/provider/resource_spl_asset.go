@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -36,7 +37,7 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
-		Geometry:      d.Get("geometry").(string),
+		Geometry:      json.RawMessage(d.Get("geometry").(string)),
 		RelatedAssets: assetRelatedAssets,
 	}
 
@@ -69,7 +70,7 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
-		Geometry:      d.Get("geometry").(string),
+		Geometry:      json.RawMessage(d.Get("geometry").(string)),
 		RelatedAssets: assetRelatedAssets,
 	}
 

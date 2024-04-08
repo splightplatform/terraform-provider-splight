@@ -7,7 +7,6 @@ import (
 )
 
 type AlertItem struct {
-	// ID              string `json:"id"`
 	RefID           string `json:"ref_id"`
 	Type            string `json:"type"`
 	ExpressionPlain string `json:"expression_plain"`
