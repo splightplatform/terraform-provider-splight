@@ -7,13 +7,13 @@ import (
 )
 
 type ComponentInputParam struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Multiple    bool   `json:"multiple"`
-	Required    bool   `json:"required"`
-	Sensitive   bool   `json:"sensitive"`
-	Type        string `json:"type"`
-	Value       string `json:"value"`
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	Multiple    bool            `json:"multiple"`
+	Required    bool            `json:"required"`
+	Sensitive   bool            `json:"sensitive"`
+	Type        string          `json:"type"`
+	Value       json.RawMessage `json:"value"`
 }
 
 type ComponentParams struct {
