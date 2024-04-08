@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 	_ "github.com/santhosh-tekuri/jsonschema/v5/httploader"
+	"github.com/tidwall/gjson"
 )
 
 type geoJSONGeometryCollectionValidator struct{}
@@ -31,6 +32,7 @@ func (v geoJSONGeometryCollectionValidator) ValidateString(ctx context.Context, 
 		return
 	}
 
+	// FIXME: extra fields in the response breaks this
 	var raw_json interface{}
 	if err := json.Unmarshal([]byte(req.ConfigValue.ValueString()), &raw_json); err != nil {
 		resp.Diagnostics.AddAttributeError(
@@ -38,6 +40,16 @@ func (v geoJSONGeometryCollectionValidator) ValidateString(ctx context.Context, 
 			"Error decoding Geometry Collection. Is it a valid JSON?",
 			fmt.Sprintf("Error: %s", err),
 		)
+	}
+
+	json_type := gjson.Get(req.ConfigValue.ValueString(), "type")
+	if json_type.String() != "GeometryCollection" {
+		resp.Diagnostics.AddAttributeError(
+			req.Path,
+			"Error while validating Geometry Collection",
+			"Make sure it satifies RFC7946: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.8",
+		)
+
 	}
 
 	schema, err := jsonschema.Compile("https://geojson.org/schema/GeoJSON.json")
