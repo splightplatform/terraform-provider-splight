@@ -13,6 +13,9 @@ format:
 build: format
 	go build -o $(BASE_NAME)
 
+install: format
+	go install .
+
 debug-build: format
 	go build -gcflags="all=-N -l" -o $(BASE_NAME)_debug
 
