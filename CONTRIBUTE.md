@@ -2,42 +2,49 @@
 
 ### Installation
 
-Install golang and terraform (MacOS)
+Install golang, terraform and delve (MacOS)
 
 ```bash
-brew install go terraform
+brew install go terraform delve
 ```
 
 Run
 
 ```bash
-make install
+make debug-start
 ```
 
 You must do this each time you want to test new changes.
 
-This will install the plugin inside the terraform folder of your home directory.
+This will run the provider with debugging support for delve
+
+When the debugger starts you will see the following output:
+
+```bash
+❯ make debug-start
+go mod tidy
+gofmt -w .
+go build -gcflags="all=-N -l" -o terraform-provider-spl_$(terraform version | grep -o '^on [^\s]\+' | cut -d ' ' -f2)_$(cat version)_debug
+dlv exec terraform-provider-spl_$(terraform version | grep -o '^on [^\s]\+' | cut -d ' ' -f2)_$(cat version)_debug -- -debug
+Type 'help' for list of commands.
+(dlv)
+```
+
+Input 'continue' or 'c' to start the server:
 
 ```
-❯ tree ~/.terraform.d
-.terraform.d
-├── checkpoint_cache
-├── checkpoint_signature
-└── plugins
-    └── local
-        └── splight
-            └── spl
-                └── 0.1.5 <-- From the 'version' file
-                    └── darwin_arm64 <-- Depending on your platform
-                        └── terraform-provider-spl_v0.1.5 <-- Compiled binary
+(dlv) c
+{"@level":"debug","@message":"plugin address","@timestamp":"2024-04-08T14:30:09.697517-03:00","address":"/var/folders/p0/8t8w97s96xb7gy2rtmkc_w4m0000gn/T/plugin3729862057","network":"unix"}
+Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environment variable with the following:
 
-7 directories, 3 files
+	TF_REATTACH_PROVIDERS=<output>
 ```
-If you are rebuilding the same version, ensure to clean the provider cache from the ```.terraform```
-folder and remove the lockfile ```.terraform.lock.hcl``` from your project's working directory.
 
-For your convenience, a ```make clean-provider-cache``` command is provided to execute these tasks when
-testing the provider inside the repository folder.
+Copy the env var and try applying changes:
+
+```
+	TF_REATTACH_PROVIDERS=<output> terraform apply
+```
 
 ### Usage
 

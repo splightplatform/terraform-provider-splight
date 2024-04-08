@@ -1,20 +1,20 @@
-GOFMT_FILES ?= $$(find . -name '*.go' | grep -v vendor)
 VERSION := $$(cat version)
 ARCH := $$(terraform version | grep -o '^on [^\s]\+' | cut -d ' ' -f2)
-PLUGIN_PATH := ~/.terraform.d/plugins/local/splight/spl/$(VERSION)/$(ARCH)
+BASE_NAME := terraform-provider-spl_${ARCH}_${VERSION}
 
+# TODO: generate docs
 
-default: build
+default: install
 
-fmt:
-	gofmt -w $(GOFMT_FILES)
+format:
+	go mod tidy
+	gofmt -w .
 
-build: fmt
-	./scripts/build.sh
+build: format
+	go build -o $(BASE_NAME)
 
-clean-provider-cache:
-	rm -rf .terraform.lock.hcl .terraform
+debug-build: format
+	go build -gcflags="all=-N -l" -o $(BASE_NAME)_debug
 
-install: build
-	mkdir -p $(PLUGIN_PATH)
-	cp terraform-provider-spl_v$(VERSION) $(PLUGIN_PATH)
+debug-start: debug-build
+	dlv exec $(BASE_NAME)_debug -- -debug
