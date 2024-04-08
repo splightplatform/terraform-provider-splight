@@ -1,14 +1,36 @@
 package main
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"context"
+	"flag"
+
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6/tf6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
 	"github.com/splightplatform/terraform-provider-splight/internal/provider"
 )
 
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate -provider-name "spl"
-
 func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: provider.Provider,
-	})
+	var debug bool
+	ctx := context.Background()
+
+	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
+	flag.Parse()
+
+	upgradedSdkProvider, err := tf5to6server.UpgradeServer(
+		ctx,
+		provider.Provider().GRPCProvider,
+	)
+
+	if err != nil {
+		// TODO: error
+	}
+
+	err = tf6server.Serve(
+		"registry.terraform.io/splightplatform/splight",
+		func() tfprotov6.ProviderServer {
+			return upgradedSdkProvider
+		},
+		tf6server.WithManagedDebug(),
+	)
 }
