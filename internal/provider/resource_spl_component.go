@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -36,7 +37,7 @@ func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
 			Name:        componentInputItem["name"].(string),
 			Description: componentInputItem["description"].(string),
 			Type:        componentInputItem["type"].(string),
-			Value:       componentInputItem["value"].(string),
+			Value:       json.RawMessage(componentInputItem["value"].(string)),
 			Multiple:    componentInputItem["multiple"].(bool),
 			Required:    componentInputItem["required"].(bool),
 			Sensitive:   componentInputItem["sensitive"].(bool),
@@ -79,7 +80,7 @@ func resourceUpdateComponent(d *schema.ResourceData, m interface{}) error {
 			Name:        componentInputItem["name"].(string),
 			Description: componentInputItem["description"].(string),
 			Type:        componentInputItem["type"].(string),
-			Value:       componentInputItem["value"].(string),
+			Value:       json.RawMessage(componentInputItem["value"].(string)),
 			Multiple:    componentInputItem["multiple"].(bool),
 			Required:    componentInputItem["required"].(bool),
 			Sensitive:   componentInputItem["sensitive"].(bool),

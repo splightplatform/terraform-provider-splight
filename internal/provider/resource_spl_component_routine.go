@@ -37,7 +37,7 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 			Name:        componentConfigItem["name"].(string),
 			Description: componentConfigItem["description"].(string),
 			Type:        componentConfigItem["type"].(string),
-			Value:       componentConfigItem["value"].(string),
+			Value:       json.RawMessage(componentConfigItem["value"].(string)),
 			Multiple:    componentConfigItem["multiple"].(bool),
 			Required:    componentConfigItem["required"].(bool),
 			Sensitive:   componentConfigItem["sensitive"].(bool),
@@ -132,7 +132,7 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 			Name:        componentConfigItem["name"].(string),
 			Description: componentConfigItem["description"].(string),
 			Type:        componentConfigItem["type"].(string),
-			Value:       componentConfigItem["value"].(string),
+			Value:       json.RawMessage(componentConfigItem["value"].(string)),
 			Multiple:    componentConfigItem["multiple"].(bool),
 			Required:    componentConfigItem["required"].(bool),
 			Sensitive:   componentConfigItem["sensitive"].(bool),
@@ -232,7 +232,7 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"required":    configDictItem.Required,
 			"sensitive":   configDictItem.Sensitive,
 			"type":        configDictItem.Type,
-			"value":       configDictItem.Value,
+			"value":       json.RawMessage(configDictItem.Value),
 		}
 	}
 	outputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Output))
