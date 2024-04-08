@@ -1,6 +1,7 @@
 ## Splight Terraform Provider
 
-### Installation
+
+### Requirements
 
 Install golang, terraform and delve (MacOS)
 
@@ -8,7 +9,36 @@ Install golang, terraform and delve (MacOS)
 brew install go terraform delve
 ```
 
+### Installation
+
 Run
+
+```bash
+make install
+```
+
+and set your ~/.terraformrc as follows:
+
+```hcl
+provider_installation {
+  dev_overrides {
+      "splightplatform/splight" = "/Users/<you>/go/bin/"
+  }
+  direct {}
+}
+```
+
+or any path configured for your go modules.
+
+Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file.
+
+The try out the provider with a ```main.tf``` file from the examples.
+
+```
+	terraform apply
+```
+
+### Debugging
 
 ```bash
 make debug-start
