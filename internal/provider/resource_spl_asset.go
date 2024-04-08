@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -26,12 +25,6 @@ func resourceAsset() *schema.Resource {
 func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
-	assetGeometry := client.AssetGeometry{}
-	err := json.Unmarshal([]byte(d.Get("geometry").(string)), &assetGeometry)
-	if err != nil {
-		return err
-	}
-
 	assetRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
 	assetRelatedAssets := make([]client.RelatedAsset, len(assetRelatedAssetsSet))
 	for i, relatedAsset := range assetRelatedAssetsSet {
@@ -43,7 +36,7 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
-		AssetGeometry: assetGeometry,
+		Geometry:      d.Get("geometry").(string),
 		RelatedAssets: assetRelatedAssets,
 	}
 
@@ -52,16 +45,11 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	geometry, err := json.Marshal(createdAsset.AssetGeometry)
-	if err != nil {
-		return err
-	}
-
 	d.SetId(createdAsset.ID)
 	d.Set("name", createdAsset.Name)
 	d.Set("description", createdAsset.Description)
 	d.Set("related_assets", createdAsset.RelatedAssets)
-	d.Set("geometry", string(geometry))
+	d.Set("geometry", createdAsset.Geometry)
 	return nil
 }
 
@@ -69,12 +57,6 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
-
-	assetGeometry := client.AssetGeometry{}
-	err := json.Unmarshal([]byte(d.Get("geometry").(string)), &assetGeometry)
-	if err != nil {
-		return err
-	}
 
 	assetRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
 	assetRelatedAssets := make([]client.RelatedAsset, len(assetRelatedAssetsSet))
@@ -87,7 +69,7 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
-		AssetGeometry: assetGeometry,
+		Geometry:      d.Get("geometry").(string),
 		RelatedAssets: assetRelatedAssets,
 	}
 
@@ -96,15 +78,10 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	geometry, err := json.Marshal(updatedAsset.AssetGeometry)
-	if err != nil {
-		return err
-	}
-
 	d.Set("name", updatedAsset.Name)
 	d.Set("description", updatedAsset.Description)
 	d.Set("related_assets", updatedAsset.RelatedAssets)
-	d.Set("geometry", string(geometry))
+	d.Set("geometry", updatedAsset.Geometry)
 	return nil
 }
 
@@ -121,16 +98,11 @@ func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	geometry, err := json.Marshal(retrievedAsset.AssetGeometry)
-	if err != nil {
-		return err
-	}
-
 	d.SetId(retrievedAsset.ID)
 	d.Set("name", retrievedAsset.Name)
 	d.Set("description", retrievedAsset.Description)
 	d.Set("related_assets", retrievedAsset.RelatedAssets)
-	d.Set("geometry", string(geometry))
+	d.Set("geometry", retrievedAsset.Geometry)
 	return nil
 }
 

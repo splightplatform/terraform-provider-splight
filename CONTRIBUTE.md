@@ -32,11 +32,13 @@ or any path configured for your go modules.
 
 Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file from your workspace folder.
 
-The try out the provider with a ```main.tf``` file from the examples:
+The try out the provider your a configuration:
 
 ```bash
 terraform apply
 ```
+
+Explore the examples folder for a complete file with all available resources.
 
 ### Debugging
 
@@ -78,79 +80,6 @@ Don't forget to set breakpoints in your code with:
 ```go
 runtime.Breakpoint()
 ```
-
-### Usage
-
-To utilize the Splight Terraform Provider, create a ```main.tf``` file with the following content:
-
-```hcl
-terraform {
-  required_providers {
-    spl = {
-      source  = "local/splight/spl"
-      version = "<VERSION>"
-    }
-  }
-}
-
-provider "spl" {
-  hostname = var.address
-  token   = var.token
-}
-
-resource "spl_asset" "AssetTest" {
-  name = "Asset1"
-  description = "Created with Terraform"
-}
-```
-
-and a ```variables.tf``` file
-
-```hcl
-variable "spl_secret" {
-  type      = string
-  sensitive = true
-}
-
-variable "spl_api_token" {
-  type      = string
-  sensitive = true
-}
-
-variable "spl_hostname" {
-  type = string
-
-}
-```
-
-then
-
-```bash
-terraform init
-```
-
-You can see the cached provider in your workspace pointing to the plugin we built previously.
-
-```
-❯ tree .terraform
-.terraform
-└── providers
-    └── local
-        └── splight
-            └── spl
-                └── 0.1.5
-                    └── darwin_arm64 -> /Users/user/.terraform.d/plugins/local/splight/spl/0.1.5/darwin_arm64
-
-7 directories, 0 files
-```
-
-Finally run
-
-```bash
-terraform plan
-```
-
-Explore the examples folder for a complete file with all available resources.
 
 ### Import resources
 
