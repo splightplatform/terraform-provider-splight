@@ -58,7 +58,7 @@ Type 'help' for list of commands.
 (dlv)
 ```
 
-Input ```continue```or ```c``` to start the server:
+Input ```continue``` or ```c``` to start the server:
 
 ```
 (dlv) c
@@ -71,6 +71,12 @@ Copy the enviroment variable and try applying changes:
 
 ```bash
 TF_REATTACH_PROVIDERS=<output> terraform apply
+```
+
+Don't forget to set breakpoints in your code with:
+
+```go
+runtime.Breakpoint()
 ```
 
 ### Usage
