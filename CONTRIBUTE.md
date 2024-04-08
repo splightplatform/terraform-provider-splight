@@ -30,7 +30,7 @@ provider_installation {
 
 or any path configured for your go modules.
 
-Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file.
+Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file from your workspace folder.
 
 The try out the provider with a ```main.tf``` file from the examples.
 
