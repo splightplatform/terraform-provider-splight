@@ -34,8 +34,8 @@ Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file.
 
 The try out the provider with a ```main.tf``` file from the examples.
 
-```
-	terraform apply
+```bash
+terraform apply
 ```
 
 ### Debugging
@@ -52,10 +52,8 @@ When the debugger starts you will see the following output:
 
 ```bash
 ❯ make debug-start
-go mod tidy
-gofmt -w .
-go build -gcflags="all=-N -l" -o terraform-provider-spl_$(terraform version | grep -o '^on [^\s]\+' | cut -d ' ' -f2)_$(cat version)_debug
-dlv exec terraform-provider-spl_$(terraform version | grep -o '^on [^\s]\+' | cut -d ' ' -f2)_$(cat version)_debug -- -debug
+```
+```
 Type 'help' for list of commands.
 (dlv)
 ```
@@ -64,7 +62,6 @@ Input 'continue' or 'c' to start the server:
 
 ```
 (dlv) c
-{"@level":"debug","@message":"plugin address","@timestamp":"2024-04-08T14:30:09.697517-03:00","address":"/var/folders/p0/8t8w97s96xb7gy2rtmkc_w4m0000gn/T/plugin3729862057","network":"unix"}
 Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environment variable with the following:
 
 	TF_REATTACH_PROVIDERS=<output>
@@ -72,8 +69,8 @@ Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environ
 
 Copy the env var and try applying changes:
 
-```
-	TF_REATTACH_PROVIDERS=<output> terraform apply
+```bash
+TF_REATTACH_PROVIDERS=<output> terraform apply
 ```
 
 ### Usage
