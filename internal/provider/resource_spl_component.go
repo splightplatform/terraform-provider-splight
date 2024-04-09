@@ -62,7 +62,7 @@ func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
 	d.Set("version", createdComponent.Version)
 
 	// We need to initialize the memory for nested elements
-	// Needed because d.set() can not handle properly json.RawMessage
+	// Needed because d.Set() can not handle properly json.RawMessage
 	if _, ok := d.GetOk("input"); !ok {
 		d.Set("input", []interface{}{})
 	}
