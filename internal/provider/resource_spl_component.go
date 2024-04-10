@@ -36,11 +36,11 @@ func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
 		componentInput[i] = client.ComponentInputParam{
 			Name:        componentInputItem["name"].(string),
 			Description: componentInputItem["description"].(string),
-			Type:        componentInputItem["type"].(string),
-			Value:       json.RawMessage(componentInputItem["value"].(string)),
 			Multiple:    componentInputItem["multiple"].(bool),
 			Required:    componentInputItem["required"].(bool),
 			Sensitive:   componentInputItem["sensitive"].(bool),
+			Type:        componentInputItem["type"].(string),
+			Value:       json.RawMessage(componentInputItem["value"].(string)),
 		}
 	}
 
@@ -60,7 +60,27 @@ func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdComponent.Name)
 	d.Set("description", createdComponent.Description)
 	d.Set("version", createdComponent.Version)
-	d.Set("input", createdComponent.Input)
+
+	// We need to initialize the memory for nested elements
+	// Needed because d.Set() can not handle properly json.RawMessage
+	if _, ok := d.GetOk("input"); !ok {
+		d.Set("input", []interface{}{})
+	}
+
+	inputInterface := make([]map[string]interface{}, len(createdComponent.Input))
+	for i, inputItem := range createdComponent.Input {
+		inputInterface[i] = map[string]interface{}{
+			"name":        inputItem.Name,
+			"description": inputItem.Description,
+			"multiple":    inputItem.Multiple,
+			"required":    inputItem.Required,
+			"sensitive":   inputItem.Sensitive,
+			"type":        inputItem.Type,
+			"value":       inputItem.Value,
+		}
+	}
+	d.Set("input", inputInterface)
+
 	return nil
 }
 

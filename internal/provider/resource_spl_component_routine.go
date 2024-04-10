@@ -110,7 +110,27 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 	d.Set("description", createdComponentRoutine.Description)
 	d.Set("type", createdComponentRoutine.Type)
 	d.Set("component_id", createdComponentRoutine.ComponentId)
-	d.Set("config", createdComponentRoutine.Config)
+
+	// We need to initialize the memory for nested elements
+	// Needed because d.Set() can not handle properly json.RawMessage
+	if _, ok := d.GetOk("config"); !ok {
+		d.Set("config", []interface{}{})
+	}
+
+	routineConfigInterface := make([]map[string]interface{}, len(createdComponentRoutine.Config))
+	for i, configItem := range createdComponentRoutine.Config {
+		routineConfigInterface[i] = map[string]interface{}{
+			"name":        configItem.Name,
+			"description": configItem.Description,
+			"multiple":    configItem.Multiple,
+			"required":    configItem.Required,
+			"sensitive":   configItem.Sensitive,
+			"type":        configItem.Type,
+			"value":       configItem.Value,
+		}
+	}
+	d.Set("config", routineConfigInterface)
+
 	d.Set("input", createdComponentRoutine.Input)
 	d.Set("output", createdComponentRoutine.Output)
 	return nil
