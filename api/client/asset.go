@@ -11,32 +11,11 @@ type RelatedAsset struct {
 }
 
 type Asset struct {
-	Id            string         `json:"id"`
-	Name          string         `json:"name"`
-	Description   string         `json:"description"`
-	RelatedAssets []RelatedAsset `json:"assets"`
-	Geometry      string         `json:"geometry"`
-}
-
-func (a *Asset) UnmarshalJSON(data []byte) error {
-	// Create a type to avoid infinite recursion
-	type Alias Asset
-	aux := &struct {
-		Geometry json.RawMessage `json:"geometry"`
-		*Alias
-	}{
-		Alias: (*Alias)(a),
-	}
-
-	// Unmarshal everything except for Geometry
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	// Store Geometry as a string
-	a.Geometry = string(aux.Geometry)
-
-	return nil
+	Id            string          `json:"id"`
+	Name          string          `json:"name"`
+	Description   string          `json:"description"`
+	RelatedAssets []RelatedAsset  `json:"assets"`
+	Geometry      json.RawMessage `json:"geometry"`
 }
 
 func (c *Client) ListAssets() (*map[string]Asset, error) {

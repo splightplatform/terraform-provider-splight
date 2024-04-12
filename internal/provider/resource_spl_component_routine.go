@@ -37,7 +37,7 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 			Name:        componentConfigItem["name"].(string),
 			Description: componentConfigItem["description"].(string),
 			Type:        componentConfigItem["type"].(string),
-			Value:       componentConfigItem["value"].(string),
+			Value:       json.RawMessage(componentConfigItem["value"].(string)),
 			Multiple:    componentConfigItem["multiple"].(bool),
 			Required:    componentConfigItem["required"].(bool),
 			Sensitive:   componentConfigItem["sensitive"].(bool),
@@ -110,7 +110,27 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 	d.Set("description", createdComponentRoutine.Description)
 	d.Set("type", createdComponentRoutine.Type)
 	d.Set("component_id", createdComponentRoutine.ComponentId)
-	d.Set("config", createdComponentRoutine.Config)
+
+	// We need to initialize the memory for nested elements
+	// Needed because d.Set() can not handle properly json.RawMessage
+	if _, ok := d.GetOk("config"); !ok {
+		d.Set("config", []interface{}{})
+	}
+
+	routineConfigInterface := make([]map[string]interface{}, len(createdComponentRoutine.Config))
+	for i, configItem := range createdComponentRoutine.Config {
+		routineConfigInterface[i] = map[string]interface{}{
+			"name":        configItem.Name,
+			"description": configItem.Description,
+			"multiple":    configItem.Multiple,
+			"required":    configItem.Required,
+			"sensitive":   configItem.Sensitive,
+			"type":        configItem.Type,
+			"value":       configItem.Value,
+		}
+	}
+	d.Set("config", routineConfigInterface)
+
 	d.Set("input", createdComponentRoutine.Input)
 	d.Set("output", createdComponentRoutine.Output)
 	return nil
@@ -132,7 +152,7 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 			Name:        componentConfigItem["name"].(string),
 			Description: componentConfigItem["description"].(string),
 			Type:        componentConfigItem["type"].(string),
-			Value:       componentConfigItem["value"].(string),
+			Value:       json.RawMessage(componentConfigItem["value"].(string)),
 			Multiple:    componentConfigItem["multiple"].(bool),
 			Required:    componentConfigItem["required"].(bool),
 			Sensitive:   componentConfigItem["sensitive"].(bool),
@@ -232,7 +252,7 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"required":    configDictItem.Required,
 			"sensitive":   configDictItem.Sensitive,
 			"type":        configDictItem.Type,
-			"value":       configDictItem.Value,
+			"value":       json.RawMessage(configDictItem.Value),
 		}
 	}
 	outputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Output))

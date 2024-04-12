@@ -4,7 +4,10 @@ BASE_NAME := terraform-provider-spl_${ARCH}_${VERSION}
 
 default: install
 
-format:
+generate-docs:
+	go generate
+
+format: generate-docs
 	go mod tidy
 	gofmt -w .
 
