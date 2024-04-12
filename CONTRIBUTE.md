@@ -1,12 +1,15 @@
 ## Splight Terraform Provider
 
-### Installation
 
-Install golang and terraform (MacOS)
+### Requirements
+
+Install golang, terraform and delve (MacOS)
 
 ```bash
-brew install go terraform
+brew install go terraform delve
 ```
+
+### Installation
 
 Run
 
@@ -14,103 +17,70 @@ Run
 make install
 ```
 
-You must do this each time you want to test new changes.
-
-This will install the plugin inside the terraform folder of your home directory.
-
-```
-❯ tree ~/.terraform.d
-.terraform.d
-├── checkpoint_cache
-├── checkpoint_signature
-└── plugins
-    └── local
-        └── splight
-            └── spl
-                └── 0.1.5 <-- From the 'version' file
-                    └── darwin_arm64 <-- Depending on your platform
-                        └── terraform-provider-spl_v0.1.5 <-- Compiled binary
-
-7 directories, 3 files
-```
-If you are rebuilding the same version, ensure to clean the provider cache from the ```.terraform```
-folder and remove the lockfile ```.terraform.lock.hcl``` from your project's working directory.
-
-For your convenience, a ```make clean-provider-cache``` command is provided to execute these tasks when
-testing the provider inside the repository folder.
-
-### Usage
-
-To utilize the Splight Terraform Provider, create a ```main.tf``` file with the following content:
+and set your ~/.terraformrc as follows:
 
 ```hcl
-terraform {
-  required_providers {
-    spl = {
-      source  = "local/splight/spl"
-      version = "<VERSION>"
-    }
+provider_installation {
+  dev_overrides {
+      "splightplatform/splight" = "/Users/<you>/go/bin/"
   }
-}
-
-provider "spl" {
-  hostname = var.address
-  token   = var.token
-}
-
-resource "spl_asset" "AssetTest" {
-  name = "Asset1"
-  description = "Created with Terraform"
+  direct {}
 }
 ```
 
-and a ```variables.tf``` file
+or any path configured for your go modules.
 
-```hcl
-variable "spl_secret" {
-  type      = string
-  sensitive = true
-}
+Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file from your workspace folder.
 
-variable "spl_api_token" {
-  type      = string
-  sensitive = true
-}
-
-variable "spl_hostname" {
-  type = string
-
-}
-```
-
-then
+The try out the provider your a configuration:
 
 ```bash
 terraform init
-```
-
-You can see the cached provider in your workspace pointing to the plugin we built previously.
-
-```
-❯ tree .terraform
-.terraform
-└── providers
-    └── local
-        └── splight
-            └── spl
-                └── 0.1.5
-                    └── darwin_arm64 -> /Users/user/.terraform.d/plugins/local/splight/spl/0.1.5/darwin_arm64
-
-7 directories, 0 files
-```
-
-Finally run
-
-```bash
-terraform plan
+terraform apply
 ```
 
 Explore the examples folder for a complete file with all available resources.
+
+### Debugging
+
+Build the provider with debugging support:
+
+```bash
+make debug-start
+```
+
+You must do this each time you want to test new changes.
+
+This will run the provider with debugging support for delve.
+
+When the debugger starts you will see the following output:
+
+```bash
+❯ make debug-start
+Type 'help' for list of commands.
+(dlv)
+```
+
+Input ```continue``` or ```c``` to start the server:
+
+```
+(dlv) c
+Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environment variable with the following:
+
+	TF_REATTACH_PROVIDERS=<output>
+```
+
+Copy the enviroment variable and try applying changes:
+
+```bash
+TF_REATTACH_PROVIDERS=<output> terraform apply
+```
+
+Don't forget to set breakpoints in your code with:
+
+```go
+runtime.Breakpoint()
+```
 
 ### Import resources
 
