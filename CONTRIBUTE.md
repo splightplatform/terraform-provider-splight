@@ -32,9 +32,10 @@ or any path configured for your go modules.
 
 Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file from your workspace folder.
 
-The try out the provider your a configuration:
+The try out the provider your configuration:
 
 ```bash
+terraform init
 terraform apply
 ```
 

@@ -3,34 +3,30 @@ package main
 import (
 	"context"
 	"flag"
+	"log"
 
-	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov6/tf6server"
-	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/splightplatform/terraform-provider-splight/internal/provider"
 )
 
+var version string = "dev"
+
 func main() {
 	var debug bool
-	ctx := context.Background()
 
-	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
+	flag.BoolVar(&debug, "debug", false, "Set to true to run the provider with support for debuggers")
 	flag.Parse()
 
-	upgradedSdkProvider, err := tf5to6server.UpgradeServer(
-		ctx,
-		provider.Provider().GRPCProvider,
-	)
-
-	if err != nil {
-		// TODO: error
+	opts := providerserver.ServeOpts{
+		// Also update the tfplugindocs generate command to either remove the
+		// -provider-name flag or set its value to the updated provider name.
+		Address: "registry.terraform.io/splightplatform/splight",
+		Debug:   debug,
 	}
 
-	err = tf6server.Serve(
-		"registry.terraform.io/splightplatform/splight",
-		func() tfprotov6.ProviderServer {
-			return upgradedSdkProvider
-		},
-		tf6server.WithManagedDebug(),
-	)
+	err := providerserver.Serve(context.Background(), provider.NewSplightProvider(version), opts)
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
