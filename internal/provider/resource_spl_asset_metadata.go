@@ -92,6 +92,7 @@ func (data *AssetMetadataResourceParams) ToAssetMetadataParams() client.AssetMet
 		Type:  data.Type.ValueString(),
 		Unit:  data.Unit.ValueString(),
 		Asset: data.Asset.ValueString(),
+		Value: data.Value.ValueString(),
 	}
 
 	return item
@@ -141,6 +142,7 @@ func (r *AssetMetadataResource) Create(ctx context.Context, req resource.CreateR
 	data.Type = types.StringValue(createdMetadata.Type)
 	data.Unit = types.StringValue(createdMetadata.Unit)
 	data.Asset = types.StringValue(createdMetadata.Asset)
+	data.Value = types.StringValue(createdMetadata.Value)
 
 	tflog.Trace(ctx, "created an AssetMetadata")
 
@@ -171,6 +173,7 @@ func (r *AssetMetadataResource) Read(ctx context.Context, req resource.ReadReque
 	data.Type = types.StringValue(retrievedAssetMetadata.Type)
 	data.Unit = types.StringValue(retrievedAssetMetadata.Unit)
 	data.Asset = types.StringValue(retrievedAssetMetadata.Asset)
+	data.Value = types.StringValue(retrievedAssetMetadata.Value)
 
 	tflog.Trace(ctx, "retrieved an AssetMetadata")
 
@@ -201,6 +204,7 @@ func (r *AssetMetadataResource) Update(ctx context.Context, req resource.UpdateR
 	data.Type = types.StringValue(updatedMetadata.Type)
 	data.Unit = types.StringValue(updatedMetadata.Unit)
 	data.Asset = types.StringValue(updatedMetadata.Asset)
+	data.Value = types.StringValue(updatedMetadata.Value)
 
 	tflog.Trace(ctx, "updated an AssetMetadata")
 
