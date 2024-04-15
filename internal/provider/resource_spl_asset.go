@@ -73,7 +73,7 @@ func (r *AssetResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 	}
 }
 
-type AssetResourceModel struct {
+type AssetResourceParams struct {
 	Id            types.String         `tfsdk:"id"`
 	Name          types.String         `tfsdk:"name"`
 	Description   types.String         `tfsdk:"description"`
@@ -81,38 +81,7 @@ type AssetResourceModel struct {
 	Geometry      jsontypes.Normalized `tfsdk:"geometry"`
 }
 
-func (r *AssetResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
-	// Prevent panic if the provider has not been configured.
-	if req.ProviderData == nil {
-		return
-	}
-
-	// Get client from provider
-	client, ok := req.ProviderData.(*client.Client)
-
-	if !ok {
-		// FIX: change error
-		resp.Diagnostics.AddError(
-			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected *http.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
-		)
-
-		return
-	}
-
-	r.client = client
-}
-
-func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data AssetResourceModel
-
-	// Read Terraform plan data into the model
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
+func (data *AssetResourceParams) ToAsset(ctx context.Context) client.Asset {
 	// Convert related assets input set to the API format
 	// from: {id1, id2, id3}
 	// to:
@@ -138,6 +107,43 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 		RelatedAssets: assetRelatedAssets,
 	}
 
+	return item
+}
+
+func (r *AssetResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	// Prevent panic if the provider has not been configured.
+	if req.ProviderData == nil {
+		return
+	}
+
+	// Get client from provider
+	client, ok := req.ProviderData.(*client.Client)
+
+	if !ok {
+		// FIX: change error
+		resp.Diagnostics.AddError(
+			"Client error",
+			fmt.Sprintf("Unable to retrieve client for Splight API: %s", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.client = client
+}
+
+func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AssetResourceParams
+
+	// Read Terraform plan data into the model
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	item := data.ToAsset(ctx)
+
 	createdAsset, err := r.client.CreateAsset(&item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create asset, got error: %s", err))
@@ -158,7 +164,7 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 }
 
 func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data AssetResourceModel
+	var data AssetResourceParams
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -167,20 +173,29 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	// If applicable, this is a great opportunity to initialize any necessary
-	// provider client data and make a call using it.
-	// httpResp, err := r.client.Do(httpReq)
-	// if err != nil {
-	//     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read example, got error: %s", err))
-	//     return
-	// }
+	id := data.Id.ValueString()
+
+	retrievedAsset, err := r.client.RetrieveAsset(id)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create asset, got error: %s", err))
+		return
+	}
+
+	data.Id = types.StringValue(retrievedAsset.Id)
+	data.Name = types.StringValue(retrievedAsset.Name)
+	data.Description = types.StringValue(retrievedAsset.Description)
+
+	// We have to normalize the geometry again to prevent diffs with the plan
+	data.Geometry = jsontypes.NewNormalizedValue(string(retrievedAsset.Geometry))
+
+	tflog.Trace(ctx, "retrieved an asset")
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data AssetResourceModel
+	var data AssetResourceParams
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -189,20 +204,34 @@ func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	// If applicable, this is a great opportunity to initialize any necessary
-	// provider client data and make a call using it.
-	// httpResp, err := r.client.Do(httpReq)
-	// if err != nil {
-	//     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update example, got error: %s", err))
-	//     return
-	// }
+	var prevId string
+	resp.Diagnostics.Append(req.State.Get(ctx, &prevId)...)
+	if prevId != data.Id.ValueString() {
+		resp.Diagnostics.AddError("Asset configuration error", "You may not change the ID of a resource")
+	}
+
+	item := data.ToAsset(ctx)
+
+	updatedAsset, err := r.client.CreateAsset(&item)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create asset, got error: %s", err))
+		return
+	}
+
+	data.Name = types.StringValue(updatedAsset.Name)
+	data.Description = types.StringValue(updatedAsset.Description)
+
+	// We have to normalize the geometry again to prevent diffs with the plan
+	data.Geometry = jsontypes.NewNormalizedValue(string(updatedAsset.Geometry))
+
+	tflog.Trace(ctx, "updated an asset")
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *AssetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data AssetResourceModel
+	var data AssetResourceParams
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -211,13 +240,14 @@ func (r *AssetResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 
-	// If applicable, this is a great opportunity to initialize any necessary
-	// provider client data and make a call using it.
-	// httpResp, err := r.client.Do(httpReq)
-	// if err != nil {
-	//     resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete example, got error: %s", err))
-	//     return
-	// }
+	id := data.Id.ValueString()
+
+	err := r.client.DeleteAsset(id)
+
+	if err != nil {
+		resp.Diagnostics.AddError("Client error", fmt.Sprintf("Unable to delete Asset with id '%s': %s", id, err))
+		return
+	}
 }
 
 func (r *AssetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
