@@ -81,7 +81,7 @@ type AssetAttributeResourceParams struct {
 	Asset types.String `tfsdk:"asset"`
 }
 
-func (data *AssetAttributeResourceParams) ToAssetAttributeParams() client.AssetAttributeParams {
+func (data *AssetAttributeResourceParams) ToAssetAttributeParams() *client.AssetAttributeParams {
 	item := client.AssetAttributeParams{
 		Name:  data.Name.ValueString(),
 		Type:  data.Type.ValueString(),
@@ -89,7 +89,15 @@ func (data *AssetAttributeResourceParams) ToAssetAttributeParams() client.AssetA
 		Asset: data.Asset.ValueString(),
 	}
 
-	return item
+	return &item
+}
+
+func (data *AssetAttributeResourceParams) FromAssetAttribute(assetAttribute client.AssetAttribute) {
+	data.Id = types.StringValue(assetAttribute.Id)
+	data.Name = types.StringValue(assetAttribute.Name)
+	data.Type = types.StringValue(assetAttribute.Type)
+	data.Unit = types.StringValue(assetAttribute.Unit)
+	data.Asset = types.StringValue(assetAttribute.Asset)
 }
 
 func (r *AssetAttributeResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -102,7 +110,6 @@ func (r *AssetAttributeResource) Configure(ctx context.Context, req resource.Con
 	client, ok := req.ProviderData.(*client.Client)
 
 	if !ok {
-		// FIX: change error
 		resp.Diagnostics.AddError(
 			"Client error",
 			fmt.Sprintf("Unable to retrieve client for Splight API: %s", req.ProviderData),
@@ -125,17 +132,13 @@ func (r *AssetAttributeResource) Create(ctx context.Context, req resource.Create
 	}
 
 	item := data.ToAssetAttributeParams()
-	createdAttribute, err := r.client.CreateAssetAttribute(&item)
+	createdAttribute, err := r.client.CreateAssetAttribute(item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Asset, got error: %s", err))
 		return
 	}
 
 	data.Id = types.StringValue(createdAttribute.Id)
-	data.Name = types.StringValue(createdAttribute.Name)
-	data.Type = types.StringValue(createdAttribute.Type)
-	data.Unit = types.StringValue(createdAttribute.Unit)
-	data.Asset = types.StringValue(createdAttribute.Asset)
 
 	tflog.Trace(ctx, "created an AssetAttribute")
 
@@ -154,18 +157,13 @@ func (r *AssetAttributeResource) Read(ctx context.Context, req resource.ReadRequ
 	}
 
 	id := data.Id.ValueString()
-
 	retrievedAssetAttribute, err := r.client.RetrieveAssetAttribute(id)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to retrieve AssetAttribute, got error: %s", err))
 		return
 	}
 
-	data.Id = types.StringValue(retrievedAssetAttribute.Id)
-	data.Name = types.StringValue(retrievedAssetAttribute.Name)
-	data.Type = types.StringValue(retrievedAssetAttribute.Type)
-	data.Unit = types.StringValue(retrievedAssetAttribute.Unit)
-	data.Asset = types.StringValue(retrievedAssetAttribute.Asset)
+	data.FromAssetAttribute(*retrievedAssetAttribute)
 
 	tflog.Trace(ctx, "retrieved an AssetAttribute")
 
@@ -185,17 +183,11 @@ func (r *AssetAttributeResource) Update(ctx context.Context, req resource.Update
 
 	id := data.Id.ValueString()
 	item := data.ToAssetAttributeParams()
-	updatedAttribute, err := r.client.UpdateAssetAttribute(id, &item)
+	_, err := r.client.UpdateAssetAttribute(id, item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create AssetAttribute, got error: %s", err))
 		return
 	}
-
-	data.Id = types.StringValue(updatedAttribute.Id)
-	data.Name = types.StringValue(updatedAttribute.Name)
-	data.Type = types.StringValue(updatedAttribute.Type)
-	data.Unit = types.StringValue(updatedAttribute.Unit)
-	data.Asset = types.StringValue(updatedAttribute.Asset)
 
 	tflog.Trace(ctx, "updated an AssetAttribute")
 
@@ -214,9 +206,7 @@ func (r *AssetAttributeResource) Delete(ctx context.Context, req resource.Delete
 	}
 
 	id := data.Id.ValueString()
-
 	err := r.client.DeleteAssetAttribute(id)
-
 	if err != nil {
 		resp.Diagnostics.AddError("Client error", fmt.Sprintf("Unable to delete AssetAttribute with id '%s': %s", id, err))
 		return

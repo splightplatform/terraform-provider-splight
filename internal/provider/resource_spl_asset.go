@@ -110,19 +110,19 @@ func (data *AssetResourceParams) ToAssetParams(ctx context.Context) *client.Asse
 	return &item
 }
 
-func (data *AssetResourceParams) FromAsset(ctx context.Context, params *client.Asset) diag.Diagnostics {
+func (data *AssetResourceParams) FromAsset(ctx context.Context, asset *client.Asset) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	data.Id = types.StringValue(params.Id)
-	data.Name = types.StringValue(params.Name)
-	data.Description = types.StringValue(params.Description)
-	relatedAssets := make([]string, len(params.RelatedAssets))
-	for _, relatedAsset := range params.RelatedAssets {
+	data.Id = types.StringValue(asset.Id)
+	data.Name = types.StringValue(asset.Name)
+	data.Description = types.StringValue(asset.Description)
+	relatedAssets := make([]string, len(asset.RelatedAssets))
+	for _, relatedAsset := range asset.RelatedAssets {
 		relatedAssets = append(relatedAssets, relatedAsset.Id)
 
 	}
 	data.RelatedAssets, diags = types.SetValueFrom(ctx, types.StringType, relatedAssets)
-	data.Geometry = jsontypes.NewNormalizedValue(string(params.Geometry))
+	data.Geometry = jsontypes.NewNormalizedValue(string(asset.Geometry))
 
 	return diags
 }
@@ -184,7 +184,6 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 
 	id := data.Id.ValueString()
-
 	retrievedAsset, err := r.client.RetrieveAsset(id)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to retrieve Asset, got error: %s", err))
