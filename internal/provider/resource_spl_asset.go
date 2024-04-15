@@ -81,7 +81,7 @@ type AssetResourceParams struct {
 	Geometry      jsontypes.Normalized `tfsdk:"geometry"`
 }
 
-func (data *AssetResourceParams) ToAsset(ctx context.Context) client.Asset {
+func (data *AssetResourceParams) ToAssetParams(ctx context.Context) client.AssetParams {
 	// Convert related assets input set to the API format
 	// from: {id1, id2, id3}
 	// to:
@@ -100,8 +100,7 @@ func (data *AssetResourceParams) ToAsset(ctx context.Context) client.Asset {
 		}
 	}
 
-	item := client.Asset{
-		Id:            data.Id.ValueString(),
+	item := client.AssetParams{
 		Name:          data.Name.ValueString(),
 		Description:   data.Description.ValueString(),
 		Geometry:      json.RawMessage(data.Geometry.ValueString()),
@@ -143,8 +142,7 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	item := data.ToAsset(ctx)
-
+	item := data.ToAssetParams(ctx)
 	createdAsset, err := r.client.CreateAsset(&item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Asset, got error: %s", err))
@@ -205,14 +203,15 @@ func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	item := data.ToAsset(ctx)
+	item := data.ToAssetParams(ctx)
 
-	updatedAsset, err := r.client.UpdateAsset(item.Id, &item)
+	updatedAsset, err := r.client.UpdateAsset(data.Id.ValueString(), &item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update Asset, got error: %s", err))
 		return
 	}
 
+	data.Id = types.StringValue(updatedAsset.Id)
 	data.Name = types.StringValue(updatedAsset.Name)
 	data.Description = types.StringValue(updatedAsset.Description)
 
