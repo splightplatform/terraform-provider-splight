@@ -101,6 +101,7 @@ func (data *AssetResourceParams) ToAsset(ctx context.Context) client.Asset {
 	}
 
 	item := client.Asset{
+		Id:            data.Id.ValueString(),
 		Name:          data.Name.ValueString(),
 		Description:   data.Description.ValueString(),
 		Geometry:      json.RawMessage(data.Geometry.ValueString()),
@@ -146,7 +147,7 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	createdAsset, err := r.client.CreateAsset(&item)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create asset, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Asset, got error: %s", err))
 		return
 	}
 
@@ -177,7 +178,7 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 
 	retrievedAsset, err := r.client.RetrieveAsset(id)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create asset, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to retrieve Asset, got error: %s", err))
 		return
 	}
 
@@ -204,17 +205,11 @@ func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	var prevId string
-	resp.Diagnostics.Append(req.State.Get(ctx, &prevId)...)
-	if prevId != data.Id.ValueString() {
-		resp.Diagnostics.AddError("Asset configuration error", "You may not change the ID of a resource")
-	}
-
 	item := data.ToAsset(ctx)
 
-	updatedAsset, err := r.client.CreateAsset(&item)
+	updatedAsset, err := r.client.UpdateAsset(item.Id, &item)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create asset, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update Asset, got error: %s", err))
 		return
 	}
 
