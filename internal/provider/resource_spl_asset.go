@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
@@ -35,9 +36,7 @@ func (r *AssetResource) Metadata(ctx context.Context, req resource.MetadataReque
 
 func (r *AssetResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "Example resource",
-
+		MarkdownDescription: "Asset resource",
 		Attributes: map[string]schema.Attribute{
 			// Read only
 			"id": schema.StringAttribute{
@@ -135,7 +134,7 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 	item := client.Asset{
 		Name:          data.Name.ValueString(),
 		Description:   data.Description.ValueString(),
-		Geometry:      data.Geometry.ValueString(),
+		Geometry:      json.RawMessage(data.Geometry.ValueString()),
 		RelatedAssets: assetRelatedAssets,
 	}
 
@@ -150,7 +149,7 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 	data.Description = types.StringValue(createdAsset.Description)
 
 	// We have to normalize the geometry again to prevent diffs with the plan
-	data.Geometry = jsontypes.NewNormalizedValue(createdAsset.Geometry)
+	data.Geometry = jsontypes.NewNormalizedValue(string(createdAsset.Geometry))
 
 	tflog.Trace(ctx, "created an asset")
 
