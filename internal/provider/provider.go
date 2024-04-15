@@ -29,6 +29,7 @@ type SplightProvider struct {
 func (p *SplightProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAssetResource,
+		NewAssetAttributeResource,
 	}
 }
 

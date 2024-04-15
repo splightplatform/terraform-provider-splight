@@ -25,7 +25,6 @@ func NewAssetResource() resource.Resource {
 	return &AssetResource{}
 }
 
-// AssetResource defines the resource implementation.
 type AssetResource struct {
 	client *client.Client
 }
@@ -156,7 +155,7 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 	// We have to normalize the geometry again to prevent diffs with the plan
 	data.Geometry = jsontypes.NewNormalizedValue(string(createdAsset.Geometry))
 
-	tflog.Trace(ctx, "created an asset")
+	tflog.Trace(ctx, "created an Asset")
 
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -187,7 +186,7 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	// We have to normalize the geometry again to prevent diffs with the plan
 	data.Geometry = jsontypes.NewNormalizedValue(string(retrievedAsset.Geometry))
 
-	tflog.Trace(ctx, "retrieved an asset")
+	tflog.Trace(ctx, "retrieved an Asset")
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -203,9 +202,9 @@ func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
+	id := data.Id.ValueString()
 	item := data.ToAssetParams(ctx)
-
-	updatedAsset, err := r.client.UpdateAsset(data.Id.ValueString(), &item)
+	updatedAsset, err := r.client.UpdateAsset(id, &item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update Asset, got error: %s", err))
 		return
@@ -218,7 +217,7 @@ func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	// We have to normalize the geometry again to prevent diffs with the plan
 	data.Geometry = jsontypes.NewNormalizedValue(string(updatedAsset.Geometry))
 
-	tflog.Trace(ctx, "updated an asset")
+	tflog.Trace(ctx, "updated an Asset")
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
