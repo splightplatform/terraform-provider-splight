@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -80,15 +81,15 @@ type AssetResourceParams struct {
 	Geometry      jsontypes.Normalized `tfsdk:"geometry"`
 }
 
-func (data *AssetResourceParams) ToAssetParams(ctx context.Context) client.AssetParams {
+func (data *AssetResourceParams) ToAssetParams(ctx context.Context) *client.AssetParams {
 	// Convert related assets input set to the API format
 	// from: {id1, id2, id3}
 	// to:
 	// [
-	// 	{
-	// 		id: <id>
-	// 	},
-	// 	...
+	//  {
+	//    id: <id>
+	//   },
+	//   ...
 	// ]
 	var relatedAssetsSet []types.String
 	data.RelatedAssets.ElementsAs(ctx, &relatedAssetsSet, false)
@@ -106,7 +107,24 @@ func (data *AssetResourceParams) ToAssetParams(ctx context.Context) client.Asset
 		RelatedAssets: assetRelatedAssets,
 	}
 
-	return item
+	return &item
+}
+
+func (data *AssetResourceParams) FromAsset(ctx context.Context, params *client.Asset) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	data.Id = types.StringValue(params.Id)
+	data.Name = types.StringValue(params.Name)
+	data.Description = types.StringValue(params.Description)
+	relatedAssets := make([]string, len(params.RelatedAssets))
+	for _, relatedAsset := range params.RelatedAssets {
+		relatedAssets = append(relatedAssets, relatedAsset.Id)
+
+	}
+	data.RelatedAssets, diags = types.SetValueFrom(ctx, types.StringType, relatedAssets)
+	data.Geometry = jsontypes.NewNormalizedValue(string(params.Geometry))
+
+	return diags
 }
 
 func (r *AssetResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -119,7 +137,6 @@ func (r *AssetResource) Configure(ctx context.Context, req resource.ConfigureReq
 	client, ok := req.ProviderData.(*client.Client)
 
 	if !ok {
-		// FIX: change error
 		resp.Diagnostics.AddError(
 			"Client error",
 			fmt.Sprintf("Unable to retrieve client for Splight API: %s", req.ProviderData),
@@ -142,18 +159,13 @@ func (r *AssetResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 
 	item := data.ToAssetParams(ctx)
-	createdAsset, err := r.client.CreateAsset(&item)
+	createdAsset, err := r.client.CreateAsset(item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Asset, got error: %s", err))
 		return
 	}
 
 	data.Id = types.StringValue(createdAsset.Id)
-	data.Name = types.StringValue(createdAsset.Name)
-	data.Description = types.StringValue(createdAsset.Description)
-
-	// We have to normalize the geometry again to prevent diffs with the plan
-	data.Geometry = jsontypes.NewNormalizedValue(string(createdAsset.Geometry))
 
 	tflog.Trace(ctx, "created an Asset")
 
@@ -179,12 +191,7 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	data.Id = types.StringValue(retrievedAsset.Id)
-	data.Name = types.StringValue(retrievedAsset.Name)
-	data.Description = types.StringValue(retrievedAsset.Description)
-
-	// We have to normalize the geometry again to prevent diffs with the plan
-	data.Geometry = jsontypes.NewNormalizedValue(string(retrievedAsset.Geometry))
+	resp.Diagnostics.Append(data.FromAsset(ctx, retrievedAsset)...)
 
 	tflog.Trace(ctx, "retrieved an Asset")
 
@@ -204,18 +211,11 @@ func (r *AssetResource) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	id := data.Id.ValueString()
 	item := data.ToAssetParams(ctx)
-	updatedAsset, err := r.client.UpdateAsset(id, &item)
+	_, err := r.client.UpdateAsset(id, item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update Asset, got error: %s", err))
 		return
 	}
-
-	data.Id = types.StringValue(updatedAsset.Id)
-	data.Name = types.StringValue(updatedAsset.Name)
-	data.Description = types.StringValue(updatedAsset.Description)
-
-	// We have to normalize the geometry again to prevent diffs with the plan
-	data.Geometry = jsontypes.NewNormalizedValue(string(updatedAsset.Geometry))
 
 	tflog.Trace(ctx, "updated an Asset")
 
@@ -234,9 +234,7 @@ func (r *AssetResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	}
 
 	id := data.Id.ValueString()
-
 	err := r.client.DeleteAsset(id)
-
 	if err != nil {
 		resp.Diagnostics.AddError("Client error", fmt.Sprintf("Unable to delete Asset with id '%s': %s", id, err))
 		return
