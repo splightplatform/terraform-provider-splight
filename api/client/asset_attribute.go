@@ -7,15 +7,15 @@ import (
 )
 
 type AssetAttributeParams struct {
-	Asset string  `json:"asset"`
-	Name  string  `json:"name"`
-	Type  string  `json:"type"`
-	Unit  *string `json:"unit"`
+	Name  string `json:"name"`
+	Type  string `json:"type"`
+	Unit  string `json:"unit"`
+	Asset string `json:"asset"`
 }
 
 type AssetAttribute struct {
 	AssetAttributeParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
 func (c *Client) ListAssetAttributes() (*map[string]AssetAttribute, error) {

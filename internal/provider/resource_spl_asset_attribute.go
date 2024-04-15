@@ -29,7 +29,7 @@ type AssetAttributeResource struct {
 }
 
 func (r *AssetAttributeResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_asset"
+	resp.TypeName = req.ProviderTypeName + "_asset_attribute"
 }
 
 func (r *AssetAttributeResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -37,6 +37,15 @@ func (r *AssetAttributeResource) Schema(ctx context.Context, req resource.Schema
 		MarkdownDescription: "Asset resource",
 		Attributes: map[string]schema.Attribute{
 			// Read only
+			"id": schema.StringAttribute{
+				MarkdownDescription: "id of the resource",
+				Required:            false,
+				Optional:            false,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "name of the resource",

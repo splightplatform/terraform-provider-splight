@@ -7,16 +7,16 @@ import (
 )
 
 type AssetMetadataParams struct {
-	Asset string  `json:"asset"`
-	Name  string  `json:"name"`
-	Type  string  `json:"type"`
-	Value string  `json:"value"`
-	Unit  *string `json:"unit"`
+	Name  string `json:"name"`
+	Type  string `json:"type"`
+	Unit  string `json:"unit"`
+	Asset string `json:"asset"`
+	Value string `json:"value"`
 }
 
 type AssetMetadata struct {
+	Id string `json:"id"`
 	AssetMetadataParams
-	ID string `json:"id"`
 }
 
 func (c *Client) ListAssetMetadatas() (*map[string]AssetMetadata, error) {
