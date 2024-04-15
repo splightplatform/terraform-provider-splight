@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/splightplatform/terraform-provider-splight/api/client"
@@ -41,7 +43,10 @@ func (r *AssetAttributeResource) Schema(ctx context.Context, req resource.Schema
 			},
 			"type": schema.StringAttribute{
 				Required:    true,
-				Description: "[string|boolean|number] type of the data to be ingested in this attribute",
+				Description: "[String|Boolean|Number] type of the data to be ingested in this attribute",
+				Validators: []validator.String{
+					stringvalidator.OneOf("Boolean", "Number", "String"),
+				},
 			},
 			"unit": schema.StringAttribute{
 				Required:    false,
