@@ -10,12 +10,16 @@ type RelatedAsset struct {
 	Id string `json:"id"`
 }
 
-type Asset struct {
-	Id            string          `json:"id"`
+type AssetParams struct {
 	Name          string          `json:"name"`
 	Description   string          `json:"description"`
 	RelatedAssets []RelatedAsset  `json:"assets"`
 	Geometry      json.RawMessage `json:"geometry"`
+}
+
+type Asset struct {
+	Id string `json:"id"`
+	AssetParams
 }
 
 func (c *Client) ListAssets() (*map[string]Asset, error) {
@@ -31,7 +35,7 @@ func (c *Client) ListAssets() (*map[string]Asset, error) {
 	return &items, nil
 }
 
-func (c *Client) CreateAsset(item *Asset) (*Asset, error) {
+func (c *Client) CreateAsset(item *AssetParams) (*Asset, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -50,7 +54,7 @@ func (c *Client) CreateAsset(item *Asset) (*Asset, error) {
 	return asset, nil
 }
 
-func (c *Client) UpdateAsset(id string, item *Asset) (*Asset, error) {
+func (c *Client) UpdateAsset(id string, item *AssetParams) (*Asset, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
