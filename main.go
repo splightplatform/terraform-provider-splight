@@ -26,11 +26,21 @@ func main() {
 		// TODO: error
 	}
 
-	err = tf6server.Serve(
-		"registry.terraform.io/splightplatform/splight",
-		func() tfprotov6.ProviderServer {
-			return upgradedSdkProvider
-		},
-		tf6server.WithManagedDebug(),
-	)
+	if debug {
+
+		err = tf6server.Serve(
+			"registry.terraform.io/splightplatform/splight",
+			func() tfprotov6.ProviderServer {
+				return upgradedSdkProvider
+			},
+			tf6server.WithManagedDebug(),
+		)
+	} else {
+		err = tf6server.Serve(
+			"registry.terraform.io/splightplatform/splight",
+			func() tfprotov6.ProviderServer {
+				return upgradedSdkProvider
+			},
+		)
+	}
 }
