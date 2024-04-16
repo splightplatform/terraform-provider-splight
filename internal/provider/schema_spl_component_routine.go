@@ -27,7 +27,7 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 			Description: "reference to component to be attached",
 		},
 		"config": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			Description: "static config parameters of the routine",
 			Elem: &schema.Resource{
@@ -64,7 +64,7 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 			},
 		},
 		"output": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			Description: "asset attribute where to ingest data. Only valid for IncomingRoutine",
 			Elem: &schema.Resource{
@@ -101,7 +101,7 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 			},
 		},
 		"input": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			Description: "asset attribute where to read data. Only valid for OutgoingRoutine",
 			Elem: &schema.Resource{
