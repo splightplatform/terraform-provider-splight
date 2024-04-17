@@ -2,7 +2,9 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"math/big"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -69,7 +71,7 @@ func (r *AssetMetadataResource) Schema(ctx context.Context, req resource.SchemaR
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"value": schema.StringAttribute{
+			"value": schema.DynamicAttribute{
 				Required:    true,
 				Description: "metadata value",
 			},
@@ -78,24 +80,59 @@ func (r *AssetMetadataResource) Schema(ctx context.Context, req resource.SchemaR
 }
 
 type AssetMetadataResourceParams struct {
-	Id    types.String `tfsdk:"id"`
-	Name  types.String `tfsdk:"name"`
-	Type  types.String `tfsdk:"type"`
-	Unit  types.String `tfsdk:"unit"`
-	Asset types.String `tfsdk:"asset"`
-	Value types.String `tfsdk:"value"`
+	Id    types.String  `tfsdk:"id"`
+	Name  types.String  `tfsdk:"name"`
+	Type  types.String  `tfsdk:"type"`
+	Unit  types.String  `tfsdk:"unit"`
+	Asset types.String  `tfsdk:"asset"`
+	Value types.Dynamic `tfsdk:"value"`
 }
 
-func (data *AssetMetadataResourceParams) ToAssetMetadataParams() client.AssetMetadataParams {
+func (data *AssetMetadataResourceParams) ToAssetMetadataParams() (*client.AssetMetadataParams, error) {
+	var value interface{}
+
+	switch tfValue := data.Value.UnderlyingValue().(type) {
+	case types.Bool:
+		value = tfValue.ValueBool()
+	case types.Number:
+		value = tfValue.ValueBigFloat()
+	case types.String:
+		value = tfValue.ValueString()
+	default:
+		return nil, errors.New("Metadata 'value' must be one of types [bool, str, float, int]")
+	}
+
 	item := client.AssetMetadataParams{
 		Name:  data.Name.ValueString(),
 		Type:  data.Type.ValueString(),
 		Unit:  data.Unit.ValueString(),
 		Asset: data.Asset.ValueString(),
-		Value: data.Value.ValueString(),
+		Value: value,
 	}
 
-	return item
+	return &item, nil
+}
+
+func (data *AssetMetadataResourceParams) FromAssetMetadata(ctx context.Context, assetMetadata *client.AssetMetadata) error {
+	data.Id = types.StringValue(assetMetadata.Id)
+	data.Name = types.StringValue(assetMetadata.Name)
+	data.Type = types.StringValue(assetMetadata.Type)
+	data.Unit = types.StringValue(assetMetadata.Unit)
+	data.Asset = types.StringValue(assetMetadata.Asset)
+
+	// Check the type of the decoded value
+	switch v := assetMetadata.Value.(type) {
+	case string:
+		data.Value = types.DynamicValue(types.StringValue(v))
+	case float64:
+		data.Value = types.DynamicValue(types.NumberValue(big.NewFloat(assetMetadata.Value.(float64))))
+	case bool:
+		data.Value = types.DynamicValue(types.BoolValue(v))
+	default:
+		return fmt.Errorf("unsupported value type: %T", v)
+	}
+
+	return nil
 }
 
 func (r *AssetMetadataResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -108,7 +145,6 @@ func (r *AssetMetadataResource) Configure(ctx context.Context, req resource.Conf
 	client, ok := req.ProviderData.(*client.Client)
 
 	if !ok {
-		// FIX: change error
 		resp.Diagnostics.AddError(
 			"Client error",
 			fmt.Sprintf("Unable to retrieve client for Splight API: %s", req.ProviderData),
@@ -130,19 +166,19 @@ func (r *AssetMetadataResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	item := data.ToAssetMetadataParams()
-	createdMetadata, err := r.client.CreateAssetMetadata(&item)
+	item, err := data.ToAssetMetadataParams()
+	if err != nil {
+		resp.Diagnostics.AddError("Argument error", fmt.Sprintf("Error while serializing to client: %s", err))
+		return
+	}
+
+	createdMetadata, err := r.client.CreateAssetMetadata(item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create Asset, got error: %s", err))
 		return
 	}
 
 	data.Id = types.StringValue(createdMetadata.Id)
-	data.Name = types.StringValue(createdMetadata.Name)
-	data.Type = types.StringValue(createdMetadata.Type)
-	data.Unit = types.StringValue(createdMetadata.Unit)
-	data.Asset = types.StringValue(createdMetadata.Asset)
-	data.Value = types.StringValue(createdMetadata.Value)
 
 	tflog.Trace(ctx, "created an AssetMetadata")
 
@@ -168,12 +204,11 @@ func (r *AssetMetadataResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	data.Id = types.StringValue(retrievedAssetMetadata.Id)
-	data.Name = types.StringValue(retrievedAssetMetadata.Name)
-	data.Type = types.StringValue(retrievedAssetMetadata.Type)
-	data.Unit = types.StringValue(retrievedAssetMetadata.Unit)
-	data.Asset = types.StringValue(retrievedAssetMetadata.Asset)
-	data.Value = types.StringValue(retrievedAssetMetadata.Value)
+	err = data.FromAssetMetadata(ctx, retrievedAssetMetadata)
+	if err != nil {
+		resp.Diagnostics.AddError("Argument error", fmt.Sprintf("Error while deserializing from client: %s", err))
+		return
+	}
 
 	tflog.Trace(ctx, "retrieved an AssetMetadata")
 
@@ -192,19 +227,16 @@ func (r *AssetMetadataResource) Update(ctx context.Context, req resource.UpdateR
 	}
 
 	id := data.Id.ValueString()
-	item := data.ToAssetMetadataParams()
-	updatedMetadata, err := r.client.UpdateAssetMetadata(id, &item)
+	item, err := data.ToAssetMetadataParams()
+	if err != nil {
+		resp.Diagnostics.AddError("Argument error", fmt.Sprintf("Error while serializing to client: %s", err))
+		return
+	}
+	_, err = r.client.UpdateAssetMetadata(id, item)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create AssetMetadata, got error: %s", err))
 		return
 	}
-
-	data.Id = types.StringValue(updatedMetadata.Id)
-	data.Name = types.StringValue(updatedMetadata.Name)
-	data.Type = types.StringValue(updatedMetadata.Type)
-	data.Unit = types.StringValue(updatedMetadata.Unit)
-	data.Asset = types.StringValue(updatedMetadata.Asset)
-	data.Value = types.StringValue(updatedMetadata.Value)
 
 	tflog.Trace(ctx, "updated an AssetMetadata")
 

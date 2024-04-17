@@ -7,11 +7,11 @@ import (
 )
 
 type AssetMetadataParams struct {
-	Name  string `json:"name"`
-	Type  string `json:"type"`
-	Unit  string `json:"unit"`
-	Asset string `json:"asset"`
-	Value string `json:"value"`
+	Name  string      `json:"name"`
+	Type  string      `json:"type"`
+	Unit  string      `json:"unit"`
+	Asset string      `json:"asset"`
+	Value interface{} `json:"value"`
 }
 
 type AssetMetadata struct {
