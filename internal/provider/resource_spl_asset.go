@@ -64,47 +64,22 @@ func (r *AssetResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 					geoJSONGeometryCollectionValidator{},
 				},
 			},
-			"related_assets": schema.SetAttribute{
-				ElementType: types.StringType,
-				Optional:    true,
-				Description: "related assets ids",
-			},
 		},
 	}
 }
 
 type AssetResourceParams struct {
-	Id            types.String         `tfsdk:"id"`
-	Name          types.String         `tfsdk:"name"`
-	Description   types.String         `tfsdk:"description"`
-	RelatedAssets types.Set            `tfsdk:"related_assets"`
-	Geometry      jsontypes.Normalized `tfsdk:"geometry"`
+	Id          types.String         `tfsdk:"id"`
+	Name        types.String         `tfsdk:"name"`
+	Description types.String         `tfsdk:"description"`
+	Geometry    jsontypes.Normalized `tfsdk:"geometry"`
 }
 
 func (data *AssetResourceParams) ToAssetParams(ctx context.Context) *client.AssetParams {
-	// Convert related assets input set to the API format
-	// from: {id1, id2, id3}
-	// to:
-	// [
-	//  {
-	//    id: <id>
-	//   },
-	//   ...
-	// ]
-	var relatedAssetsSet []types.String
-	data.RelatedAssets.ElementsAs(ctx, &relatedAssetsSet, false)
-	assetRelatedAssets := make([]client.RelatedAsset, len(relatedAssetsSet))
-	for i, relatedAsset := range relatedAssetsSet {
-		assetRelatedAssets[i] = client.RelatedAsset{
-			Id: relatedAsset.ValueString(),
-		}
-	}
-
 	item := client.AssetParams{
-		Name:          data.Name.ValueString(),
-		Description:   data.Description.ValueString(),
-		Geometry:      json.RawMessage(data.Geometry.ValueString()),
-		RelatedAssets: assetRelatedAssets,
+		Name:        data.Name.ValueString(),
+		Description: data.Description.ValueString(),
+		Geometry:    json.RawMessage(data.Geometry.ValueString()),
 	}
 
 	return &item
@@ -116,12 +91,6 @@ func (data *AssetResourceParams) FromAsset(ctx context.Context, asset *client.As
 	data.Id = types.StringValue(asset.Id)
 	data.Name = types.StringValue(asset.Name)
 	data.Description = types.StringValue(asset.Description)
-	relatedAssets := make([]string, len(asset.RelatedAssets))
-	for _, relatedAsset := range asset.RelatedAssets {
-		relatedAssets = append(relatedAssets, relatedAsset.Id)
-
-	}
-	data.RelatedAssets, diags = types.SetValueFrom(ctx, types.StringType, relatedAssets)
 	data.Geometry = jsontypes.NewNormalizedValue(string(asset.Geometry))
 
 	return diags
@@ -191,6 +160,10 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 
 	resp.Diagnostics.Append(data.FromAsset(ctx, retrievedAsset)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "retrieved an Asset")
 
