@@ -32,7 +32,6 @@ func (v geoJSONGeometryCollectionValidator) ValidateString(ctx context.Context, 
 		return
 	}
 
-	// FIXME: extra fields in the response breaks this
 	var raw_json interface{}
 	if err := json.Unmarshal([]byte(req.ConfigValue.ValueString()), &raw_json); err != nil {
 		resp.Diagnostics.AddAttributeError(

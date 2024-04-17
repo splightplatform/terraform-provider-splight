@@ -11,10 +11,9 @@ type RelatedAsset struct {
 }
 
 type AssetParams struct {
-	Name          string          `json:"name"`
-	Description   string          `json:"description"`
-	RelatedAssets []RelatedAsset  `json:"assets"`
-	Geometry      json.RawMessage `json:"geometry"`
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	Geometry    json.RawMessage `json:"geometry"`
 }
 
 type Asset struct {
