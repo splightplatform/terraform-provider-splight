@@ -31,6 +31,7 @@ func (p *SplightProvider) Resources(ctx context.Context) []func() resource.Resou
 		NewAssetResource,
 		NewAssetAttributeResource,
 		NewAssetMetadataResource,
+		NewComponentResource,
 	}
 }
 

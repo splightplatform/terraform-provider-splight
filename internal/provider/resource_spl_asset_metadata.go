@@ -125,7 +125,7 @@ func (data *AssetMetadataResourceParams) FromAssetMetadata(ctx context.Context, 
 	case string:
 		data.Value = types.DynamicValue(types.StringValue(v))
 	case float64:
-		data.Value = types.DynamicValue(types.NumberValue(big.NewFloat(assetMetadata.Value.(float64))))
+		data.Value = types.DynamicValue(types.NumberValue(big.NewFloat(v)))
 	case bool:
 		data.Value = types.DynamicValue(types.BoolValue(v))
 	default:
