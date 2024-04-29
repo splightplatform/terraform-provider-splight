@@ -7,13 +7,13 @@ import (
 )
 
 type ComponentRoutineConfigParam struct {
-	Name        string          `json:"name"`
-	Description string          `json:"description"`
-	Multiple    bool            `json:"multiple"`
-	Required    bool            `json:"required"`
-	Sensitive   bool            `json:"sensitive"`
-	Type        string          `json:"type"`
-	Value       json.RawMessage `json:"value"`
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	Type        string      `json:"type"`
+	Multiple    bool        `json:"multiple"`
+	Required    bool        `json:"required"`
+	Sensitive   bool        `json:"sensitive"`
+	Value       interface{} `json:"value"`
 }
 
 type ComponentRoutineDataAddress struct {
@@ -43,7 +43,7 @@ type ComponentRoutineParams struct {
 
 type ComponentRoutine struct {
 	ComponentRoutineParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
 func (c *Client) ListComponentRoutines() (*map[string]ComponentRoutine, error) {
