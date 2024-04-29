@@ -36,14 +36,14 @@ func (r *AssetMetadataResource) Metadata(ctx context.Context, req resource.Metad
 
 func (r *AssetMetadataResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Asset resource",
+		Description: "Asset resource",
 		Attributes: map[string]schema.Attribute{
 			// Read only
 			"id": schema.StringAttribute{
-				MarkdownDescription: "id of the resource",
-				Required:            false,
-				Optional:            false,
-				Computed:            true,
+				Description: "id of the resource",
+				Required:    false,
+				Optional:    false,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -89,6 +89,7 @@ type AssetMetadataResourceParams struct {
 }
 
 func (data *AssetMetadataResourceParams) ToAssetMetadataParams() (*client.AssetMetadataParams, error) {
+	// FIXME: missing isNull and isUnkown checks
 	var value interface{}
 
 	switch tfValue := data.Value.UnderlyingValue().(type) {
