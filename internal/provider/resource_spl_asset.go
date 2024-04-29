@@ -36,30 +36,30 @@ func (r *AssetResource) Metadata(ctx context.Context, req resource.MetadataReque
 
 func (r *AssetResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Asset resource",
+		Description: "Asset resource",
 		Attributes: map[string]schema.Attribute{
 			// Read only
 			"id": schema.StringAttribute{
-				MarkdownDescription: "id of the resource",
-				Required:            false,
-				Optional:            false,
-				Computed:            true,
+				Description: "id of the resource",
+				Required:    false,
+				Optional:    false,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "name of the resource",
-				Required:            true,
+				Description: "name of the resource",
+				Required:    true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "description of the resource",
-				Optional:            true,
+				Description: "description of the resource",
+				Optional:    true,
 			},
 			"geometry": schema.StringAttribute{
-				CustomType:          jsontypes.NormalizedType{},
-				Optional:            true,
-				MarkdownDescription: "geojson compliant geometry collection JSON (see: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.8)",
+				CustomType:  jsontypes.NormalizedType{},
+				Optional:    true,
+				Description: "geojson compliant geometry collection JSON (see: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.8)",
 				Validators: []validator.String{
 					geoJSONGeometryCollectionValidator{},
 				},
@@ -85,15 +85,11 @@ func (data *AssetResourceParams) ToAssetParams(ctx context.Context) *client.Asse
 	return &item
 }
 
-func (data *AssetResourceParams) FromAsset(ctx context.Context, asset *client.Asset) diag.Diagnostics {
-	var diags diag.Diagnostics
-
+func (data *AssetResourceParams) FromAsset(ctx context.Context, asset *client.Asset) {
 	data.Id = types.StringValue(asset.Id)
 	data.Name = types.StringValue(asset.Name)
 	data.Description = types.StringValue(asset.Description)
 	data.Geometry = jsontypes.NewNormalizedValue(string(asset.Geometry))
-
-	return diags
 }
 
 func (r *AssetResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -159,7 +155,7 @@ func (r *AssetResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	resp.Diagnostics.Append(data.FromAsset(ctx, retrievedAsset)...)
+	data.FromAsset(ctx, retrievedAsset)
 
 	if resp.Diagnostics.HasError() {
 		return
