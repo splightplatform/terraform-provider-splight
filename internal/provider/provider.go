@@ -32,6 +32,7 @@ func (p *SplightProvider) Resources(ctx context.Context) []func() resource.Resou
 		NewAssetAttributeResource,
 		NewAssetMetadataResource,
 		NewComponentResource,
+		NewComponentRoutineResource,
 	}
 }
 
@@ -50,12 +51,12 @@ func (p *SplightProvider) Schema(ctx context.Context, req provider.SchemaRequest
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
-				MarkdownDescription: "Splight API host",
-				Optional:            true,
+				Description: "Splight API host",
+				Optional:    true,
 			},
 			"token": schema.StringAttribute{
-				MarkdownDescription: "Splight <ACCESS_ID> <SECRET_KEY>",
-				Optional:            true,
+				Description: "Splight <ACCESS_ID> <SECRET_KEY>",
+				Optional:    true,
 			},
 		},
 	}
