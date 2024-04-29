@@ -34,14 +34,14 @@ func (r *AssetAttributeResource) Metadata(ctx context.Context, req resource.Meta
 
 func (r *AssetAttributeResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Asset resource",
+		Description: "Asset resource",
 		Attributes: map[string]schema.Attribute{
 			// Read only
 			"id": schema.StringAttribute{
-				MarkdownDescription: "id of the resource",
-				Required:            false,
-				Optional:            false,
-				Computed:            true,
+				Description: "id of the resource",
+				Required:    false,
+				Optional:    false,
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
