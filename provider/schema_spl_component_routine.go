@@ -94,8 +94,21 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 						Required: true,
 					},
 					"value": {
-						Type:     schema.TypeString,
+						Type:     schema.TypeSet,
 						Required: true,
+						MaxItems: 1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"asset": {
+									Required: true,
+									Type:     schema.TypeString,
+								},
+								"attribute": {
+									Required: true,
+									Type:     schema.TypeString,
+								},
+							},
+						},
 					},
 				},
 			},
@@ -131,8 +144,21 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 						Required: true,
 					},
 					"value": {
-						Type:     schema.TypeString,
+						Type:     schema.TypeSet,
 						Required: true,
+						MaxItems: 1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"asset": {
+									Required: true,
+									Type:     schema.TypeString,
+								},
+								"attribute": {
+									Required: true,
+									Type:     schema.TypeString,
+								},
+							},
+						},
 					},
 				},
 			},
