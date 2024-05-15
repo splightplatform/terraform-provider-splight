@@ -226,48 +226,60 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			d.SetId("")
-		} else {
-			return fmt.Errorf("error finding ComponentRoutine with ID %s", itemId)
+			return nil
+		}
+		return fmt.Errorf("error finding ComponentRoutine with ID %s: %s", itemId, err)
+	}
+
+	// Converting Config
+	configList := make([]interface{}, len(retrievedComponentRoutine.Config))
+	for i, configItem := range retrievedComponentRoutine.Config {
+		configList[i] = map[string]interface{}{
+			"name":        configItem.Name,
+			"description": configItem.Description,
+			"multiple":    configItem.Multiple,
+			"required":    configItem.Required,
+			"sensitive":   configItem.Sensitive,
+			"type":        configItem.Type,
+			"value":       string(configItem.Value),
 		}
 	}
 
-	configDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Config))
-	for i, configDictItem := range retrievedComponentRoutine.Config {
-		configDict[i] = map[interface{}]interface{}{
-			"name":        configDictItem.Name,
-			"description": configDictItem.Description,
-			"multiple":    configDictItem.Multiple,
-			"required":    configDictItem.Required,
-			"sensitive":   configDictItem.Sensitive,
-			"type":        configDictItem.Type,
-			"value":       json.RawMessage(configDictItem.Value),
+	// Converting Output
+	outputList := make([]interface{}, len(retrievedComponentRoutine.Output))
+	for i, outputItem := range retrievedComponentRoutine.Output {
+		outputList[i] = map[string]interface{}{
+			"name":        outputItem.Name,
+			"description": outputItem.Description,
+			"multiple":    outputItem.Multiple,
+			"required":    outputItem.Required,
+			"type":        outputItem.Type,
+			"value_type":  outputItem.ValueType,
+			"value": []interface{}{
+				map[string]interface{}{
+					"asset":     outputItem.Value.Asset,
+					"attribute": outputItem.Value.Attribute,
+				},
+			},
 		}
 	}
-	outputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Output))
-	for i, outputDictItem := range retrievedComponentRoutine.Output {
-		outputValue, _ := json.Marshal(outputDictItem.Value)
-		// return fmt.Errorf("%s", outputValue)
-		outputDict[i] = map[interface{}]interface{}{
-			"name":        outputDictItem.Name,
-			"description": outputDictItem.Description,
-			"multiple":    outputDictItem.Multiple,
-			"required":    outputDictItem.Required,
-			"type":        outputDictItem.Type,
-			"value_type":  outputDictItem.ValueType,
-			"value":       string(outputValue),
-		}
-	}
-	inputDict := make([]map[interface{}]interface{}, len(retrievedComponentRoutine.Input))
-	for i, inputDictItem := range retrievedComponentRoutine.Input {
-		inputValue, _ := json.Marshal(inputDictItem.Value)
-		inputDict[i] = map[interface{}]interface{}{
-			"name":        inputDictItem.Name,
-			"description": inputDictItem.Description,
-			"multiple":    inputDictItem.Multiple,
-			"required":    inputDictItem.Required,
-			"type":        inputDictItem.Type,
-			"value_type":  inputDictItem.ValueType,
-			"value":       string(inputValue),
+
+	// Converting Input
+	inputList := make([]interface{}, len(retrievedComponentRoutine.Input))
+	for i, inputItem := range retrievedComponentRoutine.Input {
+		inputList[i] = map[string]interface{}{
+			"name":        inputItem.Name,
+			"description": inputItem.Description,
+			"multiple":    inputItem.Multiple,
+			"required":    inputItem.Required,
+			"type":        inputItem.Type,
+			"value_type":  inputItem.ValueType,
+			"value": []interface{}{
+				map[string]interface{}{
+					"asset":     inputItem.Value.Asset,
+					"attribute": inputItem.Value.Attribute,
+				},
+			},
 		}
 	}
 
@@ -276,9 +288,10 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 	d.Set("description", retrievedComponentRoutine.Description)
 	d.Set("type", retrievedComponentRoutine.Type)
 	d.Set("component_id", retrievedComponentRoutine.ComponentId)
-	d.Set("config", configDict)
-	d.Set("input", inputDict)
-	d.Set("output", outputDict)
+	d.Set("config", configList)
+	d.Set("input", inputList)
+	d.Set("output", outputList)
+
 	return nil
 }
 
