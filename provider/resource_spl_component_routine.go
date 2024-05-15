@@ -26,66 +26,60 @@ func resourceComponentRoutine() *schema.Resource {
 func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
-	componentConfigInterface := d.Get("config").([]interface{})
-	componentConfigInterfaceList := make([]map[string]interface{}, len(componentConfigInterface))
-	for i, componentConfigInterfaceItem := range componentConfigInterface {
-		componentConfigInterfaceList[i] = componentConfigInterfaceItem.(map[string]interface{})
-	}
-	componentConfig := make([]client.ComponentRoutineConfigParam, len(componentConfigInterfaceList))
-	for i, componentConfigItem := range componentConfigInterfaceList {
+	// Handling config
+	componentConfigInterface := d.Get("config").(*schema.Set).List()
+	componentConfig := make([]client.ComponentRoutineConfigParam, len(componentConfigInterface))
+	for i, item := range componentConfigInterface {
+		data := item.(map[string]interface{})
 		componentConfig[i] = client.ComponentRoutineConfigParam{
-			Name:        componentConfigItem["name"].(string),
-			Description: componentConfigItem["description"].(string),
-			Type:        componentConfigItem["type"].(string),
-			Value:       json.RawMessage(componentConfigItem["value"].(string)),
-			Multiple:    componentConfigItem["multiple"].(bool),
-			Required:    componentConfigItem["required"].(bool),
-			Sensitive:   componentConfigItem["sensitive"].(bool),
+			Name:        data["name"].(string),
+			Description: data["description"].(string),
+			Multiple:    data["multiple"].(bool),
+			Required:    data["required"].(bool),
+			Sensitive:   data["sensitive"].(bool),
+			Type:        data["type"].(string),
+			Value:       json.RawMessage(data["value"].(string)),
 		}
 	}
 
-	componentOutputInterface := d.Get("output").([]interface{})
-	componentOutputInterfaceList := make([]map[string]interface{}, len(componentOutputInterface))
-	for i, componentOutputInterfaceItem := range componentOutputInterface {
-		componentOutputInterfaceList[i] = componentOutputInterfaceItem.(map[string]interface{})
-	}
-	componentOutput := make([]client.ComponentRoutineIOParam, len(componentOutputInterfaceList))
-	for i, componentOutputItem := range componentOutputInterfaceList {
-		outputValue := client.ComponentRoutineDataAddress{}
-		err := json.Unmarshal([]byte(componentOutputItem["value"].(string)), &outputValue)
-		if err != nil {
-			return err
+	// Handling output
+	componentOutputInterface := d.Get("output").(*schema.Set).List()
+	componentOutput := make([]client.ComponentRoutineIOParam, len(componentOutputInterface))
+	for i, item := range componentOutputInterface {
+		data := item.(map[string]interface{})
+		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
+		outputValue := client.ComponentRoutineDataAddress{
+			Asset:     valueData["asset"].(string),
+			Attribute: valueData["attribute"].(string),
 		}
 		componentOutput[i] = client.ComponentRoutineIOParam{
-			Name:        componentOutputItem["name"].(string),
-			Description: componentOutputItem["description"].(string),
-			Type:        componentOutputItem["type"].(string),
-			Multiple:    componentOutputItem["multiple"].(bool),
-			Required:    componentOutputItem["required"].(bool),
-			ValueType:   componentOutputItem["value_type"].(string),
+			Name:        data["name"].(string),
+			Description: data["description"].(string),
+			Type:        data["type"].(string),
+			Multiple:    data["multiple"].(bool),
+			Required:    data["required"].(bool),
+			ValueType:   data["value_type"].(string),
 			Value:       outputValue,
 		}
 	}
 
-	componentInputInterface := d.Get("input").([]interface{})
-	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
-	for i, componentInputInterfaceItem := range componentInputInterface {
-		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
-	}
-	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterfaceList))
-	for i, componentInputItem := range componentInputInterfaceList {
-		inputValue := client.ComponentRoutineDataAddress{}
-		err := json.Unmarshal([]byte(componentInputItem["value"].(string)), &inputValue)
-		if err != nil {
-			return err
+	// Handling input
+	componentInputInterface := d.Get("input").(*schema.Set).List()
+	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterface))
+	for i, item := range componentInputInterface {
+		data := item.(map[string]interface{})
+		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
+		inputValue := client.ComponentRoutineDataAddress{
+			Asset:     valueData["asset"].(string),
+			Attribute: valueData["attribute"].(string),
 		}
 		componentInput[i] = client.ComponentRoutineIOParam{
-			Name:        componentInputItem["name"].(string),
-			Description: componentInputItem["description"].(string),
-			Type:        componentInputItem["type"].(string),
-			Multiple:    componentInputItem["multiple"].(bool),
-			Required:    componentInputItem["required"].(bool),
-			ValueType:   componentInputItem["value_type"].(string),
+			Name:        data["name"].(string),
+			Description: data["description"].(string),
+			Type:        data["type"].(string),
+			Multiple:    data["multiple"].(bool),
+			Required:    data["required"].(bool),
+			ValueType:   data["value_type"].(string),
 			Value:       inputValue,
 		}
 	}
@@ -141,66 +135,60 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 
 	itemId := d.Id()
 
-	componentConfigInterface := d.Get("config").([]interface{})
-	componentConfigInterfaceList := make([]map[string]interface{}, len(componentConfigInterface))
-	for i, componentConfigInterfaceItem := range componentConfigInterface {
-		componentConfigInterfaceList[i] = componentConfigInterfaceItem.(map[string]interface{})
-	}
-	componentConfig := make([]client.ComponentRoutineConfigParam, len(componentConfigInterfaceList))
-	for i, componentConfigItem := range componentConfigInterfaceList {
+	// Handling config
+	componentConfigInterface := d.Get("config").(*schema.Set).List()
+	componentConfig := make([]client.ComponentRoutineConfigParam, len(componentConfigInterface))
+	for i, item := range componentConfigInterface {
+		data := item.(map[string]interface{})
 		componentConfig[i] = client.ComponentRoutineConfigParam{
-			Name:        componentConfigItem["name"].(string),
-			Description: componentConfigItem["description"].(string),
-			Type:        componentConfigItem["type"].(string),
-			Value:       json.RawMessage(componentConfigItem["value"].(string)),
-			Multiple:    componentConfigItem["multiple"].(bool),
-			Required:    componentConfigItem["required"].(bool),
-			Sensitive:   componentConfigItem["sensitive"].(bool),
+			Name:        data["name"].(string),
+			Description: data["description"].(string),
+			Multiple:    data["multiple"].(bool),
+			Required:    data["required"].(bool),
+			Sensitive:   data["sensitive"].(bool),
+			Type:        data["type"].(string),
+			Value:       json.RawMessage(data["value"].(string)),
 		}
 	}
 
-	componentOutputInterface := d.Get("output").([]interface{})
-	componentOutputInterfaceList := make([]map[string]interface{}, len(componentOutputInterface))
-	for i, componentOutputInterfaceItem := range componentOutputInterface {
-		componentOutputInterfaceList[i] = componentOutputInterfaceItem.(map[string]interface{})
-	}
-	componentOutput := make([]client.ComponentRoutineIOParam, len(componentOutputInterfaceList))
-	for i, componentOutputItem := range componentOutputInterfaceList {
-		outputValue := client.ComponentRoutineDataAddress{}
-		err := json.Unmarshal([]byte(componentOutputItem["value"].(string)), &outputValue)
-		if err != nil {
-			return err
+	// Handling output
+	componentOutputInterface := d.Get("output").(*schema.Set).List()
+	componentOutput := make([]client.ComponentRoutineIOParam, len(componentOutputInterface))
+	for i, item := range componentOutputInterface {
+		data := item.(map[string]interface{})
+		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
+		outputValue := client.ComponentRoutineDataAddress{
+			Asset:     valueData["asset"].(string),
+			Attribute: valueData["attribute"].(string),
 		}
 		componentOutput[i] = client.ComponentRoutineIOParam{
-			Name:        componentOutputItem["name"].(string),
-			Description: componentOutputItem["description"].(string),
-			Type:        componentOutputItem["type"].(string),
-			Multiple:    componentOutputItem["multiple"].(bool),
-			Required:    componentOutputItem["required"].(bool),
-			ValueType:   componentOutputItem["value_type"].(string),
+			Name:        data["name"].(string),
+			Description: data["description"].(string),
+			Type:        data["type"].(string),
+			Multiple:    data["multiple"].(bool),
+			Required:    data["required"].(bool),
+			ValueType:   data["value_type"].(string),
 			Value:       outputValue,
 		}
 	}
 
-	componentInputInterface := d.Get("input").([]interface{})
-	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
-	for i, componentInputInterfaceItem := range componentInputInterface {
-		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
-	}
-	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterfaceList))
-	for i, componentInputItem := range componentInputInterfaceList {
-		inputValue := client.ComponentRoutineDataAddress{}
-		err := json.Unmarshal([]byte(componentInputItem["value"].(string)), &inputValue)
-		if err != nil {
-			return err
+	// Handling input
+	componentInputInterface := d.Get("input").(*schema.Set).List()
+	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterface))
+	for i, item := range componentInputInterface {
+		data := item.(map[string]interface{})
+		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
+		inputValue := client.ComponentRoutineDataAddress{
+			Asset:     valueData["asset"].(string),
+			Attribute: valueData["attribute"].(string),
 		}
 		componentInput[i] = client.ComponentRoutineIOParam{
-			Name:        componentInputItem["name"].(string),
-			Description: componentInputItem["description"].(string),
-			Type:        componentInputItem["type"].(string),
-			Multiple:    componentInputItem["multiple"].(bool),
-			Required:    componentInputItem["required"].(bool),
-			ValueType:   componentInputItem["value_type"].(string),
+			Name:        data["name"].(string),
+			Description: data["description"].(string),
+			Type:        data["type"].(string),
+			Multiple:    data["multiple"].(bool),
+			Required:    data["required"].(bool),
+			ValueType:   data["value_type"].(string),
 			Value:       inputValue,
 		}
 	}
