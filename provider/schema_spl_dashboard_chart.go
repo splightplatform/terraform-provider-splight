@@ -63,7 +63,18 @@ func schemaDashboardChart() map[string]*schema.Schema {
 					},
 					"label": {
 						Type:     schema.TypeString,
-						Required: false,
+						Optional: true,
+						Default: nil,
+					},
+					"collection": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: "default",
+					},
+					"hidden": {
+						Type:     schema.TypeBool,
+						Optional: true,
+						Default: nil,
 					},
 					"query_group_unit": {
 						Type:     schema.TypeString,
@@ -78,6 +89,24 @@ func schemaDashboardChart() map[string]*schema.Schema {
 					"expression_plain": {
 						Type:     schema.TypeString,
 						Required: true,
+					},
+					"query_filter_asset_id": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"query_filter_asset_name": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: nil,
+					},
+					"query_filter_attribute_id": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"query_filter_attribute_name": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: nil,
 					},
 					"query_plain": {
 						Type:     schema.TypeString,
