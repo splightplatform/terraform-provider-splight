@@ -34,10 +34,17 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	// Consider only the first element of the set
+	kind := d.Get("kind").(*schema.Set).List()[0].(map[string]interface{})
+
 	item := client.AssetParams{
-		Name:          d.Get("name").(string),
-		Description:   d.Get("description").(string),
-		Geometry:      json.RawMessage(d.Get("geometry").(string)),
+		Name:        d.Get("name").(string),
+		Description: d.Get("description").(string),
+		Geometry:    json.RawMessage(d.Get("geometry").(string)),
+		Kind: client.AssetKind{
+			ID:   kind["id"].(string),
+			Name: kind["name"].(string),
+		},
 		RelatedAssets: assetRelatedAssets,
 	}
 
@@ -50,7 +57,16 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdAsset.Name)
 	d.Set("description", createdAsset.Description)
 	d.Set("related_assets", createdAsset.RelatedAssets)
-	d.Set("geometry", createdAsset.Geometry)
+	d.Set("geometry", string(createdAsset.Geometry))
+
+	// Set kind as a set
+	d.Set("kind", []map[string]interface{}{
+		{
+			"id":   createdAsset.Kind.ID,
+			"name": createdAsset.Kind.Name,
+		},
+	})
+
 	return nil
 }
 
@@ -67,11 +83,18 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	// Consider only the first element of the set
+	kind := d.Get("kind").(*schema.Set).List()[0].(map[string]interface{})
+
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
 		Geometry:      json.RawMessage(d.Get("geometry").(string)),
 		RelatedAssets: assetRelatedAssets,
+		Kind: client.AssetKind{
+			ID:   kind["id"].(string),
+			Name: kind["name"].(string),
+		},
 	}
 
 	updatedAsset, err := apiClient.UpdateAsset(itemId, &item)
@@ -82,7 +105,16 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", updatedAsset.Name)
 	d.Set("description", updatedAsset.Description)
 	d.Set("related_assets", updatedAsset.RelatedAssets)
-	d.Set("geometry", updatedAsset.Geometry)
+	d.Set("geometry", string(updatedAsset.Geometry))
+
+	// Set kind as a set
+	d.Set("kind", []map[string]interface{}{
+		{
+			"id":   updatedAsset.Kind.ID,
+			"name": updatedAsset.Kind.Name,
+		},
+	})
+
 	return nil
 }
 
@@ -103,7 +135,16 @@ func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", retrievedAsset.Name)
 	d.Set("description", retrievedAsset.Description)
 	d.Set("related_assets", retrievedAsset.RelatedAssets)
-	d.Set("geometry", retrievedAsset.Geometry)
+	d.Set("geometry", string(retrievedAsset.Geometry))
+
+	// Set kind as a set
+	d.Set("kind", []map[string]interface{}{
+		{
+			"id":   retrievedAsset.Kind.ID,
+			"name": retrievedAsset.Kind.Name,
+		},
+	})
+
 	return nil
 }
 
