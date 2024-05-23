@@ -61,6 +61,18 @@ func schemaDashboardChart() map[string]*schema.Schema {
 						Type:     schema.TypeString,
 						Required: true,
 					},
+					"label": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"query_group_unit": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"query_group_function": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
 					"expression_plain": {
 						Type:     schema.TypeString,
 						Required: true,
@@ -68,6 +80,14 @@ func schemaDashboardChart() map[string]*schema.Schema {
 					"query_plain": {
 						Type:     schema.TypeString,
 						Required: true,
+					},
+					"query_sort_direction": {
+						Type:     schema.TypeInt,
+						Optional: true,
+					},
+					"query_limit": {
+						Type:     schema.TypeInt,
+						Optional: true,
 					},
 				},
 			},

@@ -24,6 +24,8 @@ type DashboardChartItem struct {
 	RefID              string `json:"ref_id"`
 	Type               string `json:"type"`
 	Label              string `json:"label"`
+	QueryGroupUnit     string `json:"query_group_unit"`
+	QueryGroupFunction string `json:"query_group_function"`
 	ExpressionPlain    string `json:"expression_plain"`
 	QueryPlain         string `json:"query_plain"`
 	QuerySortDirection int    `json:"query_sort_direction"`
