@@ -20,11 +20,14 @@ type DashboardThreshold struct {
 }
 
 type DashboardChartItem struct {
-	Color           string `json:"color"`
-	RefID           string `json:"ref_id"`
-	Type            string `json:"type"`
-	ExpressionPlain string `json:"expression_plain"`
-	QueryPlain      string `json:"query_plain"`
+	Color              string `json:"color"`
+	RefID              string `json:"ref_id"`
+	Type               string `json:"type"`
+	Label              string `json:"label"`
+	ExpressionPlain    string `json:"expression_plain"`
+	QueryPlain         string `json:"query_plain"`
+	QuerySortDirection int    `json:"query_sort_direction"`
+	QueryLimit         int    `json:"query_limit"`
 }
 
 type DashboardChartParams struct {

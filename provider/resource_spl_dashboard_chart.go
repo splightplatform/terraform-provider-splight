@@ -32,11 +32,14 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
 		chartItems[i] = client.DashboardChartItem{
-			Color:           chartItemItem["color"].(string),
-			RefID:           chartItemItem["ref_id"].(string),
-			Type:            chartItemItem["type"].(string),
-			ExpressionPlain: chartItemItem["expression_plain"].(string),
-			QueryPlain:      chartItemItem["query_plain"].(string),
+			Color:              chartItemItem["color"].(string),
+			RefID:              chartItemItem["ref_id"].(string),
+			Type:               chartItemItem["type"].(string),
+			Label:              chartItemItem["label"].(string),
+			ExpressionPlain:    chartItemItem["expression_plain"].(string),
+			QueryPlain:         chartItemItem["query_plain"].(string),
+			QuerySortDirection: chartItemItem["query_sort_direction"].(int),
+			QueryLimit:         chartItemItem["query_limit"].(int),
 		}
 	}
 	valueMappingInterface := d.Get("value_mappings").(*schema.Set).List()
@@ -109,11 +112,14 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
 		chartItems[i] = client.DashboardChartItem{
-			Color:           chartItemItem["color"].(string),
-			RefID:           chartItemItem["ref_id"].(string),
-			Type:            chartItemItem["type"].(string),
-			ExpressionPlain: chartItemItem["expression_plain"].(string),
-			QueryPlain:      chartItemItem["query_plain"].(string),
+			Color:              chartItemItem["color"].(string),
+			RefID:              chartItemItem["ref_id"].(string),
+			Type:               chartItemItem["type"].(string),
+			Label:              chartItemItem["label"].(string),
+			ExpressionPlain:    chartItemItem["expression_plain"].(string),
+			QueryPlain:         chartItemItem["query_plain"].(string),
+			QuerySortDirection: chartItemItem["query_sort_direction"].(int),
+			QueryLimit:         chartItemItem["query_limit"].(int),
 		}
 	}
 	valueMappingInterface := d.Get("value_mappings").(*schema.Set).List()
@@ -191,11 +197,14 @@ func resourceReadDashboardChart(d *schema.ResourceData, m interface{}) error {
 	chartItemsDict := make([]map[interface{}]interface{}, len(retrievedDashboardChart.ChartItems))
 	for i, item := range retrievedDashboardChart.ChartItems {
 		chartItemsDict[i] = map[interface{}]interface{}{
-			"color":            item.Color,
-			"ref_id":           item.RefID,
-			"type":             item.Type,
-			"expression_plain": item.ExpressionPlain,
-			"query_plain":      item.QueryPlain,
+			"color":                item.Color,
+			"ref_id":               item.RefID,
+			"type":                 item.Type,
+			"label":                item.Label,
+			"expression_plain":     item.ExpressionPlain,
+			"query_plain":          item.QueryPlain,
+			"query_sort_direction": item.QuerySortDirection,
+			"query_limit":          item.QueryLimit,
 		}
 	}
 	thresholdsDict := make([]map[interface{}]interface{}, len(retrievedDashboardChart.Thresholds))
