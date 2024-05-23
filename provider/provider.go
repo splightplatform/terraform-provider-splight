@@ -35,6 +35,10 @@ func Provider() *schema.Provider {
 			"spl_function":          resourceFunction(),
 			"spl_secret":            resourceSecret(),
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"spl_asset_kinds": dataSourceAssetKind(),
+		},
+
 		ConfigureFunc: providerConfigure,
 	}
 }
