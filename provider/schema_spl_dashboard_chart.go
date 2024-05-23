@@ -63,7 +63,7 @@ func schemaDashboardChart() map[string]*schema.Schema {
 					},
 					"label": {
 						Type:     schema.TypeString,
-						Optional: true,
+						Required: false,
 					},
 					"query_group_unit": {
 						Type:     schema.TypeString,
