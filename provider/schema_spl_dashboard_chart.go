@@ -90,23 +90,43 @@ func schemaDashboardChart() map[string]*schema.Schema {
 						Type:     schema.TypeString,
 						Required: true,
 					},
-					"query_filter_asset_id": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_filter_asset_name": {
-						Type:     schema.TypeString,
+					"query_filter_asset": {
+						Type:     schema.TypeMap,
 						Optional: true,
+						Description: "asset filter",
 						Default: nil,
+						MaxItems: 1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"id": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+								"name": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+							},
+						},
 					},
-					"query_filter_attribute_id": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_filter_attribute_name": {
-						Type:     schema.TypeString,
+					"query_filter_attribute": {
+						Type:     schema.TypeMap,
 						Optional: true,
+						Description: "Attribute filter",
 						Default: nil,
+						MaxItems: 1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"id": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+								"name": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+							},
+						},
 					},
 					"query_plain": {
 						Type:     schema.TypeString,
