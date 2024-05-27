@@ -61,13 +61,86 @@ func schemaDashboardChart() map[string]*schema.Schema {
 						Type:     schema.TypeString,
 						Required: true,
 					},
+					"label": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: nil,
+					},
+					"collection": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: "default",
+					},
+					"hidden": {
+						Type:     schema.TypeBool,
+						Optional: true,
+						Default: nil,
+					},
+					"query_group_unit": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: "",
+					},
+					"query_group_function": {
+						Type:     schema.TypeString,
+						Optional: true,
+						Default: "",
+					},
 					"expression_plain": {
 						Type:     schema.TypeString,
 						Required: true,
 					},
+					"query_filter_asset": {
+						Type:     schema.TypeMap,
+						Optional: true,
+						Description: "asset filter",
+						Default: nil,
+						MaxItems: 1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"id": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+								"name": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+							},
+						},
+					},
+					"query_filter_attribute": {
+						Type:     schema.TypeMap,
+						Optional: true,
+						Description: "Attribute filter",
+						Default: nil,
+						MaxItems: 1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"id": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+								"name": {
+									Type:     schema.TypeString,
+									Required: true,
+								},
+							},
+						},
+					},
 					"query_plain": {
 						Type:     schema.TypeString,
 						Required: true,
+					},
+					"query_sort_direction": {
+						Type:     schema.TypeInt,
+						Optional: true,
+						Default:  -1,
+					},
+					"query_limit": {
+						Type:     schema.TypeInt,
+						Optional: true,
+						Default:  10000,
 					},
 				},
 			},
