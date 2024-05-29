@@ -81,21 +81,8 @@ Don't forget to set breakpoints in your code with:
 runtime.Breakpoint()
 ```
 
-### Import resources
-
-```bash
-terraform import <STATE_REFERENCE> <RESOURCE_ID>
-```
-
-Examples
-
-```bash
-terraform import -var-file variables.tfvars spl_secret.SecretImportTest 3e408b18-79df-465b-850d-6629088224de
-terraform import -var-file variables.tfvars spl_asset.AssetImportTest 4e408b18-79df-465b-850d-6629088224de
-```
-
 ### Generate docs
 
 ```bash
-go generate
+make generate-docs:
 ```
