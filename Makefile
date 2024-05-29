@@ -7,7 +7,7 @@ default: install
 generate-docs:
 	go generate
 
-format: generate-docs
+format:
 	go mod tidy
 	gofmt -w .
 
