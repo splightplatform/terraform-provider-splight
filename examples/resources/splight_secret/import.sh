@@ -1,1 +1,1 @@
-terraform import [options] spl_secret.<name> <secret_id>
+terraform import [options] splight_secret.<name> <secret_id>

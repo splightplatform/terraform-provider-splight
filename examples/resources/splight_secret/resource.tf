@@ -1,4 +1,4 @@
-resource "spl_secret" "SecretTest" {
+resource "splight_secret" "SecretTest" {
   name      = "SecretTest"
   raw_value = "ASUPERSECR3T"
 }

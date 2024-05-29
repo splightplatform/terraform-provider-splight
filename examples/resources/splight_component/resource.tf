@@ -1,4 +1,4 @@
-resource "spl_component" "ComponentTest" {
+resource "splight_component" "ComponentTest" {
   name        = "ComponentTest"
   description = "Created with Terraform"
   version     = "Random-3.1.0"

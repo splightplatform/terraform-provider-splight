@@ -1,4 +1,4 @@
-resource "spl_component_routine" "ComponentTestRoutine" {
+resource "splight_component_routine" "ComponentTestRoutine" {
   name         = "ComponentTestRoutine"
   description  = "Created with Terraform"
   type         = "IncomingRoutine"

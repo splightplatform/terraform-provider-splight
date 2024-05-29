@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    spl = {
+    splight = {
       source  = "splightplatform/splight"
-      version = "0.1.3"
+      version = "~> 0.1.0"
     }
   }
 }
@@ -65,13 +65,15 @@ locals {
   ]...)
 }
 
-provider "spl" {
-  hostname = var.spl_hostname
-  token    = var.spl_api_token
+# If the provider configuration is not present, the provider will
+# use the active Splight CLI workspace.
+provider "splight" {
+  hostname = var.hostname
+  token    = var.api_token
 }
 
 # ASSETS
-resource "spl_asset" "AssetMainTest" {
+resource "splight_asset" "AssetMainTest" {
   name        = "AssetTF"
   description = "Created with Terraform"
   geometry = jsonencode({
@@ -79,7 +81,7 @@ resource "spl_asset" "AssetMainTest" {
     geometries = []
   })
 }
-resource "spl_asset" "AssetTest" {
+resource "splight_asset" "AssetTest" {
   for_each    = local.assets
   name        = each.key
   description = "Created with Terraform"
@@ -88,35 +90,35 @@ resource "spl_asset" "AssetTest" {
     geometries = each.value.geometries
   })
   related_assets = [
-    spl_asset.AssetMainTest.id
+    splight_asset.AssetMainTest.id
   ]
 }
 
-resource "spl_asset_attribute" "AssetTestAttribute" {
+resource "splight_asset_attribute" "AssetTestAttribute" {
   for_each = local.asset_attribute_combinations
   name     = each.value.attributeKey
   type     = each.value.attribute.type
 
-  asset = spl_asset.AssetTest[each.value.assetKey].id
+  asset = splight_asset.AssetTest[each.value.assetKey].id
 }
 
-resource "spl_asset_attribute" "AssetTestFunctionAttribute" {
+resource "splight_asset_attribute" "AssetTestFunctionAttribute" {
   for_each = local.assets
   name     = "FunctionAttribute"
   type     = "Number"
-  asset    = spl_asset.AssetTest[each.key].id
+  asset    = splight_asset.AssetTest[each.key].id
 }
 
-resource "spl_asset_metadata" "AssetTestMetadata" {
+resource "splight_asset_metadata" "AssetTestMetadata" {
   for_each = local.asset_metadata_combinations
   name     = each.value.metadataKey
   value    = each.value.metadata.value
   type     = each.value.metadata.type
-  asset    = spl_asset.AssetTest[each.value.assetKey].id
+  asset    = splight_asset.AssetTest[each.value.assetKey].id
 }
 
 # COMPONENTS
-resource "spl_component" "ComponentTest" {
+resource "splight_component" "ComponentTest" {
   name        = "ComponentTest"
   description = "Created with Terraform"
   version     = "Random-3.1.0"
@@ -168,13 +170,13 @@ resource "spl_component" "ComponentTest" {
   }
 }
 
-resource "spl_component_routine" "ComponentTestRoutine" {
+resource "splight_component_routine" "ComponentTestRoutine" {
   for_each = local.asset_attribute_combinations
 
   name         = "ComponentTestRoutine-${each.key}"
   description  = "Created with Terraform"
   type         = "IncomingRoutine"
-  component_id = spl_component.ComponentTest.id
+  component_id = splight_component.ComponentTest.id
 
   config {
     name        = "config_param"
@@ -194,14 +196,14 @@ resource "spl_component_routine" "ComponentTestRoutine" {
     multiple    = false
     required    = true
     value = jsonencode({
-      "asset" : spl_asset.AssetTest[each.value.assetKey].id,
-      "attribute" : spl_asset_attribute.AssetTestAttribute[each.key].id
+      "asset" : splight_asset.AssetTest[each.value.assetKey].id,
+      "attribute" : splight_asset_attribute.AssetTestAttribute[each.key].id
     })
   }
 }
 
 # FUNCTIONS AND ALERTS
-resource "spl_function" "FunctionTest" {
+resource "splight_function" "FunctionTest" {
   for_each        = local.assets
   name            = "FunctionTest-${each.key}"
   description     = "Created with Terraform"
@@ -211,12 +213,12 @@ resource "spl_function" "FunctionTest" {
   rate_unit       = "minute"
   target_variable = "A"
   target_asset = {
-    id   = spl_asset.AssetTest[each.key].id
-    name = spl_asset.AssetTest[each.key].name
+    id   = splight_asset.AssetTest[each.key].id
+    name = splight_asset.AssetTest[each.key].name
   }
   target_attribute = {
-    id   = spl_asset_attribute.AssetTestFunctionAttribute[each.key].id
-    name = spl_asset_attribute.AssetTestFunctionAttribute[each.key].name
+    id   = splight_asset_attribute.AssetTestFunctionAttribute[each.key].id
+    name = splight_asset_attribute.AssetTestFunctionAttribute[each.key].name
   }
   function_items {
     ref_id           = "A"
@@ -246,8 +248,8 @@ resource "spl_function" "FunctionTest" {
   }
 }
 
-resource "spl_alert" "AlertTest" {
-  for_each        = spl_asset.AssetTest
+resource "splight_alert" "AlertTest" {
+  for_each        = splight_asset.AssetTest
   name            = "AlertTest-${each.key}"
   description     = "Created with Terraform"
   type            = "rate"
@@ -270,8 +272,8 @@ resource "spl_alert" "AlertTest" {
     query_plain = jsonencode([
       {
         "$match" = {
-          asset     = spl_asset.AssetTest[each.key].id
-          attribute = spl_asset_attribute.AssetTestFunctionAttribute[each.key].id
+          asset     = splight_asset.AssetTest[each.key].id
+          attribute = splight_asset_attribute.AssetTestFunctionAttribute[each.key].id
         }
       }
     ])
@@ -283,35 +285,35 @@ resource "spl_alert" "AlertTest" {
     query_plain = jsonencode([
       {
         "$match" = {
-          asset     = spl_asset.AssetTest[each.key].id
-          attribute = spl_asset_attribute.AssetTestFunctionAttribute[each.key].id
+          asset     = splight_asset.AssetTest[each.key].id
+          attribute = splight_asset_attribute.AssetTestFunctionAttribute[each.key].id
         }
       }
     ])
   }
   related_assets = [
-    spl_asset.AssetMainTest.id
+    splight_asset.AssetMainTest.id
   ]
 }
 
 # DASHBOARDS
-resource "spl_dashboard" "DashboardTest" {
+resource "splight_dashboard" "DashboardTest" {
   for_each = local.assets
   name     = "DashboardTest-${each.key}"
   related_assets = [
-    spl_asset.AssetMainTest.id
+    splight_asset.AssetMainTest.id
   ]
 }
 
-resource "spl_dashboard_tab" "DashboardTabTest" {
+resource "splight_dashboard_tab" "DashboardTabTest" {
   for_each  = local.assets
   name      = "TabTest"
   order     = 0
-  dashboard = spl_dashboard.DashboardTest[each.key].id
+  dashboard = splight_dashboard.DashboardTest[each.key].id
 }
 
-resource "spl_dashboard_chart" "DashboardChartTest" {
-  for_each      = spl_dashboard_tab.DashboardTabTest
+resource "splight_dashboard_chart" "DashboardChartTest" {
+  for_each      = splight_dashboard_tab.DashboardTabTest
   name          = "ChartTest"
   type          = "timeseries"
   tab           = each.value.id
@@ -325,8 +327,8 @@ resource "spl_dashboard_chart" "DashboardChartTest" {
     query_plain = jsonencode([
       {
         "$match" = {
-          asset     = spl_asset.AssetTest[each.key].id
-          attribute = spl_asset_attribute.AssetTestAttribute["${each.key}/AttributeTF1"].id
+          asset     = splight_asset.AssetTest[each.key].id
+          attribute = splight_asset_attribute.AssetTestAttribute["${each.key}/AttributeTF1"].id
         }
       }
     ])
@@ -339,8 +341,8 @@ resource "spl_dashboard_chart" "DashboardChartTest" {
     query_plain = jsonencode([
       {
         "$match" = {
-          asset     = spl_asset.AssetTest[each.key].id
-          attribute = spl_asset_attribute.AssetTestAttribute["${each.key}/AttributeTF2"].id
+          asset     = splight_asset.AssetTest[each.key].id
+          attribute = splight_asset_attribute.AssetTestAttribute["${each.key}/AttributeTF2"].id
         }
       }
     ])
@@ -359,32 +361,32 @@ resource "spl_dashboard_chart" "DashboardChartTest" {
 }
 
 # FILES
-resource "spl_file" "FileTest" {
+resource "splight_file" "FileTest" {
   file        = "./main.tf"
   description = "Sample file for testing"
   related_assets = [
-    spl_asset.AssetMainTest.id
+    splight_asset.AssetMainTest.id
   ]
 }
 
-resource "spl_file_folder" "FileFolderTest" {
+resource "splight_file_folder" "FileFolderTest" {
   name = "FolderTF"
 }
 
-resource "spl_file" "FileInnerTest" {
+resource "splight_file" "FileInnerTest" {
   file        = "./variables.tf"
   description = "Sample file for testing inner file"
-  parent      = spl_file_folder.FileFolderTest.id
+  parent      = splight_file_folder.FileFolderTest.id
 }
 
 # SECRETS
-resource "spl_secret" "SecretTest" {
+resource "splight_secret" "SecretTest" {
   name      = "SecretTest"
-  raw_value = var.spl_secret
+  raw_value = var.splight_secret
 }
 
 # IMPORT RESOURCES
-resource "spl_asset" "AssetImportTest" {
+resource "splight_asset" "AssetImportTest" {
   name        = "AssetImported"
   description = "Created with Terraform"
   geometry = jsonencode({
@@ -393,7 +395,7 @@ resource "spl_asset" "AssetImportTest" {
   })
 }
 
-resource "spl_secret" "SecretImportTest" {
+resource "splight_secret" "SecretImportTest" {
   name      = "SecretImported"
-  raw_value = var.spl_secret
+  raw_value = var.splight_secret
 }

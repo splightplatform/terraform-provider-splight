@@ -1,1 +1,1 @@
-terraform import [options] spl_alert.<name> <alert_id>
+terraform import [options] splight_alert.<name> <alert_id>

@@ -1,4 +1,4 @@
-resource "spl_function" "FunctionTest" {
+resource "splight_function" "FunctionTest" {
   name            = "FunctionTest"
   description     = "Created with Terraform"
   type            = "rate"

@@ -1,4 +1,4 @@
-resource "spl_asset" "AssetMainTest" {
+resource "splight_asset" "AssetMainTest" {
   name        = "AssetTF"
   description = "Created with Terraform"
   geometry = jsonencode({

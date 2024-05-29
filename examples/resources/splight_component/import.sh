@@ -1,1 +1,1 @@
-terraform import [options] spl_component.<name> <component_id>
+terraform import [options] splight_component.<name> <component_id>

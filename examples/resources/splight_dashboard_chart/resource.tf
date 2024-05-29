@@ -1,5 +1,4 @@
-
-resource "spl_dashboard_chart" "DashboardChartTest" {
+resource "splight_dashboard_chart" "DashboardChartTest" {
   name          = "ChartTest"
   type          = "timeseries"
   tab           = "1234-1234-1234-1234"

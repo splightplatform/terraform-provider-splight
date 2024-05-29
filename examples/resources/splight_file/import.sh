@@ -1,1 +1,1 @@
-terraform import [options] spl_file.<name> <file_id>
+terraform import [options] splight_file.<name> <file_id>

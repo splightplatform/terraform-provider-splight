@@ -1,3 +1,3 @@
-resource "spl_file_folder" "FileFolderTest" {
+resource "splight_file_folder" "FileFolderTest" {
   name = "FolderTest"
 }

@@ -1,4 +1,4 @@
-resource "spl_alert" "AlertTest" {
+resource "splight_alert" "AlertTest" {
   name            = "AlertTest"
   description     = "Created with Terraform"
   type            = "rate"

@@ -1,1 +1,1 @@
-terraform import [options] spl_asset.<name> <asset_id>
+terraform import [options] splight_asset.<name> <asset_id>

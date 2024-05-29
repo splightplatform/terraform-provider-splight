@@ -1,4 +1,4 @@
-resource "spl_asset_metadata" "AssetTestMetadata" {
+resource "splight_asset_metadata" "AssetTestMetadata" {
   name  = "Key"
   value = "Value"
   type  = "String"
