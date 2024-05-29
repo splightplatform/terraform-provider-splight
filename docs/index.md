@@ -2,20 +2,19 @@
 layout: ""
 page_title: "Provider: Splight"
 description: |-
-  The Splight provider provides resources to interact with the Splight API.
+  The Splight provider enables interaction with the Splight API, allowing you to manage 
+  various resources.
 ---
 
 # Splight Provider
 
-The Splight provider is used to interact with resources supported by
-Splight. The provider needs to be configured with the proper credentials
-before it can be used or by default it uses the system configuration.
+The Splight provider allows you to interact with resources supported by Splight.
+Before using the provider, you must configure it with the appropriate credentials,
+or it will default to using the configuration of the active workspace from the Splight CLI.
 
 ## Getting Started
 
-Try on [https://splight-ai.com](https://splight-ai.com) and then
-you can setup Terraform and learn to manage Splight resources such
-as Assets, Dashboards or Components directly by code
+Visit [Splight](https://splight-ai.com) to get started. After setting up, you can use Terraform to manage Splight resources such as Assets, Dashboards, and Components directly through code.
 
 ## Example Usage
 
