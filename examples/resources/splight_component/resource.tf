@@ -6,7 +6,7 @@ resource "splight_component" "ComponentTest" {
   input {
     name        = "period"
     type        = "int"
-    value       = 10
+    value       = jsonencode(10)
     multiple    = false
     required    = false
     sensitive   = false
@@ -15,7 +15,7 @@ resource "splight_component" "ComponentTest" {
   input {
     name        = "min"
     type        = "int"
-    value       = 1
+    value       = jsonencode(1)
     multiple    = false
     required    = false
     sensitive   = false
@@ -24,7 +24,7 @@ resource "splight_component" "ComponentTest" {
   input {
     name        = "max"
     type        = "int"
-    value       = 150
+    value       = jsonencode(150)
     multiple    = false
     required    = false
     sensitive   = false
@@ -33,7 +33,7 @@ resource "splight_component" "ComponentTest" {
   input {
     name        = "max_iterations"
     type        = "int"
-    value       = 3
+    value       = jsonencode(3)
     multiple    = false
     required    = false
     sensitive   = false
@@ -42,7 +42,7 @@ resource "splight_component" "ComponentTest" {
   input {
     name        = "should_crash"
     type        = "bool"
-    value       = "true"
+    value       = jsonencode("true")
     multiple    = false
     required    = false
     sensitive   = false

@@ -14,6 +14,7 @@ resource "splight_function" "FunctionTest" {
     id   = "49551a15-d79b-40dc-9434-1b33d6b2fcb2"
     name = "An attribute"
   }
+
   function_items {
     ref_id           = "A"
     type             = "QUERY"
@@ -27,6 +28,7 @@ resource "splight_function" "FunctionTest" {
       }
     ])
   }
+
   function_items {
     ref_id           = "B"
     type             = "QUERY"

@@ -11,7 +11,7 @@ resource "splight_component_routine" "ComponentTestRoutine" {
     multiple    = false
     required    = true
     sensitive   = false
-    description = "Created with Terraform123123"
+    description = jsonencode("Created with Terraform123123")
   }
 
   output {
@@ -21,9 +21,9 @@ resource "splight_component_routine" "ComponentTestRoutine" {
     value_type  = "Number"
     multiple    = false
     required    = true
-    value = jsonencode({
-      "asset" : "1234-1234-1234-1234",
-      "attribute" : "1234-1234-1234-1234"
-    })
+    value = {
+      asset     = "1234-1234-1234-1234",
+      attribute = "1234-1234-1234-1234"
+    }
   }
 }

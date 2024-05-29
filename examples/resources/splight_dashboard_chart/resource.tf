@@ -4,6 +4,7 @@ resource "splight_dashboard_chart" "DashboardChartTest" {
   tab           = "1234-1234-1234-1234"
   timestamp_gte = "now - 6h"
   timestamp_lte = "now"
+
   chart_items {
     ref_id           = "A"
     type             = "QUERY"
@@ -18,6 +19,7 @@ resource "splight_dashboard_chart" "DashboardChartTest" {
       }
     ])
   }
+
   chart_items {
     ref_id           = "B"
     color            = "blue"
@@ -32,11 +34,13 @@ resource "splight_dashboard_chart" "DashboardChartTest" {
       }
     ])
   }
+
   thresholds {
     color        = "#00edcf"
     display_text = "T1Test"
     value        = 13.1
   }
+
   value_mappings {
     display_text = "MODIFICADO"
     match_value  = "123.3"

@@ -5,4 +5,9 @@ resource "splight_asset" "AssetMainTest" {
     type       = "GeometryCollection"
     geometries = []
   })
+
+  kind {
+    id   = "1234-1234-1234-1234"
+    name = "Line"
+  }
 }

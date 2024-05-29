@@ -1,6 +1,7 @@
 resource "splight_asset_metadata" "AssetTestMetadata" {
   name  = "Key"
-  value = "Value"
-  type  = "String"
+  type  = "Number"
+  unit  = "meters"
+  value = jsonencode(10)
   asset = "1234-1234-1234-1234"
 }

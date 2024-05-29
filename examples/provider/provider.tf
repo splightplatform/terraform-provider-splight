@@ -8,8 +8,8 @@ terraform {
 }
 
 # If the provider configuration is not present, the provider will
-# use the active Splight CLI workspace.
+# use the ones from the active Splight CLI workspace.
 provider "splight" {
-  hostname = var.hostname
-  token    = var.api_token
+  hostname = "https://api.splight-ai.com"
+  token    = "Splight <access_id> <secret_key>"
 }
