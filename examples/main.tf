@@ -7,6 +7,8 @@ terraform {
   }
 }
 
+provider "splight" {}
+
 locals {
   assets = {
     AssetTF1 : {
@@ -65,14 +67,7 @@ locals {
   ]...)
 }
 
-# If the provider configuration is not present, the provider will
-# use the active Splight CLI workspace.
-provider "splight" {
-  hostname = var.hostname
-  token    = var.api_token
-}
-
-# ASSETS
+# Assets
 resource "splight_asset" "AssetMainTest" {
   name        = "AssetTF"
   description = "Created with Terraform"
@@ -81,6 +76,7 @@ resource "splight_asset" "AssetMainTest" {
     geometries = []
   })
 }
+
 resource "splight_asset" "AssetTest" {
   for_each    = local.assets
   name        = each.key
@@ -117,7 +113,7 @@ resource "splight_asset_metadata" "AssetTestMetadata" {
   asset    = splight_asset.AssetTest[each.value.assetKey].id
 }
 
-# COMPONENTS
+# Components and Routines
 resource "splight_component" "ComponentTest" {
   name        = "ComponentTest"
   description = "Created with Terraform"
@@ -195,14 +191,14 @@ resource "splight_component_routine" "ComponentTestRoutine" {
     value_type  = "Number"
     multiple    = false
     required    = true
-    value = jsonencode({
-      "asset" : splight_asset.AssetTest[each.value.assetKey].id,
-      "attribute" : splight_asset_attribute.AssetTestAttribute[each.key].id
-    })
+    value {
+      asset     = splight_asset.AssetTest[each.value.assetKey].id
+      attribute = splight_asset_attribute.AssetTestAttribute[each.key].id
+    }
   }
 }
 
-# FUNCTIONS AND ALERTS
+# Functions and Alerts
 resource "splight_function" "FunctionTest" {
   for_each        = local.assets
   name            = "FunctionTest-${each.key}"
@@ -296,7 +292,7 @@ resource "splight_alert" "AlertTest" {
   ]
 }
 
-# DASHBOARDS
+# Dashboards
 resource "splight_dashboard" "DashboardTest" {
   for_each = local.assets
   name     = "DashboardTest-${each.key}"
@@ -360,7 +356,7 @@ resource "splight_dashboard_chart" "DashboardChartTest" {
   }
 }
 
-# FILES
+# Files
 resource "splight_file" "FileTest" {
   file        = "./main.tf"
   description = "Sample file for testing"
@@ -379,13 +375,13 @@ resource "splight_file" "FileInnerTest" {
   parent      = splight_file_folder.FileFolderTest.id
 }
 
-# SECRETS
+# Secrets
 resource "splight_secret" "SecretTest" {
   name      = "SecretTest"
-  raw_value = var.splight_secret
+  raw_value = var.my_secret
 }
 
-# IMPORT RESOURCES
+# Import resources
 resource "splight_asset" "AssetImportTest" {
   name        = "AssetImported"
   description = "Created with Terraform"
@@ -397,5 +393,5 @@ resource "splight_asset" "AssetImportTest" {
 
 resource "splight_secret" "SecretImportTest" {
   name      = "SecretImported"
-  raw_value = var.splight_secret
+  raw_value = var.my_secret
 }
