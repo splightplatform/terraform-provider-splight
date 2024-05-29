@@ -1,23 +1,27 @@
 terraform {
   required_providers {
-    spl = {
+    splight = {
       source  = "splightplatform/splight"
-      version = "0.1.4"
+      version = "0.1.11"
     }
   }
 }
 
-provider "spl" {
-  hostname = var.spl_hostname
-  token    = var.spl_api_token
+provider "splight" {
+  hostname = var.hostname
+  token    = var.api_token
 }
 
-# ASSETS
-resource "spl_asset" "AssetMainTest" {
-  name        = "AssetTF"
+resource "splight_asset" "MyAssetResource" {
+  name        = "MyAsset"
   description = "Created with Terraform"
   geometry = jsonencode({
-    type       = "GeometryCollection"
-    geometries = []
+    type = "GeometryCollection"
+    geometries = [
+      {
+        type        = "Point"
+        coordinates = [-62.040, -35.706]
+      }
+    ]
   })
 }

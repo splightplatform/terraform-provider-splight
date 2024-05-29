@@ -3,12 +3,11 @@ variable "spl_secret" {
   sensitive = true
 }
 
-variable "spl_api_token" {
+variable "api_token" {
   type      = string
   sensitive = true
 }
 
-variable "spl_hostname" {
+variable "hostname" {
   type = string
-
 }
