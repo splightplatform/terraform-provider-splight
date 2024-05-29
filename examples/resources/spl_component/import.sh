@@ -1,1 +1,0 @@
-terraform import [options] spl_component.<name> <component_id>

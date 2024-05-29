@@ -1,1 +1,0 @@
-terraform import [options] spl_dashboard_tab.<name> <dashboard_tab_id>

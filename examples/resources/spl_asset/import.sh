@@ -1,1 +1,0 @@
-terraform import [options] spl_asset.<name> <asset_id>

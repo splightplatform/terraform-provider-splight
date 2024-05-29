@@ -1,23 +1,15 @@
 terraform {
   required_providers {
-    spl = {
+    splight = {
       source  = "splightplatform/splight"
-      version = "0.1.4"
+      version = "~> 0.1.0"
     }
   }
 }
 
-provider "spl" {
-  hostname = var.spl_hostname
-  token    = var.spl_api_token
-}
-
-# ASSETS
-resource "spl_asset" "AssetMainTest" {
-  name        = "AssetTF"
-  description = "Created with Terraform"
-  geometry = jsonencode({
-    type       = "GeometryCollection"
-    geometries = []
-  })
+# If the provider configuration is not present, the provider will
+# use the ones from the active Splight CLI workspace.
+provider "splight" {
+  hostname = "https://api.splight-ai.com"
+  token    = "Splight <access_id> <secret_key>"
 }

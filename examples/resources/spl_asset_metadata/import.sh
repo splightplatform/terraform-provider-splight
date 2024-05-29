@@ -1,1 +1,0 @@
-terraform import [options] spl_asset_metadata.<name> <asset_metadata_id>
