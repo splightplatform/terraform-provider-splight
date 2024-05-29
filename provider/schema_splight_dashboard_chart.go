@@ -64,38 +64,38 @@ func schemaDashboardChart() map[string]*schema.Schema {
 					"label": {
 						Type:     schema.TypeString,
 						Optional: true,
-						Default: nil,
+						Default:  nil,
 					},
 					"collection": {
 						Type:     schema.TypeString,
 						Optional: true,
-						Default: "default",
+						Default:  "default",
 					},
 					"hidden": {
 						Type:     schema.TypeBool,
 						Optional: true,
-						Default: nil,
+						Default:  nil,
 					},
 					"query_group_unit": {
 						Type:     schema.TypeString,
 						Optional: true,
-						Default: "",
+						Default:  "",
 					},
 					"query_group_function": {
 						Type:     schema.TypeString,
 						Optional: true,
-						Default: "",
+						Default:  "",
 					},
 					"expression_plain": {
 						Type:     schema.TypeString,
 						Required: true,
 					},
 					"query_filter_asset": {
-						Type:     schema.TypeMap,
-						Optional: true,
+						Type:        schema.TypeSet,
+						Optional:    true,
 						Description: "asset filter",
-						Default: nil,
-						MaxItems: 1,
+						Default:     nil,
+						MaxItems:    1,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"id": {
@@ -110,11 +110,11 @@ func schemaDashboardChart() map[string]*schema.Schema {
 						},
 					},
 					"query_filter_attribute": {
-						Type:     schema.TypeMap,
-						Optional: true,
+						Type:        schema.TypeSet,
+						Optional:    true,
 						Description: "Attribute filter",
-						Default: nil,
-						MaxItems: 1,
+						Default:     nil,
+						MaxItems:    1,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"id": {
