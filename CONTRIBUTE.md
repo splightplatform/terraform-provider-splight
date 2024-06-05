@@ -2,9 +2,13 @@
 
 :warning: Do not forget to update the examples for each change in the provider resources and data sources.
 
+Then run
+
 ```
 go generate
 ```
+
+to update the docs.
 
 ### Requirements
 
