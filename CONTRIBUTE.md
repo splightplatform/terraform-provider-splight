@@ -1,6 +1,8 @@
 ## Splight Terraform Provider
 
-:warning: Do not forget to update the examples/docs for each change in the provider resources and data sources (see: [Generate docs](#generate-docs)).
+:warning: Please remember to update the examples and documentation for each change in the provider resources and data sources.
+Keeping these up to date is crucial, as the Pulumi provider uses this documentation as input.
+For more details, see Generate docs.
 
 ### Requirements
 
@@ -84,7 +86,7 @@ runtime.Breakpoint()
 
 ### Generate docs
 
-Update the examples manually and then update the docs by running:
+To update the documentation, first manually update the examples. Then, run the following command to generate the updated docs:
 
 ```bash
 make generate-docs:
