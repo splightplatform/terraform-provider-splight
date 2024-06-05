@@ -1,5 +1,10 @@
 ## Splight Terraform Provider
 
+:warning: Do not forget to update the examples for each change in the provider resources and data sources.
+
+```
+go generate
+```
 
 ### Requirements
 
