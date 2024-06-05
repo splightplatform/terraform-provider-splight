@@ -1,14 +1,6 @@
 ## Splight Terraform Provider
 
-:warning: Do not forget to update the examples for each change in the provider resources and data sources.
-
-Then run
-
-```
-go generate
-```
-
-to update the docs.
+:warning: Do not forget to update the examples/docs for each change in the provider resources and data sources (see: [Generate docs](#generate-docs)).
 
 ### Requirements
 
@@ -91,6 +83,8 @@ runtime.Breakpoint()
 ```
 
 ### Generate docs
+
+Update the examples manually and then update the docs by running:
 
 ```bash
 make generate-docs:
