@@ -2,7 +2,7 @@
 
 :warning: Please remember to update the examples and documentation for each change in the provider resources and data sources.
 Keeping these up to date is crucial, as the Pulumi provider uses this documentation as input.
-For more details, see Generate docs.
+For more details, see [Generate docs](#generate-docs).
 
 ### Requirements
 
