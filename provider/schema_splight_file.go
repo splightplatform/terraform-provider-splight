@@ -6,7 +6,7 @@ import (
 
 func schemaFile() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"file": {
+		"path": {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "the path for the file resource in your system",

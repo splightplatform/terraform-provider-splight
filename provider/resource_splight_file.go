@@ -35,12 +35,12 @@ func resourceCreateFile(d *schema.ResourceData, m interface{}) error {
 	}
 
 	item := client.FileParams{
-		Name:          filepath.Base(d.Get("file").(string)),
+		Name:          filepath.Base(d.Get("path").(string)),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
 		RelatedAssets: fileRelatedAssets,
 	}
-	filepath := d.Get("file").(string)
+	filepath := d.Get("path").(string)
 	createdFile, err := apiClient.CreateFile(&item, filepath)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func resourceUpdateFile(d *schema.ResourceData, m interface{}) error {
 	}
 
 	item := client.FileParams{
-		Name:          filepath.Base(d.Get("file").(string)),
+		Name:          filepath.Base(d.Get("path").(string)),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
 		RelatedAssets: fileRelatedAssets,
@@ -114,7 +114,7 @@ func resourceReadFile(d *schema.ResourceData, m interface{}) error {
 	}
 	storedValue := d.Get("checksum")
 	if fileDetails.Checksum != storedValue.(string) {
-		d.Set("file", nil)
+		d.Set("path", nil)
 		return nil
 	}
 
