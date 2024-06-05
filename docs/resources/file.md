@@ -25,7 +25,7 @@ resource "splight_file" "FileInnerTest" {
 
 ### Required
 
-- `file` (String) the path for the file resource in your system
+- `path` (String) the path for the file resource in your system
 
 ### Optional
 
