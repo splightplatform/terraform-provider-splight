@@ -31,22 +31,30 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	}
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
-		filter_asset := chartItemItem["query_filter_asset"].(map[string]interface{})
-		filter_attr := chartItemItem["query_filter_attribute"].(map[string]interface{})
-		filter_asset_value := client.QueryFilter{
-			Id:   filter_asset["id"].(string),
-			Name: filter_asset["name"].(string),
+
+		var filter_asset_value *client.QueryFilter
+		var filter_attr_value *client.QueryFilter
+
+		if chartItemItem["query_filter_asset"].(*schema.Set).Len() > 0 {
+			filter_asset_item := chartItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
+			filter_asset_value = &client.QueryFilter{
+				Id:   filter_asset_item["id"].(string),
+				Name: filter_asset_item["name"].(string),
+			}
 		}
-		filter_attr_value := client.QueryFilter{
-			Id:   filter_attr["id"].(string),
-			Name: filter_attr["name"].(string),
+		if chartItemItem["query_filter_attribute"].(*schema.Set).Len() > 0 {
+			filter_attr_item := chartItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+			filter_attr_value = &client.QueryFilter{
+				Id:   filter_attr_item["id"].(string),
+				Name: filter_attr_item["name"].(string),
+			}
 		}
+
 		chartItems[i] = client.DashboardChartItem{
 			Color:                chartItemItem["color"].(string),
 			RefID:                chartItemItem["ref_id"].(string),
 			Type:                 chartItemItem["type"].(string),
 			Label:                chartItemItem["label"].(string),
-			Collection:           chartItemItem["collection"].(string),
 			Hidden:               chartItemItem["hidden"].(bool),
 			QueryGroupUnit:       chartItemItem["query_group_unit"].(string),
 			QueryGroupFunction:   chartItemItem["query_group_function"].(string),
@@ -94,6 +102,7 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 		TimestampLTE:  d.Get("timestamp_lte").(string),
 		Height:        d.Get("height").(int),
 		Width:         d.Get("width").(int),
+		Collection:    d.Get("collection").(string),
 		ChartItems:    chartItems,
 		ValueMappings: valueMappings,
 		Thresholds:    thresholds,
@@ -107,6 +116,8 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdDashboardChart.Name)
 	d.Set("tab", createdDashboardChart.Tab)
 	d.Set("type", createdDashboardChart.Type)
+	d.Set("height", createdDashboardChart.Height)
+	d.Set("width", createdDashboardChart.Width)
 	d.Set("timestamp_gte", createdDashboardChart.TimestampGTE)
 	d.Set("timestamp_lte", createdDashboardChart.TimestampLTE)
 	d.Set("chart_items", createdDashboardChart.ChartItems)
@@ -127,22 +138,30 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	}
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
-		filter_asset := chartItemItem["query_filter_asset"].(map[string]interface{})
-		filter_attr := chartItemItem["query_filter_attribute"].(map[string]interface{})
-		filter_asset_value := client.QueryFilter{
-			Id:   filter_asset["id"].(string),
-			Name: filter_asset["name"].(string),
+
+		var filter_asset_value *client.QueryFilter
+		var filter_attr_value *client.QueryFilter
+
+		if chartItemItem["query_filter_asset"].(*schema.Set).Len() > 0 {
+			filter_asset_item := chartItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
+			filter_asset_value = &client.QueryFilter{
+				Id:   filter_asset_item["id"].(string),
+				Name: filter_asset_item["name"].(string),
+			}
 		}
-		filter_attr_value := client.QueryFilter{
-			Id:   filter_attr["id"].(string),
-			Name: filter_attr["name"].(string),
+		if chartItemItem["query_filter_attribute"].(*schema.Set).Len() > 0 {
+			filter_attr_item := chartItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+			filter_attr_value = &client.QueryFilter{
+				Id:   filter_attr_item["id"].(string),
+				Name: filter_attr_item["name"].(string),
+			}
 		}
+
 		chartItems[i] = client.DashboardChartItem{
 			Color:                chartItemItem["color"].(string),
 			RefID:                chartItemItem["ref_id"].(string),
 			Type:                 chartItemItem["type"].(string),
 			Label:                chartItemItem["label"].(string),
-			Collection:           chartItemItem["collection"].(string),
 			Hidden:               chartItemItem["hidden"].(bool),
 			QueryGroupUnit:       chartItemItem["query_group_unit"].(string),
 			QueryGroupFunction:   chartItemItem["query_group_function"].(string),
@@ -190,9 +209,10 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 		TimestampLTE:  d.Get("timestamp_lte").(string),
 		Height:        d.Get("height").(int),
 		Width:         d.Get("width").(int),
+		Collection:    d.Get("collection").(string),
+		ChartItems:    chartItems,
 		ValueMappings: valueMappings,
 		Thresholds:    thresholds,
-		ChartItems:    chartItems,
 	}
 	createdDashboardChart, err := apiClient.UpdateDashboardChart(itemId, &item)
 	if err != nil {
@@ -228,29 +248,38 @@ func resourceReadDashboardChart(d *schema.ResourceData, m interface{}) error {
 
 	chartItemsDict := make([]map[interface{}]interface{}, len(retrievedDashboardChart.ChartItems))
 	for i, item := range retrievedDashboardChart.ChartItems {
-		chartItemsDict[i] = map[interface{}]interface{}{
+		chartItem := map[interface{}]interface{}{
 			"color":                item.Color,
 			"ref_id":               item.RefID,
 			"type":                 item.Type,
 			"label":                item.Label,
-			"collection":           item.Collection,
 			"hidden":               item.Hidden,
 			"expression_plain":     item.ExpressionPlain,
 			"query_group_unit":     item.QueryGroupUnit,
 			"query_group_function": item.QueryGroupFunction,
-			"query_filter_asset": map[string]interface{}{
-				"id":   item.QueryFilterAsset.Id,
-				"name": item.QueryFilterAsset.Name,
-			},
-			"query_filter_attribute": map[string]interface{}{
-				"id":   item.QueryFilterAttribute.Id,
-				"name": item.QueryFilterAttribute.Name,
-			},
 			"query_plain":          item.QueryPlain,
 			"query_sort_direction": item.QuerySortDirection,
 			"query_limit":          item.QueryLimit,
 		}
+		if item.QueryFilterAsset != nil {
+			chartItem["query_filter_asset"] = map[string]interface{}{
+				"id":   item.QueryFilterAsset.Id,
+				"name": item.QueryFilterAsset.Name,
+			}
+		} else {
+			chartItem["query_filter_asset"] = nil
+		}
+		if item.QueryFilterAttribute != nil {
+			chartItem["query_filter_attribute"] = map[string]interface{}{
+				"id":   item.QueryFilterAttribute.Id,
+				"name": item.QueryFilterAttribute.Name,
+			}
+		} else {
+			chartItem["query_filter_attribute"] = nil
+		}
+		chartItemsDict[i] = chartItem
 	}
+
 	thresholdsDict := make([]map[interface{}]interface{}, len(retrievedDashboardChart.Thresholds))
 	for i, item := range retrievedDashboardChart.Thresholds {
 		thresholdsDict[i] = map[interface{}]interface{}{
@@ -277,8 +306,8 @@ func resourceReadDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("height", retrievedDashboardChart.Height)
 	d.Set("width", retrievedDashboardChart.Width)
 	d.Set("chart_items", chartItemsDict)
-	d.Set("value_mappings", chartItemsDict)
-	d.Set("thresholds", chartItemsDict)
+	d.Set("value_mappings", valueMappingsDict)
+	d.Set("thresholds", thresholdsDict)
 	return nil
 }
 

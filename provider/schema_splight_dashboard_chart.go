@@ -43,6 +43,11 @@ func schemaDashboardChart() map[string]*schema.Schema {
 			Default:     20,
 			Description: "chart width in cols (max 20)",
 		},
+		"collection": {
+			Type:     schema.TypeString,
+			Optional: true,
+			Default:  "default",
+		},
 		"chart_items": {
 			Type:        schema.TypeSet,
 			Required:    true,
@@ -65,11 +70,6 @@ func schemaDashboardChart() map[string]*schema.Schema {
 						Type:     schema.TypeString,
 						Optional: true,
 						Default:  nil,
-					},
-					"collection": {
-						Type:     schema.TypeString,
-						Optional: true,
-						Default:  "default",
 					},
 					"hidden": {
 						Type:     schema.TypeBool,
