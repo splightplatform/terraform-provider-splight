@@ -25,20 +25,19 @@ type DashboardThreshold struct {
 }
 
 type DashboardChartItem struct {
-	Color                string      `json:"color"`
-	RefID                string      `json:"ref_id"`
-	Type                 string      `json:"type"`
-	Label                string      `json:"label"`
-	Collection           string      `json:"collection"`
-	Hidden               bool        `json:"hidden"`
-	QueryGroupUnit       string      `json:"query_group_unit"`
-	QueryGroupFunction   string      `json:"query_group_function"`
-	ExpressionPlain      string      `json:"expression_plain"`
-	QueryFilterAsset     QueryFilter `json:"query_filter_asset"`
-	QueryFilterAttribute QueryFilter `json:"query_filter_attribute"`
-	QueryPlain           string      `json:"query_plain"`
-	QuerySortDirection   int         `json:"query_sort_direction"`
-	QueryLimit           int         `json:"query_limit"`
+	Color                string       `json:"color"`
+	RefID                string       `json:"ref_id"`
+	Type                 string       `json:"type"`
+	Label                string       `json:"label"`
+	Hidden               bool         `json:"hidden"`
+	QueryGroupUnit       string       `json:"query_group_unit"`
+	QueryGroupFunction   string       `json:"query_group_function"`
+	ExpressionPlain      string       `json:"expression_plain"`
+	QueryFilterAsset     *QueryFilter `json:"query_filter_asset"`
+	QueryFilterAttribute *QueryFilter `json:"query_filter_attribute"`
+	QueryPlain           string       `json:"query_plain"`
+	QuerySortDirection   int          `json:"query_sort_direction"`
+	QueryLimit           int          `json:"query_limit"`
 }
 
 type DashboardChartParams struct {
@@ -49,6 +48,7 @@ type DashboardChartParams struct {
 	TimestampLTE  string                  `json:"timestamp_lte"`
 	Height        int                     `json:"height"`
 	Width         int                     `json:"width"`
+	Collection    string                  `json:"collection"`
 	ChartItems    []DashboardChartItem    `json:"chart_items"`
 	Thresholds    []DashboardThreshold    `json:"thresholds"`
 	ValueMappings []DashboardValueMapping `json:"value_mappings"`
