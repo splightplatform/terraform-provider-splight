@@ -31,15 +31,20 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	}
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
-		filter_asset := chartItemItem["query_filter_asset"].(map[string]interface{})
-		filter_attr := chartItemItem["query_filter_attribute"].(map[string]interface{})
+
+		filter_asset := chartItemItem["query_filter_asset"].(*schema.Set).List()
+		filter_asset_item := filter_asset[0].(map[string]interface{})
+
+		filter_attr := chartItemItem["query_filter_attribute"].(*schema.Set).List()
+		filter_attr_item := filter_attr[0].(map[string]interface{})
+
 		filter_asset_value := client.QueryFilter{
-			Id:   filter_asset["id"].(string),
-			Name: filter_asset["name"].(string),
+			Id:   filter_asset_item["id"].(string),
+			Name: filter_asset_item["name"].(string),
 		}
 		filter_attr_value := client.QueryFilter{
-			Id:   filter_attr["id"].(string),
-			Name: filter_attr["name"].(string),
+			Id:   filter_attr_item["id"].(string),
+			Name: filter_attr_item["name"].(string),
 		}
 		chartItems[i] = client.DashboardChartItem{
 			Color:                chartItemItem["color"].(string),
@@ -127,15 +132,20 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	}
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
-		filter_asset := chartItemItem["query_filter_asset"].(map[string]interface{})
-		filter_attr := chartItemItem["query_filter_attribute"].(map[string]interface{})
+
+		filter_asset := chartItemItem["query_filter_asset"].(*schema.Set).List()
+		filter_asset_item := filter_asset[0].(map[string]interface{})
+
+		filter_attr := chartItemItem["query_filter_attribute"].(*schema.Set).List()
+		filter_attr_item := filter_attr[0].(map[string]interface{})
+
 		filter_asset_value := client.QueryFilter{
-			Id:   filter_asset["id"].(string),
-			Name: filter_asset["name"].(string),
+			Id:   filter_asset_item["id"].(string),
+			Name: filter_asset_item["name"].(string),
 		}
 		filter_attr_value := client.QueryFilter{
-			Id:   filter_attr["id"].(string),
-			Name: filter_attr["name"].(string),
+			Id:   filter_attr_item["id"].(string),
+			Name: filter_attr_item["name"].(string),
 		}
 		chartItems[i] = client.DashboardChartItem{
 			Color:                chartItemItem["color"].(string),
