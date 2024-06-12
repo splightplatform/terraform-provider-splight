@@ -34,18 +34,26 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	// Consider only the first element of the set
-	kind := d.Get("kind").(*schema.Set).List()[0].(map[string]interface{})
+	// Initialize the kind variable
+	var kind map[string]interface{}
+	kinds := d.Get("kind").(*schema.Set).List()
+	if len(kinds) > 0 {
+		kind = kinds[0].(map[string]interface{})
+	}
 
+	// Prepare the item with a check on kind
 	item := client.AssetParams{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
-		Geometry:    json.RawMessage(d.Get("geometry").(string)),
-		Kind: client.AssetKind{
+		Name:          d.Get("name").(string),
+		Description:   d.Get("description").(string),
+		Geometry:      json.RawMessage(d.Get("geometry").(string)),
+		RelatedAssets: assetRelatedAssets,
+	}
+
+	if kind != nil {
+		item.Kind = &client.AssetKind{
 			ID:   kind["id"].(string),
 			Name: kind["name"].(string),
-		},
-		RelatedAssets: assetRelatedAssets,
+		}
 	}
 
 	createdAsset, err := apiClient.CreateAsset(&item)
@@ -60,12 +68,14 @@ func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
 	d.Set("geometry", string(createdAsset.Geometry))
 
 	// Set kind as a set
-	d.Set("kind", []map[string]interface{}{
-		{
-			"id":   createdAsset.Kind.ID,
-			"name": createdAsset.Kind.Name,
-		},
-	})
+	if kind != nil {
+		d.Set("kind", []map[string]interface{}{
+			{
+				"id":   createdAsset.Kind.ID,
+				"name": createdAsset.Kind.Name,
+			},
+		})
+	}
 
 	return nil
 }
@@ -83,18 +93,27 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	// Consider only the first element of the set
-	kind := d.Get("kind").(*schema.Set).List()[0].(map[string]interface{})
+	// Initialize the kind variable
+	var kind map[string]interface{}
+	kinds := d.Get("kind").(*schema.Set).List()
+	if len(kinds) > 0 {
+		kind = kinds[0].(map[string]interface{})
+	}
 
+	// Prepare the item
 	item := client.AssetParams{
 		Name:          d.Get("name").(string),
 		Description:   d.Get("description").(string),
 		Geometry:      json.RawMessage(d.Get("geometry").(string)),
 		RelatedAssets: assetRelatedAssets,
-		Kind: client.AssetKind{
+	}
+
+	// Only set Kind if kind is not nil
+	if kind != nil {
+		item.Kind = &client.AssetKind{
 			ID:   kind["id"].(string),
 			Name: kind["name"].(string),
-		},
+		}
 	}
 
 	updatedAsset, err := apiClient.UpdateAsset(itemId, &item)
@@ -107,13 +126,18 @@ func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
 	d.Set("related_assets", updatedAsset.RelatedAssets)
 	d.Set("geometry", string(updatedAsset.Geometry))
 
-	// Set kind as a set
-	d.Set("kind", []map[string]interface{}{
-		{
-			"id":   updatedAsset.Kind.ID,
-			"name": updatedAsset.Kind.Name,
-		},
-	})
+	// Set kind as a set if it's not nil
+	if kind != nil {
+		d.Set("kind", []map[string]interface{}{
+			{
+				"id":   updatedAsset.Kind.ID,
+				"name": updatedAsset.Kind.Name,
+			},
+		})
+	} else {
+		// Clear the kind field if it was not provided
+		d.Set("kind", nil)
+	}
 
 	return nil
 }
@@ -129,6 +153,7 @@ func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
 		} else {
 			return fmt.Errorf("error finding Asset with ID %s", itemId)
 		}
+		return nil
 	}
 
 	d.SetId(retrievedAsset.ID)
@@ -137,13 +162,18 @@ func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
 	d.Set("related_assets", retrievedAsset.RelatedAssets)
 	d.Set("geometry", string(retrievedAsset.Geometry))
 
-	// Set kind as a set
-	d.Set("kind", []map[string]interface{}{
-		{
-			"id":   retrievedAsset.Kind.ID,
-			"name": retrievedAsset.Kind.Name,
-		},
-	})
+	// Check if kind is present in the retrieved asset
+	if retrievedAsset.Kind != nil {
+		d.Set("kind", []map[string]interface{}{
+			{
+				"id":   retrievedAsset.Kind.ID,
+				"name": retrievedAsset.Kind.Name,
+			},
+		})
+	} else {
+		// Clear the kind field if it was not provided
+		d.Set("kind", nil)
+	}
 
 	return nil
 }
