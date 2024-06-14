@@ -22,13 +22,13 @@ type ComponentRoutineDataAddress struct {
 }
 
 type ComponentRoutineIOParam struct {
-	Name        string                      `json:"name"`
-	Description string                      `json:"description"`
-	Type        string                      `json:"type"`
-	ValueType   string                      `json:"value_type"`
-	Multiple    bool                        `json:"multiple"`
-	Required    bool                        `json:"required"`
-	Value			 *ComponentRoutineDataAddress `json:"value"`
+	Name        string                       `json:"name"`
+	Description string                       `json:"description"`
+	Type        string                       `json:"type"`
+	ValueType   string                       `json:"value_type"`
+	Multiple    bool                         `json:"multiple"`
+	Required    bool                         `json:"required"`
+	Value       *ComponentRoutineDataAddress `json:"value"`
 }
 
 type ComponentRoutineParams struct {

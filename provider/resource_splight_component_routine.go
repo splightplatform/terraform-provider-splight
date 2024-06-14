@@ -309,7 +309,7 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"required":    inputItem.Required,
 			"type":        inputItem.Type,
 			"value_type":  inputItem.ValueType,
-			"value": 		   value,
+			"value":       value,
 			// "value": []interface{}{
 			// 	map[string]interface{}{
 			// 		"asset":     inputItem.Value.Asset,
