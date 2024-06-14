@@ -37,9 +37,17 @@ func InputParameter() *schema.Schema {
 					Default:  false,
 				},
 				"type": {
-					Type:         schema.TypeString,
-					Required:     true,
-					ValidateFunc: validation.StringInSlice([]string{"str", "float", "int", "bool"}, false),
+					Type:     schema.TypeString,
+					Required: true,
+					ValidateFunc: validation.StringInSlice([]string{
+						"str",
+						"float",
+						"int",
+						"bool",
+						"Asset",
+						"Attribute",
+						"datetime",
+					}, false),
 				},
 				"value": {
 					Type:     schema.TypeString,
