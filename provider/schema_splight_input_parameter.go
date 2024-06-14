@@ -37,6 +37,7 @@ func InputParameter() *schema.Schema {
 				},
 				"type": {
 					Type:         schema.TypeString,
+					Required:     true,
 					ExactlyOneOf: []string{"str", "float", "int", "bool"},
 				},
 				"value": {
