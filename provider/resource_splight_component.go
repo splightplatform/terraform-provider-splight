@@ -24,7 +24,7 @@ func resourceComponent() *schema.Resource {
 }
 
 func ToComponent(d *schema.ResourceData) *client.ComponentParams {
-	componentInputInterface := d.Get("input").([]interface{})
+	componentInputInterface := d.Get("input").(*schema.Set).List()
 	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
 	for i, componentInputInterfaceItem := range componentInputInterface {
 		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
