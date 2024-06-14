@@ -37,12 +37,11 @@ func InputDataAddress() *schema.Schema {
 				},
 				"type": {
 					Type:     schema.TypeString,
-					Computed: true,
+					Optional: true,
 					Default:  "DataAddress",
 				},
 				"value_type": {
 					Type:         schema.TypeString,
-					Required:     true,
 					ExactlyOneOf: []string{"Number", "String", "Boolean"},
 				},
 				"value": {
