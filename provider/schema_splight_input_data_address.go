@@ -30,14 +30,20 @@ func InputDataAddress() *schema.Schema {
 					Optional: true,
 					Default:  true,
 				},
-				"value_type": {
-					Type:     schema.TypeString,
-					Required: true,
+				"sensitive": {
+					Type:     schema.TypeBool,
+					Optional: true,
+					Default:  false,
 				},
 				"type": {
 					Type:     schema.TypeString,
 					Computed: true,
 					Default:  "DataAddress",
+				},
+				"value_type": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ExactlyOneOf: []string{"Number", "String", "Boolean"},
 				},
 				"value": {
 					Type:     schema.TypeSet,
