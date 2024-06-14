@@ -91,11 +91,15 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 					},
 					"type": {
 						Type:     schema.TypeString,
-						Required: true,
+						// Required: true,
+						Optional: true,
+						Default: "DataAddress",
 					},
 					"value": {
 						Type:     schema.TypeSet,
-						Required: true,
+						Optional:	true,
+						Default: nil,
+						// Required: true,
 						MaxItems: 1,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
@@ -141,11 +145,15 @@ func schemaComponentRoutine() map[string]*schema.Schema {
 					},
 					"type": {
 						Type:     schema.TypeString,
-						Required: true,
+						// Required: true,
+						Optional: true,
+						Default: "DataAddress",
 					},
 					"value": {
 						Type:     schema.TypeSet,
-						Required: true,
+						Optional: true,
+						Default: nil,
+						// Required: true,
 						MaxItems: 1,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{

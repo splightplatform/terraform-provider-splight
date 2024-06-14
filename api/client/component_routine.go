@@ -28,7 +28,7 @@ type ComponentRoutineIOParam struct {
 	ValueType   string                      `json:"value_type"`
 	Multiple    bool                        `json:"multiple"`
 	Required    bool                        `json:"required"`
-	Value       ComponentRoutineDataAddress `json:"value"`
+	Value			 *ComponentRoutineDataAddress `json:"value"`
 }
 
 type ComponentRoutineParams struct {

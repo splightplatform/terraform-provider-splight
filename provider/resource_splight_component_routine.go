@@ -47,10 +47,13 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 	componentOutput := make([]client.ComponentRoutineIOParam, len(componentOutputInterface))
 	for i, item := range componentOutputInterface {
 		data := item.(map[string]interface{})
-		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
-		outputValue := client.ComponentRoutineDataAddress{
-			Asset:     valueData["asset"].(string),
-			Attribute: valueData["attribute"].(string),
+		var outputValue *client.ComponentRoutineDataAddress
+		if data["value"] != nil {
+			valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
+			outputValue = &client.ComponentRoutineDataAddress{
+				Asset:     valueData["asset"].(string),
+				Attribute: valueData["attribute"].(string),
+			}
 		}
 		componentOutput[i] = client.ComponentRoutineIOParam{
 			Name:        data["name"].(string),
@@ -68,10 +71,15 @@ func resourceCreateComponentRoutine(d *schema.ResourceData, m interface{}) error
 	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterface))
 	for i, item := range componentInputInterface {
 		data := item.(map[string]interface{})
-		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
-		inputValue := client.ComponentRoutineDataAddress{
-			Asset:     valueData["asset"].(string),
-			Attribute: valueData["attribute"].(string),
+		var inputValue *client.ComponentRoutineDataAddress
+		listData := data["value"].(*schema.Set).List()
+		// fmt.Println("List Data", listData)
+		if len(listData) > 0 {
+			valueData := listData[0].(map[string]interface{})
+			inputValue = &client.ComponentRoutineDataAddress{
+				Asset:     valueData["asset"].(string),
+				Attribute: valueData["attribute"].(string),
+			}
 		}
 		componentInput[i] = client.ComponentRoutineIOParam{
 			Name:        data["name"].(string),
@@ -156,10 +164,14 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 	componentOutput := make([]client.ComponentRoutineIOParam, len(componentOutputInterface))
 	for i, item := range componentOutputInterface {
 		data := item.(map[string]interface{})
-		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
-		outputValue := client.ComponentRoutineDataAddress{
-			Asset:     valueData["asset"].(string),
-			Attribute: valueData["attribute"].(string),
+		var outputValue *client.ComponentRoutineDataAddress
+		listData := data["value"].(*schema.Set).List()
+		if len(listData) > 0 {
+			valueData := listData[0].(map[string]interface{})
+			outputValue = &client.ComponentRoutineDataAddress{
+				Asset:     valueData["asset"].(string),
+				Attribute: valueData["attribute"].(string),
+			}
 		}
 		componentOutput[i] = client.ComponentRoutineIOParam{
 			Name:        data["name"].(string),
@@ -177,10 +189,14 @@ func resourceUpdateComponentRoutine(d *schema.ResourceData, m interface{}) error
 	componentInput := make([]client.ComponentRoutineIOParam, len(componentInputInterface))
 	for i, item := range componentInputInterface {
 		data := item.(map[string]interface{})
-		valueData := data["value"].(*schema.Set).List()[0].(map[string]interface{})
-		inputValue := client.ComponentRoutineDataAddress{
-			Asset:     valueData["asset"].(string),
-			Attribute: valueData["attribute"].(string),
+		var inputValue *client.ComponentRoutineDataAddress
+		listData := data["value"].(*schema.Set).List()
+		if len(listData) > 0 {
+			valueData := listData[0].(map[string]interface{})
+			inputValue = &client.ComponentRoutineDataAddress{
+				Asset:     valueData["asset"].(string),
+				Attribute: valueData["attribute"].(string),
+			}
 		}
 		componentInput[i] = client.ComponentRoutineIOParam{
 			Name:        data["name"].(string),
@@ -248,6 +264,15 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 	// Converting Output
 	outputList := make([]interface{}, len(retrievedComponentRoutine.Output))
 	for i, outputItem := range retrievedComponentRoutine.Output {
+		var value *[]interface{}
+		if outputItem.Value != nil {
+			value = &[]interface{}{
+				map[string]interface{}{
+					"asset":     outputItem.Value.Asset,
+					"attribute": outputItem.Value.Attribute,
+				},
+			}
+		}
 		outputList[i] = map[string]interface{}{
 			"name":        outputItem.Name,
 			"description": outputItem.Description,
@@ -255,18 +280,28 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"required":    outputItem.Required,
 			"type":        outputItem.Type,
 			"value_type":  outputItem.ValueType,
-			"value": []interface{}{
-				map[string]interface{}{
-					"asset":     outputItem.Value.Asset,
-					"attribute": outputItem.Value.Attribute,
-				},
-			},
+			"value":       value,
+			// "value": []interface{}{
+			// 	map[string]interface{}{
+			// 		"asset":     outputItem.Value.Asset,
+			// 		"attribute": outputItem.Value.Attribute,
+			// 	},
+			// },
 		}
 	}
 
 	// Converting Input
 	inputList := make([]interface{}, len(retrievedComponentRoutine.Input))
 	for i, inputItem := range retrievedComponentRoutine.Input {
+		var value *[]interface{}
+		if inputItem.Value != nil {
+			value = &[]interface{}{
+				map[string]interface{}{
+					"asset":     inputItem.Value.Asset,
+					"attribute": inputItem.Value.Attribute,
+				},
+			}
+		}
 		inputList[i] = map[string]interface{}{
 			"name":        inputItem.Name,
 			"description": inputItem.Description,
@@ -274,12 +309,13 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"required":    inputItem.Required,
 			"type":        inputItem.Type,
 			"value_type":  inputItem.ValueType,
-			"value": []interface{}{
-				map[string]interface{}{
-					"asset":     inputItem.Value.Asset,
-					"attribute": inputItem.Value.Attribute,
-				},
-			},
+			"value": 		   value,
+			// "value": []interface{}{
+			// 	map[string]interface{}{
+			// 		"asset":     inputItem.Value.Asset,
+			// 		"attribute": inputItem.Value.Attribute,
+			// 	},
+			// },
 		}
 	}
 
