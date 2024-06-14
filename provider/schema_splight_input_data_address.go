@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func InputDataAddress() *schema.Schema {
@@ -41,8 +42,13 @@ func InputDataAddress() *schema.Schema {
 					Default:  "DataAddress",
 				},
 				"value_type": {
-					Type:         schema.TypeString,
-					ExactlyOneOf: []string{"Number", "String", "Boolean"},
+					Type:     schema.TypeString,
+					Optional: true,
+					ValidateFunc: validation.StringInSlice([]string{
+						"String",
+						"Number",
+						"Boolean",
+					}, false),
 				},
 				"value": {
 					Type:     schema.TypeSet,

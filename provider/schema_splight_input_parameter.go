@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func InputParameter() *schema.Schema {
@@ -38,7 +39,7 @@ func InputParameter() *schema.Schema {
 				"type": {
 					Type:         schema.TypeString,
 					Required:     true,
-					ExactlyOneOf: []string{"str", "float", "int", "bool"},
+					ValidateFunc: validation.StringInSlice([]string{"str", "float", "int", "bool"}, false),
 				},
 				"value": {
 					Type:     schema.TypeString,
