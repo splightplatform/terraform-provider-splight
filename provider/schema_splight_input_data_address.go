@@ -54,7 +54,6 @@ func InputDataAddress() *schema.Schema {
 					Type:     schema.TypeSet,
 					Optional: true,
 					Default:  nil,
-					MaxItems: 1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"asset": {

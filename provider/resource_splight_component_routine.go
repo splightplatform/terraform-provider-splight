@@ -37,11 +37,10 @@ func ToComponentRoutine(d *schema.ResourceData) *client.ComponentRoutineParams {
 			Sensitive:   data["sensitive"].(bool),
 			Type:        data["type"].(string),
 		}
-		if data["value"] != nil {
+		if data["value"] != nil && data["value"] != "" {
 			value := json.RawMessage(data["value"].(string))
 			componentConfig[i].Value = &value
 		}
-
 	}
 
 	// Handling output
@@ -59,12 +58,12 @@ func ToComponentRoutine(d *schema.ResourceData) *client.ComponentRoutineParams {
 		}
 		if data["value"] != nil {
 			value := data["value"].(*schema.Set).List()
-			if len(value) > 0 {
-				valueData := value[0].(map[string]interface{})
-				componentOutput[i].Value = &client.ComponentRoutineDataAddress{
+			for _, value := range value {
+				valueData := value.(map[string]interface{})
+				componentOutput[i].Value = append(componentOutput[i].Value, client.ComponentRoutineDataAddress{
 					Asset:     valueData["asset"].(string),
 					Attribute: valueData["attribute"].(string),
-				}
+				})
 			}
 		}
 	}
@@ -84,12 +83,12 @@ func ToComponentRoutine(d *schema.ResourceData) *client.ComponentRoutineParams {
 		}
 		if data["value"] != nil {
 			value := data["value"].(*schema.Set).List()
-			if len(value) > 0 {
-				valueData := value[0].(map[string]interface{})
-				componentInput[i].Value = &client.ComponentRoutineDataAddress{
+			for _, value := range value {
+				valueData := value.(map[string]interface{})
+				componentOutput[i].Value = append(componentOutput[i].Value, client.ComponentRoutineDataAddress{
 					Asset:     valueData["asset"].(string),
 					Attribute: valueData["attribute"].(string),
-				}
+				})
 			}
 		}
 	}
@@ -211,11 +210,13 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"value_type":  outputItem.ValueType,
 		}
 		if outputItem.Value != nil {
-			outputList[i].(map[string]interface{})["value"] = []interface{}{
-				map[string]interface{}{
-					"asset":     outputItem.Value.Asset,
-					"attribute": outputItem.Value.Attribute,
-				},
+			outputList[i].(map[string]interface{})["value"] = []interface{}{}
+			for _, value := range outputItem.Value {
+				outputList[i].(map[string]interface{})["value"] = append(
+					outputList[i].(map[string]interface{})["value"].([]interface{}), map[string]interface{}{
+						"asset":     value.Asset,
+						"attribute": value.Attribute,
+					})
 			}
 		}
 	}
@@ -232,11 +233,13 @@ func resourceReadComponentRoutine(d *schema.ResourceData, m interface{}) error {
 			"value_type":  inputItem.ValueType,
 		}
 		if inputItem.Value != nil {
-			inputList[i].(map[string]interface{})["value"] = []interface{}{
-				map[string]interface{}{
-					"asset":     inputItem.Value.Asset,
-					"attribute": inputItem.Value.Attribute,
-				},
+			inputList[i].(map[string]interface{})["value"] = []interface{}{}
+			for _, value := range inputItem.Value {
+				inputList[i].(map[string]interface{})["value"] = append(
+					inputList[i].(map[string]interface{})["value"].([]interface{}), map[string]interface{}{
+						"asset":     value.Asset,
+						"attribute": value.Attribute,
+					})
 			}
 		}
 	}

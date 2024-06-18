@@ -39,7 +39,7 @@ func ToComponent(d *schema.ResourceData) *client.ComponentParams {
 			Sensitive:   componentInputItem["sensitive"].(bool),
 			Type:        componentInputItem["type"].(string),
 		}
-		if componentInputItem["value"] != nil {
+		if componentInputItem["value"] != nil && componentInputItem["value"] != "" {
 			value := json.RawMessage(componentInputItem["value"].(string))
 			componentInput[i].Value = &value
 		}

@@ -21,14 +21,34 @@ type ComponentRoutineDataAddress struct {
 	Attribute string `json:"attribute"`
 }
 
+type ComponentRoutineDataAddresses []ComponentRoutineDataAddress
+
+func (c *ComponentRoutineDataAddresses) UnmarshalJSON(data []byte) error {
+	// Attempt to unmarshal data into a single ComponentRoutineDataAddress
+	var single ComponentRoutineDataAddress
+	if err := json.Unmarshal(data, &single); err == nil {
+		*c = ComponentRoutineDataAddresses{single}
+		return nil
+	}
+
+	// Attempt to unmarshal data into a slice of ComponentRoutineDataAddress
+	var slice []ComponentRoutineDataAddress
+	if err := json.Unmarshal(data, &slice); err == nil {
+		*c = slice
+		return nil
+	}
+
+	return fmt.Errorf("failed to unmarshal ComponentRoutineDataAddresses")
+}
+
 type ComponentRoutineIOParam struct {
-	Name        string                       `json:"name"`
-	Description string                       `json:"description"`
-	Type        string                       `json:"type"`
-	ValueType   string                       `json:"value_type"`
-	Multiple    bool                         `json:"multiple"`
-	Required    bool                         `json:"required"`
-	Value       *ComponentRoutineDataAddress `json:"value"`
+	Name        string                        `json:"name"`
+	Description string                        `json:"description"`
+	Type        string                        `json:"type"`
+	ValueType   string                        `json:"value_type"`
+	Multiple    bool                          `json:"multiple"`
+	Required    bool                          `json:"required"`
+	Value       ComponentRoutineDataAddresses `json:"value"`
 }
 
 type ComponentRoutineParams struct {
