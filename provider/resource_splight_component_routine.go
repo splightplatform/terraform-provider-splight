@@ -57,8 +57,8 @@ func ToComponentRoutine(d *schema.ResourceData) *client.ComponentRoutineParams {
 			ValueType:   data["value_type"].(string),
 		}
 		if data["value"] != nil {
-			value := data["value"].(*schema.Set).List()
-			for _, value := range value {
+			valueList := data["value"].(*schema.Set).List()
+			for _, value := range valueList {
 				valueData := value.(map[string]interface{})
 				componentOutput[i].Value = append(componentOutput[i].Value, client.ComponentRoutineDataAddress{
 					Asset:     valueData["asset"].(string),
@@ -82,10 +82,10 @@ func ToComponentRoutine(d *schema.ResourceData) *client.ComponentRoutineParams {
 			ValueType:   data["value_type"].(string),
 		}
 		if data["value"] != nil {
-			value := data["value"].(*schema.Set).List()
-			for _, value := range value {
+			valueList := data["value"].(*schema.Set).List()
+			for _, value := range valueList {
 				valueData := value.(map[string]interface{})
-				componentOutput[i].Value = append(componentOutput[i].Value, client.ComponentRoutineDataAddress{
+				componentInput[i].Value = append(componentInput[i].Value, client.ComponentRoutineDataAddress{
 					Asset:     valueData["asset"].(string),
 					Attribute: valueData["attribute"].(string),
 				})
