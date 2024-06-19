@@ -23,10 +23,8 @@ func resourceComponent() *schema.Resource {
 	}
 }
 
-func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-
-	componentInputInterface := d.Get("input").([]interface{})
+func ToComponent(d *schema.ResourceData) *client.ComponentParams {
+	componentInputInterface := d.Get("input").(*schema.Set).List()
 	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
 	for i, componentInputInterfaceItem := range componentInputInterface {
 		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
@@ -40,18 +38,27 @@ func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
 			Required:    componentInputItem["required"].(bool),
 			Sensitive:   componentInputItem["sensitive"].(bool),
 			Type:        componentInputItem["type"].(string),
-			Value:       json.RawMessage(componentInputItem["value"].(string)),
+		}
+		if componentInputItem["value"] != nil && componentInputItem["value"] != "" {
+			value := json.RawMessage(componentInputItem["value"].(string))
+			componentInput[i].Value = &value
 		}
 	}
 
-	item := client.ComponentParams{
+	return &client.ComponentParams{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
 		Version:     d.Get("version").(string),
 		Input:       componentInput,
 	}
+}
 
-	createdComponent, err := apiClient.CreateComponent(&item)
+func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
+	apiClient := m.(*client.Client)
+
+	item := ToComponent(d)
+
+	createdComponent, err := apiClient.CreateComponent(item)
 	if err != nil {
 		return err
 	}
@@ -89,32 +96,9 @@ func resourceUpdateComponent(d *schema.ResourceData, m interface{}) error {
 
 	itemId := d.Id()
 
-	componentInputInterface := d.Get("input").([]interface{})
-	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
-	for i, componentInputInterfaceItem := range componentInputInterface {
-		componentInputInterfaceList[i] = componentInputInterfaceItem.(map[string]interface{})
-	}
-	componentInput := make([]client.ComponentInputParam, len(componentInputInterfaceList))
-	for i, componentInputItem := range componentInputInterfaceList {
-		componentInput[i] = client.ComponentInputParam{
-			Name:        componentInputItem["name"].(string),
-			Description: componentInputItem["description"].(string),
-			Type:        componentInputItem["type"].(string),
-			Value:       json.RawMessage(componentInputItem["value"].(string)),
-			Multiple:    componentInputItem["multiple"].(bool),
-			Required:    componentInputItem["required"].(bool),
-			Sensitive:   componentInputItem["sensitive"].(bool),
-		}
-	}
+	item := ToComponent(d)
 
-	item := client.ComponentParams{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
-		Version:     d.Get("version").(string),
-		Input:       componentInput,
-	}
-
-	updatedComponent, err := apiClient.UpdateComponent(itemId, &item)
+	updatedComponent, err := apiClient.UpdateComponent(itemId, item)
 	if err != nil {
 		return err
 	}
