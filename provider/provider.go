@@ -34,6 +34,7 @@ func Provider() *schema.Provider {
 			"splight_file_folder":       resourceFileFolder(),
 			"splight_function":          resourceFunction(),
 			"splight_secret":            resourceSecret(),
+			"splight_node":              resourceNode(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"splight_asset_kinds": dataSourceAssetKind(),

@@ -79,6 +79,7 @@ resource "splight_dashboard_chart" "DashboardChartTest" {
 
 ### Optional
 
+- `collection` (String)
 - `height` (Number) chart height in px
 - `thresholds` (Block Set) optional static lines to be added to the chart as references (see [below for nested schema](#nestedblock--thresholds))
 - `value_mappings` (Block Set) optional mappings to transform data with rules (see [below for nested schema](#nestedblock--value_mappings))
@@ -101,7 +102,6 @@ Required:
 
 Optional:
 
-- `collection` (String)
 - `hidden` (Boolean)
 - `label` (String)
 - `query_filter_asset` (Block Set, Max: 1) asset filter (see [below for nested schema](#nestedblock--chart_items--query_filter_asset))

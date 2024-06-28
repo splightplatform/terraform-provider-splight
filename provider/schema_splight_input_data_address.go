@@ -43,7 +43,7 @@ func InputDataAddress() *schema.Schema {
 				},
 				"value_type": {
 					Type:     schema.TypeString,
-					Optional: true,
+					Required: true,
 					ValidateFunc: validation.StringInSlice([]string{
 						"String",
 						"Number",

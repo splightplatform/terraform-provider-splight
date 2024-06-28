@@ -71,13 +71,13 @@ resource "splight_component" "ComponentTest" {
 
 ### Required
 
-- `input` (Block List, Min: 1) The input parameters based on hubcomponent spec (see [below for nested schema](#nestedblock--input))
 - `name` (String) the name of the component to be created
 - `version` (String) [NAME-VERSION] the version of the hub component
 
 ### Optional
 
 - `description` (String) optinal description to add details of the resource
+- `input` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--input))
 
 ### Read-Only
 
@@ -88,12 +88,15 @@ resource "splight_component" "ComponentTest" {
 
 Required:
 
+- `name` (String)
+- `type` (String)
+
+Optional:
+
 - `description` (String)
 - `multiple` (Boolean)
-- `name` (String)
 - `required` (Boolean)
 - `sensitive` (Boolean)
-- `type` (String)
 - `value` (String)
 
 ## Import
