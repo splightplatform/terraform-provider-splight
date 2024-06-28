@@ -57,7 +57,7 @@ resource "splight_component_routine" "ComponentTestRoutine" {
 
 - `config` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--config))
 - `description` (String) optional complementary information about the routine
-- `input` (Block Set) asset attribute where to read data. Only valid for OutgoingRoutine (see [below for nested schema](#nestedblock--input))
+- `input` (Block Set) asset attribute where to ingest data. Only valid for IncomingRoutine (see [below for nested schema](#nestedblock--input))
 - `output` (Block Set) asset attribute where to ingest data. Only valid for IncomingRoutine (see [below for nested schema](#nestedblock--output))
 
 ### Read-Only
@@ -69,12 +69,15 @@ resource "splight_component_routine" "ComponentTestRoutine" {
 
 Required:
 
+- `name` (String)
+- `type` (String)
+
+Optional:
+
 - `description` (String)
 - `multiple` (Boolean)
-- `name` (String)
 - `required` (Boolean)
 - `sensitive` (Boolean)
-- `type` (String)
 - `value` (String)
 
 
@@ -83,13 +86,17 @@ Required:
 
 Required:
 
+- `name` (String)
+- `value_type` (String)
+
+Optional:
+
 - `description` (String)
 - `multiple` (Boolean)
-- `name` (String)
 - `required` (Boolean)
+- `sensitive` (Boolean)
 - `type` (String)
-- `value` (Block Set, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--input--value))
-- `value_type` (String)
+- `value` (Block Set) (see [below for nested schema](#nestedblock--input--value))
 
 <a id="nestedblock--input--value"></a>
 ### Nested Schema for `input.value`
@@ -106,13 +113,17 @@ Required:
 
 Required:
 
+- `name` (String)
+- `value_type` (String)
+
+Optional:
+
 - `description` (String)
 - `multiple` (Boolean)
-- `name` (String)
 - `required` (Boolean)
+- `sensitive` (Boolean)
 - `type` (String)
-- `value` (Block Set, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--output--value))
-- `value_type` (String)
+- `value` (Block Set) (see [below for nested schema](#nestedblock--output--value))
 
 <a id="nestedblock--output--value"></a>
 ### Nested Schema for `output.value`
