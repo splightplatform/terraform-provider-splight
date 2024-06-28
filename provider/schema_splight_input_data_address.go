@@ -42,7 +42,8 @@ func InputDataAddress() *schema.Schema {
 					Default:  "DataAddress",
 				},
 				"value_type": {
-					Type:     schema.TypeString,
+					Type: schema.TypeString,
+					// TODO: optional esto?
 					Optional: true,
 					ValidateFunc: validation.StringInSlice([]string{
 						"String",
