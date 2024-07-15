@@ -7,6 +7,7 @@ import (
 )
 
 type AlertItem struct {
+	ID              string `json:"id,omitempty"`
 	RefID           string `json:"ref_id"`
 	Type            string `json:"type"`
 	ExpressionPlain string `json:"expression_plain"`
@@ -75,17 +76,18 @@ func (c *Client) CreateAlert(item *AlertParams) (*Alert, error) {
 		return nil, err
 	}
 
-	function := &Alert{}
-	err = json.NewDecoder(body).Decode(function)
+	alert := &Alert{}
+	err = json.NewDecoder(body).Decode(alert)
 	if err != nil {
 		return nil, err
 	}
-	return function, nil
+	return alert, nil
 }
 
 func (c *Client) UpdateAlert(id string, item *AlertParams) (*Alert, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
+
 	if err != nil {
 		return nil, err
 	}
@@ -93,12 +95,12 @@ func (c *Client) UpdateAlert(id string, item *AlertParams) (*Alert, error) {
 	if err != nil {
 		return nil, err
 	}
-	function := &Alert{}
-	err = json.NewDecoder(body).Decode(function)
+	alert := &Alert{}
+	err = json.NewDecoder(body).Decode(alert)
 	if err != nil {
 		return nil, err
 	}
-	return function, nil
+	return alert, nil
 }
 
 func (c *Client) RetrieveAlert(id string) (*Alert, error) {
@@ -106,12 +108,12 @@ func (c *Client) RetrieveAlert(id string) (*Alert, error) {
 	if err != nil {
 		return nil, err
 	}
-	function := &Alert{}
-	err = json.NewDecoder(body).Decode(function)
+	alert := &Alert{}
+	err = json.NewDecoder(body).Decode(alert)
 	if err != nil {
 		return nil, err
 	}
-	return function, nil
+	return alert, nil
 }
 
 func (c *Client) DeleteAlert(id string) error {
