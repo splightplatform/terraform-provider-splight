@@ -127,6 +127,11 @@ func schemaAlert() map[string]*schema.Schema {
 			Description: "variables to be calculated for a complex comparisson.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Computed:    true,
+						Description: "optional id",
+					},
 					"ref_id": {
 						Type:     schema.TypeString,
 						Required: true,

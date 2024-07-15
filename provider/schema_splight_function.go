@@ -98,6 +98,11 @@ func schemaFunction() map[string]*schema.Schema {
 			Description: "traces to be used to compute the results",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Computed:    true,
+						Description: "optional id",
+					},
 					"ref_id": {
 						Type:     schema.TypeString,
 						Required: true,

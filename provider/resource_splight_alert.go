@@ -90,7 +90,6 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("time_window", createdAlert.TimeWindow)
 	d.Set("operator", createdAlert.Operator)
 	d.Set("aggregation", createdAlert.Aggregation)
-	d.Set("thresholds", createdAlert.Thresholds)
 	d.Set("rate_unit", createdAlert.RateUnit)
 	d.Set("rate_value", createdAlert.RateValue)
 	d.Set("cron_minutes", createdAlert.CronMinutes)
@@ -99,9 +98,29 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_month", createdAlert.CronMonth)
 	d.Set("cron_dow", createdAlert.CronDOW)
 	d.Set("cron_year", createdAlert.CronYear)
-	d.Set("alert_items", createdAlert.AlertItems)
 	d.Set("severity", createdAlert.Severity)
 	d.Set("related_assets", createdAlert.RelatedAssets)
+	alertThresholdsOutput := make([]map[string]interface{}, len(createdAlert.Thresholds))
+	for i, alertThresholdItem := range createdAlert.Thresholds {
+		alertThresholdsOutput[i] = map[string]interface{}{
+			"value":       alertThresholdItem.Value,
+			"status":      alertThresholdItem.Status,
+			"status_text": alertThresholdItem.StatusText,
+		}
+	}
+	d.Set("thresholds", alertThresholdsOutput)
+	alertItemsOutput := make([]map[string]interface{}, len(createdAlert.AlertItems))
+	for i, alertItemItem := range createdAlert.AlertItems {
+		alertItemsOutput[i] = map[string]interface{}{
+			"id":               alertItemItem.ID,
+			"ref_id":           alertItemItem.RefID,
+			"type":             alertItemItem.Type,
+			"expression_plain": alertItemItem.ExpressionPlain,
+			"query_plain":      alertItemItem.QueryPlain,
+		}
+	}
+	d.Set("alert_items", alertItemsOutput)
+
 	return nil
 }
 
@@ -118,6 +137,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	alertItems := make([]client.AlertItem, len(alertItemInterfaceList))
 	for i, alertItemItem := range alertItemInterfaceList {
 		alertItems[i] = client.AlertItem{
+			ID:              alertItemItem["id"].(string),
 			RefID:           alertItemItem["ref_id"].(string),
 			Type:            alertItemItem["type"].(string),
 			ExpressionPlain: alertItemItem["expression_plain"].(string),
@@ -175,7 +195,6 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("time_window", updateAlert.TimeWindow)
 	d.Set("operator", updateAlert.Operator)
 	d.Set("aggregation", updateAlert.Aggregation)
-	d.Set("thresholds", updateAlert.Thresholds)
 	d.Set("rate_unit", updateAlert.RateUnit)
 	d.Set("rate_value", updateAlert.RateValue)
 	d.Set("cron_minutes", updateAlert.CronMinutes)
@@ -184,9 +203,29 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_month", updateAlert.CronMonth)
 	d.Set("cron_dow", updateAlert.CronDOW)
 	d.Set("cron_year", updateAlert.CronYear)
-	d.Set("alert_items", updateAlert.AlertItems)
 	d.Set("severity", updateAlert.Severity)
 	d.Set("related_assets", updateAlert.RelatedAssets)
+	alertThresholdsOutput := make([]map[string]interface{}, len(updateAlert.Thresholds))
+	for i, alertThresholdItem := range updateAlert.Thresholds {
+		alertThresholdsOutput[i] = map[string]interface{}{
+			"value":       alertThresholdItem.Value,
+			"status":      alertThresholdItem.Status,
+			"status_text": alertThresholdItem.StatusText,
+		}
+	}
+	d.Set("thresholds", alertThresholdsOutput)
+	alertItemsOutput := make([]map[string]interface{}, len(updateAlert.AlertItems))
+	for i, alertItemItem := range updateAlert.AlertItems {
+		alertItemsOutput[i] = map[string]interface{}{
+			"id":               alertItemItem.ID,
+			"ref_id":           alertItemItem.RefID,
+			"type":             alertItemItem.Type,
+			"expression_plain": alertItemItem.ExpressionPlain,
+			"query_plain":      alertItemItem.QueryPlain,
+		}
+	}
+	d.Set("alert_items", alertItemsOutput)
+
 	return nil
 }
 
@@ -206,6 +245,7 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 	alertItemsDict := make([]map[interface{}]interface{}, len(retrievedAlert.AlertItems))
 	for i, alertItemItem := range retrievedAlert.AlertItems {
 		alertItemsDict[i] = map[interface{}]interface{}{
+			"id":               alertItemItem.ID,
 			"ref_id":           alertItemItem.RefID,
 			"type":             alertItemItem.Type,
 			"expression_plain": alertItemItem.ExpressionPlain,

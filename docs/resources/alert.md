@@ -108,6 +108,10 @@ Required:
 - `ref_id` (String)
 - `type` (String)
 
+Read-Only:
+
+- `id` (String) optional id
+
 
 <a id="nestedblock--thresholds"></a>
 ### Nested Schema for `thresholds`
