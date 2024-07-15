@@ -99,6 +99,10 @@ Required:
 - `ref_id` (String)
 - `type` (String)
 
+Read-Only:
+
+- `id` (String) optional id
+
 ## Import
 
 Import is supported using the following syntax:
