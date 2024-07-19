@@ -81,16 +81,44 @@ func schemaFunction() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"target_asset": {
-			Type:        schema.TypeMap,
+			Type:        schema.TypeSet,
 			Required:    true,
+			MaxItems:    1,
 			Description: "asset where to ingest results",
-			Elem:        &schema.Schema{Type: schema.TypeString},
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "name",
+					},
+				},
+			},
 		},
 		"target_attribute": {
-			Type:        schema.TypeMap,
+			Type:        schema.TypeSet,
 			Required:    true,
+			MaxItems:    1,
 			Description: "attribute where to ingest results",
-			Elem:        &schema.Schema{Type: schema.TypeString},
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "name",
+					},
+				},
+			},
 		},
 		"function_items": {
 			Type:        schema.TypeList,
