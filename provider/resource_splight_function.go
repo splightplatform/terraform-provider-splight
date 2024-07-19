@@ -51,12 +51,14 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 		functionItemInterfaceList[i] = functionItemInterfaceItem.(map[string]interface{})
 	}
 	functionItems := make([]client.FunctionItem, len(functionItemInterfaceList))
-	for i, functionItemItem := range functionItemInterfaceList {
+	for i, functionItem := range functionItemInterfaceList {
 		functionItems[i] = client.FunctionItem{
-			RefID:           functionItemItem["ref_id"].(string),
-			Type:            functionItemItem["type"].(string),
-			ExpressionPlain: functionItemItem["expression_plain"].(string),
-			QueryPlain:      functionItemItem["query_plain"].(string),
+			RefID:                functionItem["ref_id"].(string),
+			Type:                 functionItem["type"].(string),
+			ExpressionPlain:      functionItem["expression_plain"].(string),
+			QueryPlain:           functionItem["query_plain"].(string),
+			QueryFilterAsset:     functionItem["query_filter_asset"].(string),
+			QueryFilterAttribute: functionItem["query_filter_attribute"].(string),
 		}
 	}
 
@@ -105,13 +107,15 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_dow", createdFunction.CronDOW)
 	d.Set("cron_year", createdFunction.CronYear)
 	functionItemsOutput := make([]map[string]interface{}, len(createdFunction.FunctionItems))
-	for i, functionItemItem := range createdFunction.FunctionItems {
+	for i, functionItem := range createdFunction.FunctionItems {
 		functionItemsOutput[i] = map[string]interface{}{
-			"id":               functionItemItem.ID,
-			"ref_id":           functionItemItem.RefID,
-			"type":             functionItemItem.Type,
-			"expression_plain": functionItemItem.ExpressionPlain,
-			"query_plain":      functionItemItem.QueryPlain,
+			"id":                     functionItem.ID,
+			"ref_id":                 functionItem.RefID,
+			"type":                   functionItem.Type,
+			"expression_plain":       functionItem.ExpressionPlain,
+			"query_plain":            functionItem.QueryPlain,
+			"query_filter_asset":     functionItem.QueryFilterAsset,
+			"query_filter_attribute": functionItem.QueryFilterAttribute,
 		}
 	}
 	d.Set("function_items", functionItemsOutput)
@@ -150,13 +154,15 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 		functionItemInterfaceList[i] = functionItemInterfaceItem.(map[string]interface{})
 	}
 	functionItems := make([]client.FunctionItem, len(functionItemInterfaceList))
-	for i, functionItemItem := range functionItemInterfaceList {
+	for i, functionItem := range functionItemInterfaceList {
 		functionItems[i] = client.FunctionItem{
-			ID:              functionItemItem["id"].(string),
-			RefID:           functionItemItem["ref_id"].(string),
-			Type:            functionItemItem["type"].(string),
-			ExpressionPlain: functionItemItem["expression_plain"].(string),
-			QueryPlain:      functionItemItem["query_plain"].(string),
+			ID:                   functionItem["id"].(string),
+			RefID:                functionItem["ref_id"].(string),
+			Type:                 functionItem["type"].(string),
+			ExpressionPlain:      functionItem["expression_plain"].(string),
+			QueryPlain:           functionItem["query_plain"].(string),
+			QueryFilterAsset:     functionItem["query_filter_asset"].(string),
+			QueryFilterAttribute: functionItem["query_filter_attribute"].(string),
 		}
 	}
 
@@ -202,13 +208,15 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 	d.Set("cron_dow", updatedFunction.CronDOW)
 	d.Set("cron_year", updatedFunction.CronYear)
 	functionItemsOutput := make([]map[string]interface{}, len(updatedFunction.FunctionItems))
-	for i, functionItemItem := range updatedFunction.FunctionItems {
+	for i, functionItem := range updatedFunction.FunctionItems {
 		functionItemsOutput[i] = map[string]interface{}{
-			"id":               functionItemItem.ID,
-			"ref_id":           functionItemItem.RefID,
-			"type":             functionItemItem.Type,
-			"expression_plain": functionItemItem.ExpressionPlain,
-			"query_plain":      functionItemItem.QueryPlain,
+			"id":                     functionItem.ID,
+			"ref_id":                 functionItem.RefID,
+			"type":                   functionItem.Type,
+			"expression_plain":       functionItem.ExpressionPlain,
+			"query_plain":            functionItem.QueryPlain,
+			"query_filter_asset":     functionItem.QueryFilterAsset,
+			"query_filter_attribute": functionItem.QueryFilterAttribute,
 		}
 	}
 	d.Set("function_items", functionItemsOutput)
@@ -230,13 +238,15 @@ func resourceReadFunction(d *schema.ResourceData, m interface{}) error {
 	}
 
 	functionItemsDict := make([]map[interface{}]interface{}, len(retrievedFunction.FunctionItems))
-	for i, functionItemItem := range retrievedFunction.FunctionItems {
+	for i, functionItem := range retrievedFunction.FunctionItems {
 		functionItemsDict[i] = map[interface{}]interface{}{
-			"id":               functionItemItem.ID,
-			"ref_id":           functionItemItem.RefID,
-			"type":             functionItemItem.Type,
-			"expression_plain": functionItemItem.ExpressionPlain,
-			"query_plain":      functionItemItem.QueryPlain,
+			"id":                     functionItem.ID,
+			"ref_id":                 functionItem.RefID,
+			"type":                   functionItem.Type,
+			"expression_plain":       functionItem.ExpressionPlain,
+			"query_plain":            functionItem.QueryPlain,
+			"query_filter_asset":     functionItem.QueryFilterAsset,
+			"query_filter_attribute": functionItem.QueryFilterAttribute,
 		}
 	}
 

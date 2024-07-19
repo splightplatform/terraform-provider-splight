@@ -7,11 +7,13 @@ import (
 )
 
 type FunctionItem struct {
-	ID              string `json:"id,omitempty"`
-	RefID           string `json:"ref_id"`
-	Type            string `json:"type"`
-	ExpressionPlain string `json:"expression_plain"`
-	QueryPlain      string `json:"query_plain"`
+	ID                   string `json:"id,omitempty"`
+	RefID                string `json:"ref_id"`
+	Type                 string `json:"type"`
+	ExpressionPlain      string `json:"expression_plain"`
+	QueryPlain           string `json:"query_plain"`
+	QueryFilterAsset     string `json:"query_filter_asset"`
+	QueryFilterAttribute string `json:"query_filter_attribute"`
 }
 
 type FunctionTargetItem struct {
