@@ -21,11 +21,13 @@ resource "splight_function" "FunctionTest" {
   rate_value      = 10
   rate_unit       = "minute"
   target_variable = "A"
-  target_asset = {
+
+  target_asset {
     id   = "49551a15-d79b-40dc-9434-1b33d6b2fcb2"
     name = "An asset"
   }
-  target_attribute = {
+
+  target_attribute {
     id   = "49551a15-d79b-40dc-9434-1b33d6b2fcb2"
     name = "An attribute"
   }
@@ -68,8 +70,8 @@ resource "splight_function" "FunctionTest" {
 - `description` (String) The description of the resource
 - `function_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--function_items))
 - `name` (String) The name of the resource
-- `target_asset` (Map of String) asset where to ingest results
-- `target_attribute` (Map of String) attribute where to ingest results
+- `target_asset` (Block Set, Min: 1, Max: 1) asset where to ingest results (see [below for nested schema](#nestedblock--target_asset))
+- `target_attribute` (Block Set, Min: 1, Max: 1) attribute where to ingest results (see [below for nested schema](#nestedblock--target_attribute))
 - `target_variable` (String) variable to be considered to be ingested
 - `time_window` (Number) window to fetch data from. Data out of that window will not be considered for evaluation
 - `type` (String) [cron|rate] type for the cron
@@ -102,6 +104,24 @@ Required:
 Read-Only:
 
 - `id` (String) optional id
+
+
+<a id="nestedblock--target_asset"></a>
+### Nested Schema for `target_asset`
+
+Required:
+
+- `id` (String) id
+- `name` (String) name
+
+
+<a id="nestedblock--target_attribute"></a>
+### Nested Schema for `target_attribute`
+
+Required:
+
+- `id` (String) id
+- `name` (String) name
 
 ## Import
 
