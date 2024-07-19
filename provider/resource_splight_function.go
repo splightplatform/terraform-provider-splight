@@ -24,16 +24,25 @@ func resourceFunction() *schema.Resource {
 
 func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
-	targetAssetDict := d.Get("target_asset").(map[string]interface{})
-	targetAsset := client.FunctionTargetItem{
-		Name: targetAssetDict["name"].(string),
-		ID:   targetAssetDict["id"].(string),
+
+	valueList := d.Get("target_asset").(*schema.Set).List()
+	var targetAsset client.FunctionTargetItem
+	for _, value := range valueList {
+		valueData := value.(map[string]interface{})
+		targetAsset = client.FunctionTargetItem{
+			Name: valueData["name"].(string),
+			ID:   valueData["id"].(string),
+		}
 	}
 
-	targetAttributeDict := d.Get("target_attribute").(map[string]interface{})
-	targetAttribute := client.FunctionTargetItem{
-		Name: targetAttributeDict["name"].(string),
-		ID:   targetAttributeDict["id"].(string),
+	valueList = d.Get("target_attribute").(*schema.Set).List()
+	var targetAttribute client.FunctionTargetItem
+	for _, value := range valueList {
+		valueData := value.(map[string]interface{})
+		targetAttribute = client.FunctionTargetItem{
+			Name: valueData["name"].(string),
+			ID:   valueData["id"].(string),
+		}
 	}
 
 	functionItemInterface := d.Get("function_items").([]interface{})
@@ -74,8 +83,19 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 	d.Set("description", createdFunction.Description)
 	d.Set("type", createdFunction.Type)
 	d.Set("time_window", createdFunction.TimeWindow)
-	d.Set("target_asset", createdFunction.TargetAsset)
-	d.Set("target_attribute", createdFunction.TargetAttribute)
+
+	targetAssetOutput := make([]map[string]interface{}, 1)
+	targetAssetOutput[0] = map[string]interface{}{
+		"name": createdFunction.TargetAsset.Name,
+		"id":   createdFunction.TargetAsset.ID,
+	}
+	targetAttributeOutput := make([]map[string]interface{}, 1)
+	targetAttributeOutput[0] = map[string]interface{}{
+		"name": createdFunction.TargetAttribute.Name,
+		"id":   createdFunction.TargetAttribute.ID,
+	}
+	d.Set("target_asset", targetAssetOutput)
+	d.Set("target_attribute", targetAttributeOutput)
 	d.Set("rate_unit", createdFunction.RateUnit)
 	d.Set("rate_value", createdFunction.RateValue)
 	d.Set("cron_minutes", createdFunction.CronMinutes)
@@ -104,16 +124,24 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 
 	itemId := d.Id()
 
-	targetAssetDict := d.Get("target_asset").(map[string]interface{})
-	targetAsset := client.FunctionTargetItem{
-		Name: targetAssetDict["name"].(string),
-		ID:   targetAssetDict["id"].(string),
+	valueList := d.Get("target_asset").(*schema.Set).List()
+	var targetAsset client.FunctionTargetItem
+	for _, value := range valueList {
+		valueData := value.(map[string]interface{})
+		targetAsset = client.FunctionTargetItem{
+			Name: valueData["name"].(string),
+			ID:   valueData["id"].(string),
+		}
 	}
 
-	targetAttributeDict := d.Get("target_attribute").(map[string]interface{})
-	targetAttribute := client.FunctionTargetItem{
-		Name: targetAttributeDict["name"].(string),
-		ID:   targetAttributeDict["id"].(string),
+	valueList = d.Get("target_attribute").(*schema.Set).List()
+	var targetAttribute client.FunctionTargetItem
+	for _, value := range valueList {
+		valueData := value.(map[string]interface{})
+		targetAttribute = client.FunctionTargetItem{
+			Name: valueData["name"].(string),
+			ID:   valueData["id"].(string),
+		}
 	}
 
 	functionItemInterface := d.Get("function_items").([]interface{})
@@ -153,8 +181,18 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 	d.Set("description", updatedFunction.Description)
 	d.Set("type", updatedFunction.Type)
 	d.Set("time_window", updatedFunction.TimeWindow)
-	d.Set("target_asset", updatedFunction.TargetAsset)
-	d.Set("target_attribute", updatedFunction.TargetAttribute)
+	targetAssetOutput := make([]map[string]interface{}, 1)
+	targetAssetOutput[0] = map[string]interface{}{
+		"name": updatedFunction.TargetAsset.Name,
+		"id":   updatedFunction.TargetAsset.ID,
+	}
+	targetAttributeOutput := make([]map[string]interface{}, 1)
+	targetAttributeOutput[0] = map[string]interface{}{
+		"name": updatedFunction.TargetAttribute.Name,
+		"id":   updatedFunction.TargetAttribute.ID,
+	}
+	d.Set("target_asset", targetAssetOutput)
+	d.Set("target_attribute", targetAttributeOutput)
 	d.Set("rate_unit", updatedFunction.RateUnit)
 	d.Set("rate_value", updatedFunction.RateValue)
 	d.Set("cron_minutes", updatedFunction.CronMinutes)
@@ -201,12 +239,15 @@ func resourceReadFunction(d *schema.ResourceData, m interface{}) error {
 			"query_plain":      functionItemItem.QueryPlain,
 		}
 	}
-	targetAsset := map[interface{}]interface{}{
+
+	targetAsset := make([]map[string]string, 1)
+	targetAsset[0] = map[string]string{
 		"name": retrievedFunction.TargetAsset.Name,
 		"id":   retrievedFunction.TargetAsset.ID,
 	}
 
-	targetAttribute := map[interface{}]interface{}{
+	targetAttribute := make([]map[string]string, 1)
+	targetAttribute[0] = map[string]string{
 		"name": retrievedFunction.TargetAttribute.Name,
 		"id":   retrievedFunction.TargetAttribute.ID,
 	}

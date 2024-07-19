@@ -6,11 +6,13 @@ resource "splight_function" "FunctionTest" {
   rate_value      = 10
   rate_unit       = "minute"
   target_variable = "A"
-  target_asset = {
+
+  target_asset {
     id   = "49551a15-d79b-40dc-9434-1b33d6b2fcb2"
     name = "An asset"
   }
-  target_attribute = {
+
+  target_attribute {
     id   = "49551a15-d79b-40dc-9434-1b33d6b2fcb2"
     name = "An attribute"
   }
