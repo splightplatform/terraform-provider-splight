@@ -148,14 +148,8 @@ func schemaAlert() map[string]*schema.Schema {
 						Type:     schema.TypeString,
 						Required: true,
 					},
-					"query_filter_asset": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_filter_attribute": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
+					"query_filter_asset":     QueryFilter(),
+					"query_filter_attribute": QueryFilter(),
 				},
 			},
 		},
