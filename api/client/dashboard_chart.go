@@ -41,17 +41,18 @@ type DashboardChartItem struct {
 }
 
 type DashboardChartParams struct {
-	Name          string                  `json:"name"`
-	Tab           string                  `json:"tab"`
-	Type          string                  `json:"type"`
-	TimestampGTE  string                  `json:"timestamp_gte"`
-	TimestampLTE  string                  `json:"timestamp_lte"`
-	Height        int                     `json:"height"`
-	Width         int                     `json:"width"`
-	Collection    string                  `json:"collection"`
-	ChartItems    []DashboardChartItem    `json:"chart_items"`
-	Thresholds    []DashboardThreshold    `json:"thresholds"`
-	ValueMappings []DashboardValueMapping `json:"value_mappings"`
+	Name           string                  `json:"name"`
+	Tab            string                  `json:"tab"`
+	Type           string                  `json:"type"`
+	TimeseriesType *string                 `json:"timeseries_type,omitempty"`
+	TimestampGTE   string                  `json:"timestamp_gte"`
+	TimestampLTE   string                  `json:"timestamp_lte"`
+	Height         int                     `json:"height"`
+	Width          int                     `json:"width"`
+	Collection     string                  `json:"collection"`
+	ChartItems     []DashboardChartItem    `json:"chart_items"`
+	Thresholds     []DashboardThreshold    `json:"thresholds"`
+	ValueMappings  []DashboardValueMapping `json:"value_mappings"`
 }
 
 type DashboardChart struct {

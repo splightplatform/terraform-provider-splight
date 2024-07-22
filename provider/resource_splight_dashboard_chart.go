@@ -93,20 +93,30 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 			DisplayText: thresholdItem["display_text"].(string),
 		}
 	}
+	typeInterface := d.Get("type").(string)
+	timeseriesTypeInteraface := d.Get("timeseries_type").(string)
+	var timeseriesType *string
+	if typeInterface == "timeseries" {
+		timeseriesType = &timeseriesTypeInteraface
+	} else {
+		timeseriesType = nil
+	}
 
 	item := client.DashboardChartParams{
-		Name:          d.Get("name").(string),
-		Tab:           d.Get("tab").(string),
-		Type:          d.Get("type").(string),
-		TimestampGTE:  d.Get("timestamp_gte").(string),
-		TimestampLTE:  d.Get("timestamp_lte").(string),
-		Height:        d.Get("height").(int),
-		Width:         d.Get("width").(int),
-		Collection:    d.Get("collection").(string),
-		ChartItems:    chartItems,
-		ValueMappings: valueMappings,
-		Thresholds:    thresholds,
+		Name:           d.Get("name").(string),
+		Tab:            d.Get("tab").(string),
+		Type:           d.Get("type").(string),
+		TimeseriesType: timeseriesType,
+		TimestampGTE:   d.Get("timestamp_gte").(string),
+		TimestampLTE:   d.Get("timestamp_lte").(string),
+		Height:         d.Get("height").(int),
+		Width:          d.Get("width").(int),
+		Collection:     d.Get("collection").(string),
+		ChartItems:     chartItems,
+		ValueMappings:  valueMappings,
+		Thresholds:     thresholds,
 	}
+
 	createdDashboardChart, err := apiClient.CreateDashboardChart(&item)
 	if err != nil {
 		return err
@@ -116,6 +126,9 @@ func resourceCreateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdDashboardChart.Name)
 	d.Set("tab", createdDashboardChart.Tab)
 	d.Set("type", createdDashboardChart.Type)
+	if createdDashboardChart.Type == "timeseries" {
+		d.Set("timeseries_type", createdDashboardChart.TimeseriesType)
+	}
 	d.Set("height", createdDashboardChart.Height)
 	d.Set("width", createdDashboardChart.Width)
 	d.Set("timestamp_gte", createdDashboardChart.TimestampGTE)
@@ -201,18 +214,28 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
+	typeInterface := d.Get("type").(string)
+	timeseriesTypeInteraface := d.Get("timeseries_type").(string)
+	var timeseriesType *string
+	if typeInterface == "timeseries" {
+		timeseriesType = &timeseriesTypeInteraface
+	} else {
+		timeseriesType = nil
+	}
+
 	item := client.DashboardChartParams{
-		Name:          d.Get("name").(string),
-		Tab:           d.Get("tab").(string),
-		Type:          d.Get("type").(string),
-		TimestampGTE:  d.Get("timestamp_gte").(string),
-		TimestampLTE:  d.Get("timestamp_lte").(string),
-		Height:        d.Get("height").(int),
-		Width:         d.Get("width").(int),
-		Collection:    d.Get("collection").(string),
-		ChartItems:    chartItems,
-		ValueMappings: valueMappings,
-		Thresholds:    thresholds,
+		Name:           d.Get("name").(string),
+		Tab:            d.Get("tab").(string),
+		Type:           d.Get("type").(string),
+		TimeseriesType: timeseriesType,
+		TimestampGTE:   d.Get("timestamp_gte").(string),
+		TimestampLTE:   d.Get("timestamp_lte").(string),
+		Height:         d.Get("height").(int),
+		Width:          d.Get("width").(int),
+		Collection:     d.Get("collection").(string),
+		ChartItems:     chartItems,
+		ValueMappings:  valueMappings,
+		Thresholds:     thresholds,
 	}
 	createdDashboardChart, err := apiClient.UpdateDashboardChart(itemId, &item)
 	if err != nil {
@@ -223,6 +246,9 @@ func resourceUpdateDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdDashboardChart.Name)
 	d.Set("tab", createdDashboardChart.Tab)
 	d.Set("type", createdDashboardChart.Type)
+	if createdDashboardChart.Type == "timeseries" {
+		d.Set("timeseries_type", createdDashboardChart.TimeseriesType)
+	}
 	d.Set("height", createdDashboardChart.Height)
 	d.Set("width", createdDashboardChart.Width)
 	d.Set("timestamp_gte", createdDashboardChart.TimestampGTE)
@@ -301,6 +327,9 @@ func resourceReadDashboardChart(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", retrievedDashboardChart.Name)
 	d.Set("tab", retrievedDashboardChart.Tab)
 	d.Set("type", retrievedDashboardChart.Type)
+	if retrievedDashboardChart.Type == "timeseries" {
+		d.Set("timeseries_type", retrievedDashboardChart.TimeseriesType)
+	}
 	d.Set("timestamp_gte", retrievedDashboardChart.TimestampGTE)
 	d.Set("timestamp_lte", retrievedDashboardChart.TimestampLTE)
 	d.Set("height", retrievedDashboardChart.Height)

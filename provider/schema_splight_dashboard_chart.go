@@ -21,6 +21,12 @@ func schemaDashboardChart() map[string]*schema.Schema {
 			Required:    true,
 			Description: "[timeseries|bargauge|..] chart type",
 		},
+		"timeseries_type": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Required:    false,
+			Description: "[bar|line] timeseries type",
+		},
 		"timestamp_lte": {
 			Type:        schema.TypeString,
 			Required:    true,
