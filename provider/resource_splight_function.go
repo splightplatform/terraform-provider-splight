@@ -65,7 +65,7 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 			},
 			QueryFilterAttribute: client.FunctionTargetItem{
 				Name: queryFilterAttribute["name"].(string),
-				ID:   queryFilterAsset["id"].(string),
+				ID:   queryFilterAttribute["id"].(string),
 			},
 		}
 	}
@@ -183,7 +183,7 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 			},
 			QueryFilterAttribute: client.FunctionTargetItem{
 				Name: queryFilterAttribute["name"].(string),
-				ID:   queryFilterAsset["id"].(string),
+				ID:   queryFilterAttribute["id"].(string),
 			},
 		}
 	}

@@ -45,7 +45,7 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 			},
 			QueryFilterAttribute: client.AlertTargetItem{
 				Name: queryFilterAttribute["name"].(string),
-				ID:   queryFilterAsset["id"].(string),
+				ID:   queryFilterAttribute["id"].(string),
 			},
 		}
 	}
@@ -168,7 +168,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 			},
 			QueryFilterAttribute: client.AlertTargetItem{
 				Name: queryFilterAttribute["name"].(string),
-				ID:   queryFilterAsset["id"].(string),
+				ID:   queryFilterAttribute["id"].(string),
 			},
 		}
 	}
