@@ -32,13 +32,21 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	}
 	alertItems := make([]client.AlertItem, len(alertItemInterfaceList))
 	for i, alertItemItem := range alertItemInterfaceList {
+		queryFilterAsset := alertItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]string)
+		queryFilterAttribute := alertItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]string)
 		alertItems[i] = client.AlertItem{
-			RefID:                alertItemItem["ref_id"].(string),
-			Type:                 alertItemItem["type"].(string),
-			ExpressionPlain:      alertItemItem["expression_plain"].(string),
-			QueryPlain:           alertItemItem["query_plain"].(string),
-			QueryFilterAsset:     alertItemItem["query_filter_asset"].(string),
-			QueryFilterAttribute: alertItemItem["query_filter_attribute"].(string),
+			RefID:           alertItemItem["ref_id"].(string),
+			Type:            alertItemItem["type"].(string),
+			ExpressionPlain: alertItemItem["expression_plain"].(string),
+			QueryPlain:      alertItemItem["query_plain"].(string),
+			QueryFilterAsset: client.AlertTargetItem{
+				Name: queryFilterAsset["name"],
+				ID:   queryFilterAsset["id"],
+			},
+			QueryFilterAttribute: client.AlertTargetItem{
+				Name: queryFilterAttribute["name"],
+				ID:   queryFilterAsset["id"],
+			},
 		}
 	}
 
@@ -112,15 +120,21 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	}
 	d.Set("thresholds", alertThresholdsOutput)
 	alertItemsOutput := make([]map[string]interface{}, len(createdAlert.AlertItems))
-	for i, alertItemItem := range createdAlert.AlertItems {
+	for i, alertItem := range createdAlert.AlertItems {
 		alertItemsOutput[i] = map[string]interface{}{
-			"id":                     alertItemItem.ID,
-			"ref_id":                 alertItemItem.RefID,
-			"type":                   alertItemItem.Type,
-			"expression_plain":       alertItemItem.ExpressionPlain,
-			"query_plain":            alertItemItem.QueryPlain,
-			"query_filter_asset":     alertItemItem.QueryFilterAsset,
-			"query_filter_attribute": alertItemItem.QueryFilterAttribute,
+			"id":               alertItem.ID,
+			"ref_id":           alertItem.RefID,
+			"type":             alertItem.Type,
+			"expression_plain": alertItem.ExpressionPlain,
+			"query_plain":      alertItem.QueryPlain,
+			"query_filter_asset": map[string]interface{}{
+				"name": alertItem.QueryFilterAsset.Name,
+				"id":   alertItem.QueryFilterAsset.ID,
+			},
+			"query_filter_attribute": map[string]interface{}{
+				"name": alertItem.QueryFilterAttribute.Name,
+				"id":   alertItem.QueryFilterAttribute.ID,
+			},
 		}
 	}
 	d.Set("alert_items", alertItemsOutput)
@@ -140,14 +154,22 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	}
 	alertItems := make([]client.AlertItem, len(alertItemInterfaceList))
 	for i, alertItemItem := range alertItemInterfaceList {
+		queryFilterAsset := alertItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]string)
+		queryFilterAttribute := alertItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]string)
 		alertItems[i] = client.AlertItem{
-			ID:                   alertItemItem["id"].(string),
-			RefID:                alertItemItem["ref_id"].(string),
-			Type:                 alertItemItem["type"].(string),
-			ExpressionPlain:      alertItemItem["expression_plain"].(string),
-			QueryPlain:           alertItemItem["query_plain"].(string),
-			QueryFilterAsset:     alertItemItem["query_filter_asset"].(string),
-			QueryFilterAttribute: alertItemItem["query_filter_attribute"].(string),
+			ID:              alertItemItem["id"].(string),
+			RefID:           alertItemItem["ref_id"].(string),
+			Type:            alertItemItem["type"].(string),
+			ExpressionPlain: alertItemItem["expression_plain"].(string),
+			QueryPlain:      alertItemItem["query_plain"].(string),
+			QueryFilterAsset: client.AlertTargetItem{
+				Name: queryFilterAsset["name"],
+				ID:   queryFilterAsset["id"],
+			},
+			QueryFilterAttribute: client.AlertTargetItem{
+				Name: queryFilterAttribute["name"],
+				ID:   queryFilterAsset["id"],
+			},
 		}
 	}
 
@@ -221,15 +243,21 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	}
 	d.Set("thresholds", alertThresholdsOutput)
 	alertItemsOutput := make([]map[string]interface{}, len(updateAlert.AlertItems))
-	for i, alertItemItem := range updateAlert.AlertItems {
+	for i, alertItem := range updateAlert.AlertItems {
 		alertItemsOutput[i] = map[string]interface{}{
-			"id":                     alertItemItem.ID,
-			"ref_id":                 alertItemItem.RefID,
-			"type":                   alertItemItem.Type,
-			"expression_plain":       alertItemItem.ExpressionPlain,
-			"query_plain":            alertItemItem.QueryPlain,
-			"query_filter_asset":     alertItemItem.QueryFilterAsset,
-			"query_filter_attribute": alertItemItem.QueryFilterAttribute,
+			"id":               alertItem.ID,
+			"ref_id":           alertItem.RefID,
+			"type":             alertItem.Type,
+			"expression_plain": alertItem.ExpressionPlain,
+			"query_plain":      alertItem.QueryPlain,
+			"query_filter_asset": map[string]interface{}{
+				"name": alertItem.QueryFilterAsset.Name,
+				"id":   alertItem.QueryFilterAsset.ID,
+			},
+			"query_filter_attribute": map[string]interface{}{
+				"name": alertItem.QueryFilterAttribute.Name,
+				"id":   alertItem.QueryFilterAttribute.ID,
+			},
 		}
 	}
 	d.Set("alert_items", alertItemsOutput)
@@ -251,15 +279,21 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 	}
 
 	alertItemsDict := make([]map[interface{}]interface{}, len(retrievedAlert.AlertItems))
-	for i, alertItemItem := range retrievedAlert.AlertItems {
+	for i, alertItem := range retrievedAlert.AlertItems {
 		alertItemsDict[i] = map[interface{}]interface{}{
-			"id":                     alertItemItem.ID,
-			"ref_id":                 alertItemItem.RefID,
-			"type":                   alertItemItem.Type,
-			"expression_plain":       alertItemItem.ExpressionPlain,
-			"query_plain":            alertItemItem.QueryPlain,
-			"query_filter_asset":     alertItemItem.QueryFilterAsset,
-			"query_filter_attribute": alertItemItem.QueryFilterAttribute,
+			"id":               alertItem.ID,
+			"ref_id":           alertItem.RefID,
+			"type":             alertItem.Type,
+			"expression_plain": alertItem.ExpressionPlain,
+			"query_plain":      alertItem.QueryPlain,
+			"query_filter_asset": map[string]interface{}{
+				"name": alertItem.QueryFilterAsset.Name,
+				"id":   alertItem.QueryFilterAsset.ID,
+			},
+			"query_filter_attribute": map[string]interface{}{
+				"name": alertItem.QueryFilterAttribute.Name,
+				"id":   alertItem.QueryFilterAttribute.ID,
+			},
 		}
 	}
 
