@@ -1,11 +1,5 @@
 package client
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-)
-
 type QueryFilter struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
@@ -41,91 +35,33 @@ type DashboardChartItem struct {
 }
 
 type DashboardChartParams struct {
-	Name          string                  `json:"name"`
-	Tab           string                  `json:"tab"`
-	Type          string                  `json:"type"`
-	TimestampGTE  string                  `json:"timestamp_gte"`
-	TimestampLTE  string                  `json:"timestamp_lte"`
-	Height        int                     `json:"height"`
-	Width         int                     `json:"width"`
-	Collection    string                  `json:"collection"`
-	ChartItems    []DashboardChartItem    `json:"chart_items"`
-	Thresholds    []DashboardThreshold    `json:"thresholds"`
-	ValueMappings []DashboardValueMapping `json:"value_mappings"`
+	Name               string                  `json:"name"`
+	Tab                string                  `json:"tab"`
+	Type               string                  `json:"type"`
+	Description        string                  `json:"description,omitempty"`
+	PositionX          int                     `json:"position_x,omitempty"`
+	PositionY          int                     `json:"position_y,omitempty"`
+	MinHeight          int                     `json:"min_height"`
+	MinWidth           int                     `json:"min_width"`
+	DisplayTimeRange   bool                    `json:"display_time_range"`
+	LabelsDisplay      bool                    `json:"labels_display"`
+	LabelsAggregation  string                  `json:"labels_aggregation"`
+	LabelsPlacement    string                  `json:"labels_placement"`
+	RefreshInterval    string                  `json:"refresh_interval,omitempty"`
+	RelativeWindowTime string                  `json:"relative_window_time,omitempty"`
+	ShowBeyondData     bool                    `json:"show_beyond_data"`
+	Timezone           string                  `json:"timezone,omitempty"`
+	TimestampGTE       string                  `json:"timestamp_gte"`
+	TimestampLTE       string                  `json:"timestamp_lte"`
+	Height             int                     `json:"height"`
+	Width              int                     `json:"width"`
+	Collection         string                  `json:"collection"`
+	ChartItems         []DashboardChartItem    `json:"chart_items"`
+	Thresholds         []DashboardThreshold    `json:"thresholds"`
+	ValueMappings      []DashboardValueMapping `json:"value_mappings"`
 }
 
 type DashboardChart struct {
 	DashboardChartParams
 	ID string `json:"id"`
-}
-
-func (c *Client) ListDashboardCharts() (*map[string]DashboardChart, error) {
-	body, err := c.httpRequest("v2/engine/dashboard/charts/", "GET", bytes.Buffer{})
-	if err != nil {
-		return nil, err
-	}
-	items := map[string]DashboardChart{}
-	err = json.NewDecoder(body).Decode(&items)
-	if err != nil {
-		return nil, err
-	}
-	return &items, nil
-}
-
-func (c *Client) CreateDashboardChart(item *DashboardChartParams) (*DashboardChart, error) {
-	buf := bytes.Buffer{}
-	err := json.NewEncoder(&buf).Encode(item)
-	if err != nil {
-		return nil, err
-	}
-	body, err := c.httpRequest("v2/engine/dashboard/charts/", "POST", buf)
-	if err != nil {
-		return nil, err
-	}
-
-	asset := &DashboardChart{}
-	err = json.NewDecoder(body).Decode(asset)
-	if err != nil {
-		return nil, err
-	}
-	return asset, nil
-}
-
-func (c *Client) UpdateDashboardChart(id string, item *DashboardChartParams) (*DashboardChart, error) {
-	buf := bytes.Buffer{}
-	err := json.NewEncoder(&buf).Encode(item)
-	if err != nil {
-		return nil, err
-	}
-	body, err := c.httpRequest(fmt.Sprintf("v2/engine/dashboard/charts/%s/", id), "PUT", buf)
-	if err != nil {
-		return nil, err
-	}
-	asset := &DashboardChart{}
-	err = json.NewDecoder(body).Decode(asset)
-	if err != nil {
-		return nil, err
-	}
-	return asset, nil
-}
-
-func (c *Client) RetrieveDashboardChart(id string) (*DashboardChart, error) {
-	body, err := c.httpRequest(fmt.Sprintf("v2/engine/dashboard/charts/%s/", id), "GET", bytes.Buffer{})
-	if err != nil {
-		return nil, err
-	}
-	asset := &DashboardChart{}
-	err = json.NewDecoder(body).Decode(asset)
-	if err != nil {
-		return nil, err
-	}
-	return asset, nil
-}
-
-func (c *Client) DeleteDashboardChart(id string) error {
-	_, err := c.httpRequest(fmt.Sprintf("v2/engine/dashboard/charts/%s/", id), "DELETE", bytes.Buffer{})
-	if err != nil {
-		return err
-	}
-	return nil
 }
