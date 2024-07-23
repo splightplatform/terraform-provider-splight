@@ -7,7 +7,7 @@ import (
 func QueryFilter() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeSet,
-		Optional:    true,
+		Required:    true,
 		Description: "Asset/Attribute filter",
 		Default:     nil,
 		MaxItems:    1,

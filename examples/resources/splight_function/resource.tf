@@ -21,6 +21,7 @@ resource "splight_function" "FunctionTest" {
     ref_id           = "A"
     type             = "QUERY"
     expression_plain = ""
+    # TODO: agregar qfasset y attr
     query_plain = jsonencode([
       {
         "$match" = {
@@ -35,6 +36,7 @@ resource "splight_function" "FunctionTest" {
     ref_id           = "B"
     type             = "QUERY"
     expression_plain = ""
+    # TODO: agregar qfasset y attr
     query_plain = jsonencode([
       {
         "$match" = {

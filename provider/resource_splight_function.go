@@ -52,13 +52,21 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 	}
 	functionItems := make([]client.FunctionItem, len(functionItemInterfaceList))
 	for i, functionItem := range functionItemInterfaceList {
+		queryFilterAsset := functionItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
+		queryFilterAttribute := functionItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
 		functionItems[i] = client.FunctionItem{
-			RefID:                functionItem["ref_id"].(string),
-			Type:                 functionItem["type"].(string),
-			ExpressionPlain:      functionItem["expression_plain"].(string),
-			QueryPlain:           functionItem["query_plain"].(string),
-			QueryFilterAsset:     functionItem["query_filter_asset"].(string),
-			QueryFilterAttribute: functionItem["query_filter_attribute"].(string),
+			RefID:           functionItem["ref_id"].(string),
+			Type:            functionItem["type"].(string),
+			ExpressionPlain: functionItem["expression_plain"].(string),
+			QueryPlain:      functionItem["query_plain"].(string),
+			QueryFilterAsset: client.FunctionTargetItem{
+				Name: queryFilterAsset["name"].(string),
+				ID:   queryFilterAsset["id"].(string),
+			},
+			QueryFilterAttribute: client.FunctionTargetItem{
+				Name: queryFilterAttribute["name"].(string),
+				ID:   queryFilterAsset["id"].(string),
+			},
 		}
 	}
 
@@ -109,13 +117,19 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 	functionItemsOutput := make([]map[string]interface{}, len(createdFunction.FunctionItems))
 	for i, functionItem := range createdFunction.FunctionItems {
 		functionItemsOutput[i] = map[string]interface{}{
-			"id":                     functionItem.ID,
-			"ref_id":                 functionItem.RefID,
-			"type":                   functionItem.Type,
-			"expression_plain":       functionItem.ExpressionPlain,
-			"query_plain":            functionItem.QueryPlain,
-			"query_filter_asset":     functionItem.QueryFilterAsset,
-			"query_filter_attribute": functionItem.QueryFilterAttribute,
+			"id":               functionItem.ID,
+			"ref_id":           functionItem.RefID,
+			"type":             functionItem.Type,
+			"expression_plain": functionItem.ExpressionPlain,
+			"query_plain":      functionItem.QueryPlain,
+			"query_filter_asset": map[string]interface{}{
+				"name": functionItem.QueryFilterAsset.Name,
+				"id":   functionItem.QueryFilterAsset.ID,
+			},
+			"query_filter_attribute": map[string]interface{}{
+				"name": functionItem.QueryFilterAttribute.Name,
+				"id":   functionItem.QueryFilterAttribute.ID,
+			},
 		}
 	}
 	d.Set("function_items", functionItemsOutput)
@@ -155,14 +169,22 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 	}
 	functionItems := make([]client.FunctionItem, len(functionItemInterfaceList))
 	for i, functionItem := range functionItemInterfaceList {
+		queryFilterAsset := functionItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
+		queryFilterAttribute := functionItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
 		functionItems[i] = client.FunctionItem{
-			ID:                   functionItem["id"].(string),
-			RefID:                functionItem["ref_id"].(string),
-			Type:                 functionItem["type"].(string),
-			ExpressionPlain:      functionItem["expression_plain"].(string),
-			QueryPlain:           functionItem["query_plain"].(string),
-			QueryFilterAsset:     functionItem["query_filter_asset"].(string),
-			QueryFilterAttribute: functionItem["query_filter_attribute"].(string),
+			ID:              functionItem["id"].(string),
+			RefID:           functionItem["ref_id"].(string),
+			Type:            functionItem["type"].(string),
+			ExpressionPlain: functionItem["expression_plain"].(string),
+			QueryPlain:      functionItem["query_plain"].(string),
+			QueryFilterAsset: client.FunctionTargetItem{
+				Name: queryFilterAsset["name"].(string),
+				ID:   queryFilterAsset["id"].(string),
+			},
+			QueryFilterAttribute: client.FunctionTargetItem{
+				Name: queryFilterAttribute["name"].(string),
+				ID:   queryFilterAsset["id"].(string),
+			},
 		}
 	}
 
@@ -210,13 +232,19 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 	functionItemsOutput := make([]map[string]interface{}, len(updatedFunction.FunctionItems))
 	for i, functionItem := range updatedFunction.FunctionItems {
 		functionItemsOutput[i] = map[string]interface{}{
-			"id":                     functionItem.ID,
-			"ref_id":                 functionItem.RefID,
-			"type":                   functionItem.Type,
-			"expression_plain":       functionItem.ExpressionPlain,
-			"query_plain":            functionItem.QueryPlain,
-			"query_filter_asset":     functionItem.QueryFilterAsset,
-			"query_filter_attribute": functionItem.QueryFilterAttribute,
+			"id":               functionItem.ID,
+			"ref_id":           functionItem.RefID,
+			"type":             functionItem.Type,
+			"expression_plain": functionItem.ExpressionPlain,
+			"query_plain":      functionItem.QueryPlain,
+			"query_filter_asset": map[string]interface{}{
+				"name": functionItem.QueryFilterAsset.Name,
+				"id":   functionItem.QueryFilterAsset.ID,
+			},
+			"query_filter_attribute": map[string]interface{}{
+				"name": functionItem.QueryFilterAttribute.Name,
+				"id":   functionItem.QueryFilterAttribute.ID,
+			},
 		}
 	}
 	d.Set("function_items", functionItemsOutput)
@@ -240,13 +268,19 @@ func resourceReadFunction(d *schema.ResourceData, m interface{}) error {
 	functionItemsDict := make([]map[interface{}]interface{}, len(retrievedFunction.FunctionItems))
 	for i, functionItem := range retrievedFunction.FunctionItems {
 		functionItemsDict[i] = map[interface{}]interface{}{
-			"id":                     functionItem.ID,
-			"ref_id":                 functionItem.RefID,
-			"type":                   functionItem.Type,
-			"expression_plain":       functionItem.ExpressionPlain,
-			"query_plain":            functionItem.QueryPlain,
-			"query_filter_asset":     functionItem.QueryFilterAsset,
-			"query_filter_attribute": functionItem.QueryFilterAttribute,
+			"id":               functionItem.ID,
+			"ref_id":           functionItem.RefID,
+			"type":             functionItem.Type,
+			"expression_plain": functionItem.ExpressionPlain,
+			"query_plain":      functionItem.QueryPlain,
+			"query_filter_asset": map[string]interface{}{
+				"name": functionItem.QueryFilterAsset.Name,
+				"id":   functionItem.QueryFilterAsset.ID,
+			},
+			"query_filter_attribute": map[string]interface{}{
+				"name": functionItem.QueryFilterAttribute.Name,
+				"id":   functionItem.QueryFilterAttribute.ID,
+			},
 		}
 	}
 

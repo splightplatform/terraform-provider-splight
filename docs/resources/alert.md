@@ -44,12 +44,14 @@ resource "splight_alert" "AlertTest" {
         }
       }
     ])
+    # TODO: agregar qfasset y attr
   }
 
   alert_items {
     ref_id           = "B"
     type             = "QUERY"
     expression_plain = ""
+    # TODO: agregar qfasset y attr
     query_plain = jsonencode([
       {
         "$match" = {
@@ -104,6 +106,8 @@ resource "splight_alert" "AlertTest" {
 Required:
 
 - `expression_plain` (String)
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--alert_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--alert_items--query_filter_attribute))
 - `query_plain` (String)
 - `ref_id` (String)
 - `type` (String)
@@ -111,6 +115,24 @@ Required:
 Read-Only:
 
 - `id` (String) optional id
+
+<a id="nestedblock--alert_items--query_filter_asset"></a>
+### Nested Schema for `alert_items.query_filter_asset`
+
+Required:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+
+
+<a id="nestedblock--alert_items--query_filter_attribute"></a>
+### Nested Schema for `alert_items.query_filter_attribute`
+
+Required:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+
 
 
 <a id="nestedblock--thresholds"></a>

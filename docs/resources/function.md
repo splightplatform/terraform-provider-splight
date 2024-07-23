@@ -36,6 +36,7 @@ resource "splight_function" "FunctionTest" {
     ref_id           = "A"
     type             = "QUERY"
     expression_plain = ""
+    # TODO: agregar qfasset y attr
     query_plain = jsonencode([
       {
         "$match" = {
@@ -50,6 +51,7 @@ resource "splight_function" "FunctionTest" {
     ref_id           = "B"
     type             = "QUERY"
     expression_plain = ""
+    # TODO: agregar qfasset y attr
     query_plain = jsonencode([
       {
         "$match" = {
@@ -70,8 +72,8 @@ resource "splight_function" "FunctionTest" {
 - `description` (String) The description of the resource
 - `function_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--function_items))
 - `name` (String) The name of the resource
-- `target_asset` (Block Set, Min: 1, Max: 1) asset where to ingest results (see [below for nested schema](#nestedblock--target_asset))
-- `target_attribute` (Block Set, Min: 1, Max: 1) attribute where to ingest results (see [below for nested schema](#nestedblock--target_attribute))
+- `target_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_asset))
+- `target_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
 - `target_variable` (String) variable to be considered to be ingested
 - `time_window` (Number) window to fetch data from. Data out of that window will not be considered for evaluation
 - `type` (String) [cron|rate] type for the cron
@@ -97,13 +99,33 @@ resource "splight_function" "FunctionTest" {
 Required:
 
 - `expression_plain` (String)
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
 - `query_plain` (String)
 - `ref_id` (String)
 - `type` (String)
 
 Read-Only:
 
-- `id` (String) optional id
+- `id` (String) id of the function item
+
+<a id="nestedblock--function_items--query_filter_asset"></a>
+### Nested Schema for `function_items.query_filter_asset`
+
+Required:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+
+
+<a id="nestedblock--function_items--query_filter_attribute"></a>
+### Nested Schema for `function_items.query_filter_attribute`
+
+Required:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+
 
 
 <a id="nestedblock--target_asset"></a>
@@ -111,8 +133,8 @@ Read-Only:
 
 Required:
 
-- `id` (String) id
-- `name` (String) name
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
 
 
 <a id="nestedblock--target_attribute"></a>
@@ -120,8 +142,8 @@ Required:
 
 Required:
 
-- `id` (String) id
-- `name` (String) name
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
 
 ## Import
 

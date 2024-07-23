@@ -29,12 +29,14 @@ resource "splight_alert" "AlertTest" {
         }
       }
     ])
+    # TODO: agregar qfasset y attr
   }
 
   alert_items {
     ref_id           = "B"
     type             = "QUERY"
     expression_plain = ""
+    # TODO: agregar qfasset y attr
     query_plain = jsonencode([
       {
         "$match" = {
