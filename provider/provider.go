@@ -33,6 +33,7 @@ func Provider() *schema.Provider {
 			"splight_dashboard_timeseries_chart": resourceDashboardTimeseriesChart(),
 			"splight_dashboard_histogram_chart":  resourceDashboardHistogramChart(),
 			"splight_dashboard_image_chart":      resourceDashboardImageChart(),
+			"splight_dashboard_bargauge_chart":   resourceDashboardBarGaugeChart(),
 			"splight_file":                       resourceFile(),
 			"splight_file_folder":                resourceFileFolder(),
 			"splight_function":                   resourceFunction(),
