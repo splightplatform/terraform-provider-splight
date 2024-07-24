@@ -82,37 +82,6 @@ func schemaFunction() map[string]*schema.Schema {
 		},
 		"target_asset":     QueryFilter(),
 		"target_attribute": QueryFilter(),
-		"function_items": {
-			Type:        schema.TypeList,
-			Required:    true,
-			Description: "traces to be used to compute the results",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Computed:    true,
-						Description: "id of the function item",
-					},
-					"ref_id": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"type": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"expression_plain": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_plain": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_filter_asset":     QueryFilter(),
-					"query_filter_attribute": QueryFilter(),
-				},
-			},
-		},
+		"function_items":   Trace(),
 	}
 }

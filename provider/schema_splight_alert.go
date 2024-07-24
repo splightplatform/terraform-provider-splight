@@ -121,38 +121,7 @@ func schemaAlert() map[string]*schema.Schema {
 			Description: "variable to be used to compare with thresholds",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
-		"alert_items": {
-			Type:        schema.TypeList,
-			Required:    true,
-			Description: "variables to be calculated for a complex comparisson.",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Computed:    true,
-						Description: "optional id",
-					},
-					"ref_id": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"type": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"expression_plain": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_plain": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_filter_asset":     QueryFilter(),
-					"query_filter_attribute": QueryFilter(),
-				},
-			},
-		},
+		"alert_items": Trace(),
 		"related_assets": {
 			Type:        schema.TypeSet,
 			Optional:    true,
