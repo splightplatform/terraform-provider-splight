@@ -6,12 +6,6 @@ import (
 
 func schemaDashboardTimeseriesChart() map[string]*schema.Schema {
 	outputSchema := schemaDashboardChart()
-	outputSchema["type"] = &schema.Schema{
-		Type:        schema.TypeString,
-		Optional:    true,
-		Default:     "timeseries",
-		Description: "[timeseries|bargauge|..] chart type",
-	}
 	outputSchema["y_axis_max_limit"] = &schema.Schema{
 		Type:        schema.TypeInt,
 		Optional:    true,
@@ -57,6 +51,7 @@ func schemaDashboardTimeseriesChart() map[string]*schema.Schema {
 	outputSchema["timeseries_type"] = &schema.Schema{
 		Type:        schema.TypeString,
 		Optional:    true,
+		Default:     "line",
 		Description: "[line|bar] timeseries type",
 	}
 	outputSchema["fill"] = &schema.Schema{

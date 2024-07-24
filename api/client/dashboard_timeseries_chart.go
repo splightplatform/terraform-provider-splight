@@ -8,6 +8,7 @@ import (
 
 type DashboardTimeseriesChartParams struct {
 	DashboardChartParams
+	Type                   string `json:"type"`
 	YAxisMaxLimit          int    `json:"y_axis_max_limit,omitempty"`
 	YAxisMinLimit          int    `json:"y_axis_min_limit,omitempty"`
 	YAxisUnit              string `json:"y_axis_unit,omitempty"`

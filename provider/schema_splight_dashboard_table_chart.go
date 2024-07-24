@@ -6,12 +6,6 @@ import (
 
 func schemaDashboardTableChart() map[string]*schema.Schema {
 	outputSchema := schemaDashboardChart()
-	outputSchema["type"] = &schema.Schema{
-		Type:        schema.TypeString,
-		Optional:    true,
-		Default:     "table",
-		Description: "[timeseries|bargauge|..] chart type",
-	}
 	outputSchema["y_axis_unit"] = &schema.Schema{
 		Type:        schema.TypeString,
 		Optional:    true,

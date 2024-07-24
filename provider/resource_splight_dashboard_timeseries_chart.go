@@ -8,6 +8,8 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 )
 
+var timeseriesType string = "timeseries"
+
 func resourceDashboardTimeseriesChart() *schema.Resource {
 	return &schema.Resource{
 		Schema: schemaDashboardTimeseriesChart(),
@@ -28,6 +30,7 @@ func resourceCreateDashboardTimeseriesChart(d *schema.ResourceData, m interface{
 	DashboardChartParams := getDashboardChartParams(d)
 	item := client.DashboardTimeseriesChartParams{
 		DashboardChartParams:   DashboardChartParams,
+		Type:                   timeseriesType,
 		YAxisMaxLimit:          d.Get("y_axis_max_limit").(int),
 		YAxisMinLimit:          d.Get("y_axis_min_limit").(int),
 		YAxisUnit:              d.Get("y_axis_unit").(string),
@@ -57,6 +60,7 @@ func resourceUpdateDashboardTimeseriesChart(d *schema.ResourceData, m interface{
 	DashboardChartParams := getDashboardChartParams(d)
 	item := client.DashboardTimeseriesChartParams{
 		DashboardChartParams:   DashboardChartParams,
+		Type:                   timeseriesType,
 		YAxisMaxLimit:          d.Get("y_axis_max_limit").(int),
 		YAxisMinLimit:          d.Get("y_axis_min_limit").(int),
 		YAxisUnit:              d.Get("y_axis_unit").(string),

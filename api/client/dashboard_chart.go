@@ -37,7 +37,6 @@ type DashboardChartItem struct {
 type DashboardChartParams struct {
 	Name               string                  `json:"name"`
 	Tab                string                  `json:"tab"`
-	Type               string                  `json:"type"`
 	Description        string                  `json:"description,omitempty"`
 	PositionX          int                     `json:"position_x,omitempty"`
 	PositionY          int                     `json:"position_y,omitempty"`

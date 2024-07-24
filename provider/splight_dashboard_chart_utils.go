@@ -5,10 +5,6 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 )
 
-type DashboardChartParamsInterface interface {
-	client.DashboardTableChart
-}
-
 func getDashboardChartParams(d *schema.ResourceData) client.DashboardChartParams {
 	chartItemInterface := d.Get("chart_items").(*schema.Set).List()
 	chartItemInterfaceList := make([]map[string]interface{}, len(chartItemInterface))
@@ -83,7 +79,6 @@ func getDashboardChartParams(d *schema.ResourceData) client.DashboardChartParams
 	return client.DashboardChartParams{
 		Name:               d.Get("name").(string),
 		Tab:                d.Get("tab").(string),
-		Type:               d.Get("type").(string),
 		Description:        d.Get("description").(string),
 		PositionX:          d.Get("position_x").(int),
 		PositionY:          d.Get("position_y").(int),

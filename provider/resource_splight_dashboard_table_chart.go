@@ -8,6 +8,8 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 )
 
+var tableType string = "table"
+
 func resourceDashboardTableChart() *schema.Resource {
 	return &schema.Resource{
 		Schema: schemaDashboardTableChart(),
@@ -28,6 +30,7 @@ func resourceCreateDashboardTableChart(d *schema.ResourceData, m interface{}) er
 	DashboardChartParams := getDashboardChartParams(d)
 	item := client.DashboardTableChartParams{
 		DashboardChartParams: DashboardChartParams,
+		Type:                 tableType,
 		YAxisUnit:            d.Get("y_axis_unit").(string),
 		NumberOfDecimals:     d.Get("number_of_decimals").(int),
 	}
@@ -48,6 +51,7 @@ func resourceUpdateDashboardTableChart(d *schema.ResourceData, m interface{}) er
 	DashboardChartParams := getDashboardChartParams(d)
 	item := client.DashboardTableChartParams{
 		DashboardChartParams: DashboardChartParams,
+		Type:                 tableType,
 		YAxisUnit:            d.Get("y_axis_unit").(string),
 		NumberOfDecimals:     d.Get("number_of_decimals").(int),
 	}
