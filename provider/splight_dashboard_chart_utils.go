@@ -14,19 +14,19 @@ func getDashboardChartParams(d *schema.ResourceData) client.DashboardChartParams
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
 
-		var filter_asset_value *client.QueryFilter
-		var filter_attr_value *client.QueryFilter
+		var filter_asset_value client.QueryFilter
+		var filter_attr_value client.QueryFilter
 
 		if chartItemItem["query_filter_asset"].(*schema.Set).Len() > 0 {
 			filter_asset_item := chartItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
-			filter_asset_value = &client.QueryFilter{
+			filter_asset_value = client.QueryFilter{
 				Id:   filter_asset_item["id"].(string),
 				Name: filter_asset_item["name"].(string),
 			}
 		}
 		if chartItemItem["query_filter_attribute"].(*schema.Set).Len() > 0 {
 			filter_attr_item := chartItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
-			filter_attr_value = &client.QueryFilter{
+			filter_attr_value = client.QueryFilter{
 				Id:   filter_attr_item["id"].(string),
 				Name: filter_attr_item["name"].(string),
 			}
