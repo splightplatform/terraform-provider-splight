@@ -22,44 +22,17 @@ func resourceFunction() *schema.Resource {
 	}
 }
 
-func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
+func toFunction(d *schema.ResourceData) *client.FunctionParams {
+	// Convert target asset
+	targetAsset := convertFunctionTargetItem(d.Get("target_asset").(*schema.Set).List())
 
-	valueList := d.Get("target_asset").(*schema.Set).List()
-	var targetAsset client.FunctionTargetItem
-	for _, value := range valueList {
-		valueData := value.(map[string]interface{})
-		targetAsset = client.FunctionTargetItem{
-			Name: valueData["name"].(string),
-			ID:   valueData["id"].(string),
-		}
-	}
+	// Convert target attribute
+	targetAttribute := convertFunctionTargetItem(d.Get("target_attribute").(*schema.Set).List())
 
-	valueList = d.Get("target_attribute").(*schema.Set).List()
-	var targetAttribute client.FunctionTargetItem
-	for _, value := range valueList {
-		valueData := value.(map[string]interface{})
-		targetAttribute = client.FunctionTargetItem{
-			Name: valueData["name"].(string),
-			ID:   valueData["id"].(string),
-		}
-	}
+	// Convert function items
+	functionItems := convertFunctionItems(d.Get("function_items").([]interface{}))
 
-	functionItemInterface := d.Get("function_items").([]interface{})
-	functionItemInterfaceList := make([]map[string]interface{}, len(functionItemInterface))
-	for i, functionItemInterfaceItem := range functionItemInterface {
-		functionItemInterfaceList[i] = functionItemInterfaceItem.(map[string]interface{})
-	}
-	functionItems := make([]client.FunctionItem, len(functionItemInterfaceList))
-	for i, functionItemItem := range functionItemInterfaceList {
-		functionItems[i] = client.FunctionItem{
-			RefID:           functionItemItem["ref_id"].(string),
-			Type:            functionItemItem["type"].(string),
-			ExpressionPlain: functionItemItem["expression_plain"].(string),
-			QueryPlain:      functionItemItem["query_plain"].(string),
-		}
-	}
-
+	// Create the FunctionParams object
 	item := client.FunctionParams{
 		Name:            d.Get("name").(string),
 		Description:     d.Get("description").(string),
@@ -73,48 +46,82 @@ func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
 		FunctionItems:   functionItems,
 	}
 
-	createdFunction, err := apiClient.CreateFunction(&item)
-	if err != nil {
-		return err
-	}
+	return &item
+}
 
-	d.SetId(createdFunction.ID)
-	d.Set("name", createdFunction.Name)
-	d.Set("description", createdFunction.Description)
-	d.Set("type", createdFunction.Type)
-	d.Set("time_window", createdFunction.TimeWindow)
+func convertFunctionTargetItem(targetItemList []interface{}) client.FunctionTargetItem {
+	if len(targetItemList) == 0 {
+		return client.FunctionTargetItem{}
+	}
+	valueData := targetItemList[0].(map[string]interface{})
+	return client.FunctionTargetItem{
+		Name: valueData["name"].(string),
+		ID:   valueData["id"].(string),
+	}
+}
 
-	targetAssetOutput := make([]map[string]interface{}, 1)
-	targetAssetOutput[0] = map[string]interface{}{
-		"name": createdFunction.TargetAsset.Name,
-		"id":   createdFunction.TargetAsset.ID,
-	}
-	targetAttributeOutput := make([]map[string]interface{}, 1)
-	targetAttributeOutput[0] = map[string]interface{}{
-		"name": createdFunction.TargetAttribute.Name,
-		"id":   createdFunction.TargetAttribute.ID,
-	}
-	d.Set("target_asset", targetAssetOutput)
-	d.Set("target_attribute", targetAttributeOutput)
-	d.Set("rate_unit", createdFunction.RateUnit)
-	d.Set("rate_value", createdFunction.RateValue)
-	d.Set("cron_minutes", createdFunction.CronMinutes)
-	d.Set("cron_hours", createdFunction.CronHours)
-	d.Set("cron_dom", createdFunction.CronDOM)
-	d.Set("cron_month", createdFunction.CronMonth)
-	d.Set("cron_dow", createdFunction.CronDOW)
-	d.Set("cron_year", createdFunction.CronYear)
-	functionItemsOutput := make([]map[string]interface{}, len(createdFunction.FunctionItems))
-	for i, functionItemItem := range createdFunction.FunctionItems {
-		functionItemsOutput[i] = map[string]interface{}{
-			"id":               functionItemItem.ID,
-			"ref_id":           functionItemItem.RefID,
-			"type":             functionItemItem.Type,
-			"expression_plain": functionItemItem.ExpressionPlain,
-			"query_plain":      functionItemItem.QueryPlain,
+func convertFunctionItems(functionItemsInterface []interface{}) []client.FunctionItem {
+	functionItems := make([]client.FunctionItem, len(functionItemsInterface))
+	for i, item := range functionItemsInterface {
+		functionItem := item.(map[string]interface{})
+		queryFilterAsset := functionItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
+		queryFilterAttribute := functionItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+		functionItems[i] = client.FunctionItem{
+			RefID:           functionItem["ref_id"].(string),
+			Type:            functionItem["type"].(string),
+			Expression:      functionItem["expression"].(string),
+			ExpressionPlain: functionItem["expression_plain"].(string),
+			QueryPlain:      functionItem["query_plain"].(string),
+			QueryFilterAsset: client.FunctionTargetItem{
+				Name: queryFilterAsset["name"].(string),
+				ID:   queryFilterAsset["id"].(string),
+			},
+			QueryFilterAttribute: client.FunctionTargetItem{
+				Name: queryFilterAttribute["name"].(string),
+				ID:   queryFilterAttribute["id"].(string),
+			},
 		}
 	}
-	d.Set("function_items", functionItemsOutput)
+	return functionItems
+}
+
+func saveFunctionToState(d *schema.ResourceData, function *client.Function) {
+	d.SetId(function.ID)
+
+	d.Set("name", function.Name)
+	d.Set("description", function.Description)
+	d.Set("type", function.Type)
+	d.Set("time_window", function.TimeWindow)
+
+	// Since the schemas for these params are 'TypeSet' we must convert
+	// our structs to a slice of 'FunctionTargetItem'.
+	// Otherwise the SDK will raise a type error.
+	d.Set("target_asset", []client.FunctionTargetItem{function.TargetAsset})
+	d.Set("target_attribute", []client.FunctionTargetItem{function.TargetAttribute})
+
+	d.Set("rate_unit", function.RateUnit)
+	d.Set("rate_value", function.RateValue)
+	d.Set("cron_minutes", function.CronMinutes)
+	d.Set("cron_hours", function.CronHours)
+	d.Set("cron_dom", function.CronDOM)
+	d.Set("cron_month", function.CronMonth)
+	d.Set("cron_dow", function.CronDOW)
+	d.Set("cron_year", function.CronYear)
+	d.Set("function_items", function.FunctionItems)
+}
+
+func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {
+	apiClient := m.(*client.Client)
+
+	item := toFunction(d)
+
+	createdFunction, err := apiClient.CreateFunction(item)
+
+	if err != nil {
+		return fmt.Errorf("error creating Function %s", err.Error())
+	}
+
+	saveFunctionToState(d, createdFunction)
 
 	return nil
 }
@@ -124,94 +131,15 @@ func resourceUpdateFunction(d *schema.ResourceData, m interface{}) error {
 
 	itemId := d.Id()
 
-	valueList := d.Get("target_asset").(*schema.Set).List()
-	var targetAsset client.FunctionTargetItem
-	for _, value := range valueList {
-		valueData := value.(map[string]interface{})
-		targetAsset = client.FunctionTargetItem{
-			Name: valueData["name"].(string),
-			ID:   valueData["id"].(string),
-		}
-	}
+	item := toFunction(d)
 
-	valueList = d.Get("target_attribute").(*schema.Set).List()
-	var targetAttribute client.FunctionTargetItem
-	for _, value := range valueList {
-		valueData := value.(map[string]interface{})
-		targetAttribute = client.FunctionTargetItem{
-			Name: valueData["name"].(string),
-			ID:   valueData["id"].(string),
-		}
-	}
+	updatedFunction, err := apiClient.UpdateFunction(itemId, item)
 
-	functionItemInterface := d.Get("function_items").([]interface{})
-	functionItemInterfaceList := make([]map[string]interface{}, len(functionItemInterface))
-	for i, functionItemInterfaceItem := range functionItemInterface {
-		functionItemInterfaceList[i] = functionItemInterfaceItem.(map[string]interface{})
-	}
-	functionItems := make([]client.FunctionItem, len(functionItemInterfaceList))
-	for i, functionItemItem := range functionItemInterfaceList {
-		functionItems[i] = client.FunctionItem{
-			ID:              functionItemItem["id"].(string),
-			RefID:           functionItemItem["ref_id"].(string),
-			Type:            functionItemItem["type"].(string),
-			ExpressionPlain: functionItemItem["expression_plain"].(string),
-			QueryPlain:      functionItemItem["query_plain"].(string),
-		}
-	}
-
-	item := client.FunctionParams{
-		Name:            d.Get("name").(string),
-		Description:     d.Get("description").(string),
-		Type:            d.Get("type").(string),
-		TimeWindow:      d.Get("time_window").(int),
-		RateUnit:        d.Get("rate_unit").(string),
-		RateValue:       d.Get("rate_value").(int),
-		TargetVariable:  d.Get("target_variable").(string),
-		TargetAsset:     targetAsset,
-		TargetAttribute: targetAttribute,
-		FunctionItems:   functionItems,
-	}
-	updatedFunction, err := apiClient.UpdateFunction(itemId, &item)
 	if err != nil {
-		return err
+		return fmt.Errorf("error updating Function with ID '%s': %s", itemId, err.Error())
 	}
 
-	d.Set("name", updatedFunction.Name)
-	d.Set("description", updatedFunction.Description)
-	d.Set("type", updatedFunction.Type)
-	d.Set("time_window", updatedFunction.TimeWindow)
-	targetAssetOutput := make([]map[string]interface{}, 1)
-	targetAssetOutput[0] = map[string]interface{}{
-		"name": updatedFunction.TargetAsset.Name,
-		"id":   updatedFunction.TargetAsset.ID,
-	}
-	targetAttributeOutput := make([]map[string]interface{}, 1)
-	targetAttributeOutput[0] = map[string]interface{}{
-		"name": updatedFunction.TargetAttribute.Name,
-		"id":   updatedFunction.TargetAttribute.ID,
-	}
-	d.Set("target_asset", targetAssetOutput)
-	d.Set("target_attribute", targetAttributeOutput)
-	d.Set("rate_unit", updatedFunction.RateUnit)
-	d.Set("rate_value", updatedFunction.RateValue)
-	d.Set("cron_minutes", updatedFunction.CronMinutes)
-	d.Set("cron_hours", updatedFunction.CronHours)
-	d.Set("cron_dom", updatedFunction.CronDOM)
-	d.Set("cron_month", updatedFunction.CronMonth)
-	d.Set("cron_dow", updatedFunction.CronDOW)
-	d.Set("cron_year", updatedFunction.CronYear)
-	functionItemsOutput := make([]map[string]interface{}, len(updatedFunction.FunctionItems))
-	for i, functionItemItem := range updatedFunction.FunctionItems {
-		functionItemsOutput[i] = map[string]interface{}{
-			"id":               functionItemItem.ID,
-			"ref_id":           functionItemItem.RefID,
-			"type":             functionItemItem.Type,
-			"expression_plain": functionItemItem.ExpressionPlain,
-			"query_plain":      functionItemItem.QueryPlain,
-		}
-	}
-	d.Set("function_items", functionItemsOutput)
+	saveFunctionToState(d, updatedFunction)
 
 	return nil
 }
@@ -220,56 +148,15 @@ func resourceReadFunction(d *schema.ResourceData, m interface{}) error {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
 	retrievedFunction, err := apiClient.RetrieveFunction(itemId)
+
 	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			d.SetId("")
-		} else {
-			return fmt.Errorf("error finding Function with ID %s", itemId)
-		}
+		return fmt.Errorf("error reading Function with ID '%s': %s", itemId, err.Error())
 	}
 
-	functionItemsDict := make([]map[interface{}]interface{}, len(retrievedFunction.FunctionItems))
-	for i, functionItemItem := range retrievedFunction.FunctionItems {
-		functionItemsDict[i] = map[interface{}]interface{}{
-			"id":               functionItemItem.ID,
-			"ref_id":           functionItemItem.RefID,
-			"type":             functionItemItem.Type,
-			"expression_plain": functionItemItem.ExpressionPlain,
-			"query_plain":      functionItemItem.QueryPlain,
-		}
-	}
+	saveFunctionToState(d, retrievedFunction)
 
-	targetAsset := make([]map[string]string, 1)
-	targetAsset[0] = map[string]string{
-		"name": retrievedFunction.TargetAsset.Name,
-		"id":   retrievedFunction.TargetAsset.ID,
-	}
-
-	targetAttribute := make([]map[string]string, 1)
-	targetAttribute[0] = map[string]string{
-		"name": retrievedFunction.TargetAttribute.Name,
-		"id":   retrievedFunction.TargetAttribute.ID,
-	}
-
-	d.SetId(retrievedFunction.ID)
-	d.Set("name", retrievedFunction.Name)
-	d.Set("description", retrievedFunction.Description)
-	d.Set("name", retrievedFunction.Name)
-	d.Set("description", retrievedFunction.Description)
-	d.Set("type", retrievedFunction.Type)
-	d.Set("time_window", retrievedFunction.TimeWindow)
-	d.Set("target_asset", targetAsset)
-	d.Set("target_attribute", targetAttribute)
-	d.Set("rate_unit", retrievedFunction.RateUnit)
-	d.Set("rate_value", retrievedFunction.RateValue)
-	d.Set("cron_minutes", retrievedFunction.CronMinutes)
-	d.Set("cron_hours", retrievedFunction.CronHours)
-	d.Set("cron_dom", retrievedFunction.CronDOM)
-	d.Set("cron_month", retrievedFunction.CronMonth)
-	d.Set("cron_dow", retrievedFunction.CronDOW)
-	d.Set("cron_year", retrievedFunction.CronYear)
-	d.Set("function_items", functionItemsDict)
 	return nil
 }
 
@@ -279,10 +166,13 @@ func resourceDeleteFunction(d *schema.ResourceData, m interface{}) error {
 	itemId := d.Id()
 
 	err := apiClient.DeleteFunction(itemId)
+
 	if err != nil {
-		return err
+		return fmt.Errorf("error deleting Function with ID '%s': %s", itemId, err.Error())
 	}
+
 	d.SetId("")
+
 	return nil
 }
 
@@ -290,13 +180,16 @@ func resourceExistsFunction(d *schema.ResourceData, m interface{}) (bool, error)
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
 	_, err := apiClient.RetrieveFunction(itemId)
+
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			return false, nil
 		} else {
-			return false, err
+			return false, fmt.Errorf("error finding Function with ID '%s': %s", itemId, err.Error())
 		}
 	}
+
 	return true, nil
 }

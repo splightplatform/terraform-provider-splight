@@ -7,16 +7,45 @@ import (
 )
 
 type FunctionItem struct {
-	ID              string `json:"id,omitempty"`
-	RefID           string `json:"ref_id"`
-	Type            string `json:"type"`
-	ExpressionPlain string `json:"expression_plain"`
-	QueryPlain      string `json:"query_plain"`
+	ID                   string             `json:"id,omitempty"`
+	RefID                string             `json:"ref_id"`
+	Type                 string             `json:"type"`
+	Expression           string             `json:"expression"`
+	ExpressionPlain      string             `json:"expression_plain"`
+	QueryPlain           string             `json:"query_plain"`
+	QueryFilterAsset     FunctionTargetItem `json:"query_filter_asset"`
+	QueryFilterAttribute FunctionTargetItem `json:"query_filter_attribute"`
 }
 
 type FunctionTargetItem struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+}
+
+// Implement custom JSON marshalling to omit the struct if both fields are empty
+func (fti FunctionTargetItem) MarshalJSON() ([]byte, error) {
+	if fti.ID == "" && fti.Name == "" {
+		return []byte("null"), nil
+	}
+	type Alias FunctionTargetItem
+	return json.Marshal((Alias)(fti))
+}
+
+// Implement custom JSON unmarshalling to initialize the struct if the field is null
+func (fti *FunctionTargetItem) UnmarshalJSON(data []byte) error {
+	type Alias FunctionTargetItem
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(fti),
+	}
+
+	if string(data) == "null" {
+		*fti = FunctionTargetItem{}
+		return nil
+	}
+
+	return json.Unmarshal(data, &aux)
 }
 
 type FunctionParams struct {

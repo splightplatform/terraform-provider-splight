@@ -80,75 +80,8 @@ func schemaFunction() map[string]*schema.Schema {
 			Description: "variable to be considered to be ingested",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
-		"target_asset": {
-			Type:        schema.TypeSet,
-			Required:    true,
-			MaxItems:    1,
-			Description: "asset where to ingest results",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "id",
-					},
-					"name": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "name",
-					},
-				},
-			},
-		},
-		"target_attribute": {
-			Type:        schema.TypeSet,
-			Required:    true,
-			MaxItems:    1,
-			Description: "attribute where to ingest results",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "id",
-					},
-					"name": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "name",
-					},
-				},
-			},
-		},
-		"function_items": {
-			Type:        schema.TypeList,
-			Required:    true,
-			Description: "traces to be used to compute the results",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Computed:    true,
-						Description: "optional id",
-					},
-					"ref_id": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"type": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"expression_plain": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-					"query_plain": {
-						Type:     schema.TypeString,
-						Required: true,
-					},
-				},
-			},
-		},
+		"target_asset":     QueryFilter(),
+		"target_attribute": QueryFilter(),
+		"function_items":   Trace(),
 	}
 }
