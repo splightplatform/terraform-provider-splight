@@ -7,16 +7,45 @@ import (
 )
 
 type AlertItem struct {
-	ID              string `json:"id,omitempty"`
-	RefID           string `json:"ref_id"`
-	Type            string `json:"type"`
-	ExpressionPlain string `json:"expression_plain"`
-	QueryPlain      string `json:"query_plain"`
+	ID                   string          `json:"id,omitempty"`
+	RefID                string          `json:"ref_id"`
+	Type                 string          `json:"type"`
+	Expression           string          `json:"expression"`
+	ExpressionPlain      string          `json:"expression_plain"`
+	QueryPlain           string          `json:"query_plain"`
+	QueryFilterAsset     AlertTargetItem `json:"query_filter_asset"`
+	QueryFilterAttribute AlertTargetItem `json:"query_filter_attribute"`
 }
 
 type AlertTargetItem struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+}
+
+// Implement custom JSON marshalling to omit the struct if both fields are empty
+func (ati AlertTargetItem) MarshalJSON() ([]byte, error) {
+	if ati.ID == "" && ati.Name == "" {
+		return []byte("null"), nil
+	}
+	type Alias AlertTargetItem
+	return json.Marshal((Alias)(ati))
+}
+
+// Implement custom JSON unmarshalling to initialize the struct if the field is null
+func (ati *AlertTargetItem) UnmarshalJSON(data []byte) error {
+	type Alias AlertTargetItem
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(ati),
+	}
+
+	if string(data) == "null" {
+		*ati = AlertTargetItem{}
+		return nil
+	}
+
+	return json.Unmarshal(data, &aux)
 }
 
 type AlertThreshold struct {

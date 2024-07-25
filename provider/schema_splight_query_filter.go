@@ -15,12 +15,12 @@ func QueryFilter() *schema.Schema {
 			Schema: map[string]*schema.Schema{
 				"id": {
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Description: "ID of the resource",
 				},
 				"name": {
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Description: "name of the resource",
 				},
 			},

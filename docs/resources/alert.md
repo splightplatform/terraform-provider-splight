@@ -13,56 +13,80 @@ description: |-
 ## Example Usage
 
 ```terraform
-resource "splight_alert" "AlertTest" {
-  name        = "AlertTest"
-  description = "Created with Terraform"
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
+  }
+}
+
+resource "splight_asset" "my_asset" {
+  name        = "My Asset"
+  description = "My Asset Description"
+  geometry = jsonencode({
+    type = "GeometryCollection"
+    geometries = [
+      {
+        type        = "Point"
+        coordinates = [0, 0]
+      }
+    ]
+  })
+}
+
+resource "splight_asset_attribute" "my_attribute" {
+  name  = "My Attribute"
+  type  = "Number"
+  asset = splight_asset.my_asset.id
+}
+
+resource "splight_alert" "my_alert" {
+  name        = "My Alert"
+  description = "My Alert Description"
   type        = "rate"
   rate_unit   = "minute"
   rate_value  = 10
-  time_window = 600
+  time_window = 3600 * 12
 
   thresholds {
-    value       = 4.0
-    status      = "no_alert"
-    status_text = "CustomStatusText"
+    value       = 1
+    status      = "alert"
+    status_text = "Some warning!"
   }
 
-  severity        = "sev8"
-  operator        = "gt"
-  aggregation     = "avg"
+  severity        = "sev1"
+  operator        = "lt"
+  aggregation     = "max"
   target_variable = "A"
 
   alert_items {
     ref_id           = "A"
     type             = "QUERY"
+    expression       = ""
     expression_plain = ""
-    query_plain = jsonencode([
-      {
-        "$match" = {
-          asset     = "1234-1234-1234-1234"
-          attribute = "1234-1234-1234-1234"
-        }
-      }
-    ])
-  }
 
-  alert_items {
-    ref_id           = "B"
-    type             = "QUERY"
-    expression_plain = ""
-    query_plain = jsonencode([
-      {
-        "$match" = {
-          asset     = "1234-1234-1234-1234"
-          attribute = "1234-1234-1234-1234"
-        }
-      }
-    ])
-  }
+    query_filter_asset {
+      id   = splight_asset.my_asset.id
+      name = splight_asset.my_asset.name
+    }
 
-  related_assets = [
-    "1234-1234-1234-1234"
-  ]
+    query_filter_attribute {
+      id   = splight_asset_attribute.my_attribute.id
+      name = splight_asset_attribute.my_attribute.name
+    }
+
+    query_plain = jsonencode(
+      [
+        {
+          "$match" : {
+            "asset" : splight_asset.my_asset.id,
+            "attribute" : splight_asset_attribute.my_attribute.id,
+          }
+        }
+      ]
+    )
+  }
 }
 ```
 
@@ -72,7 +96,7 @@ resource "splight_alert" "AlertTest" {
 ### Required
 
 - `aggregation` (String) aggregation to be applied to reads before comparisson
-- `alert_items` (Block List, Min: 1) variables to be calculated for a complex comparisson. (see [below for nested schema](#nestedblock--alert_items))
+- `alert_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--alert_items))
 - `description` (String) The description of the resource
 - `name` (String) The name of the resource
 - `operator` (String) operator to be used to compare the read value with the threshold value
@@ -103,14 +127,35 @@ resource "splight_alert" "AlertTest" {
 
 Required:
 
-- `expression_plain` (String)
-- `query_plain` (String)
-- `ref_id` (String)
-- `type` (String)
+- `expression` (String) how the expression is shown (i.e 'A * 2')
+- `expression_plain` (String) actual mongo query containing the expression
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--alert_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--alert_items--query_filter_attribute))
+- `query_plain` (String) actual mongo query
+- `ref_id` (String) identifier of the variable (i.e 'A')
+- `type` (String) either QUERY or EXPRESSION
 
 Read-Only:
 
-- `id` (String) optional id
+- `id` (String) ID of the function item
+
+<a id="nestedblock--alert_items--query_filter_asset"></a>
+### Nested Schema for `alert_items.query_filter_asset`
+
+Optional:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+
+
+<a id="nestedblock--alert_items--query_filter_attribute"></a>
+### Nested Schema for `alert_items.query_filter_attribute`
+
+Optional:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+
 
 
 <a id="nestedblock--thresholds"></a>
