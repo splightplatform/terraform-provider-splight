@@ -31,7 +31,7 @@ func resourceCreateDashboardBarChart(d *schema.ResourceData, m interface{}) erro
 	item := client.DashboardBarChartParams{
 		DashboardChartParams: DashboardChartParams,
 		Type:                 barType,
-		YAxisUnit:            d.Get("y_axis_unit").(int),
+		YAxisUnit:            d.Get("y_axis_unit").(string),
 		NumberOfDecimals:     d.Get("number_of_decimals").(int),
 		Orientation:          d.Get("orientation").(string),
 	}
@@ -53,7 +53,7 @@ func resourceUpdateDashboardBarChart(d *schema.ResourceData, m interface{}) erro
 	item := client.DashboardBarChartParams{
 		DashboardChartParams: DashboardChartParams,
 		Type:                 barType,
-		YAxisUnit:            d.Get("y_axis_unit").(int),
+		YAxisUnit:            d.Get("y_axis_unit").(string),
 		NumberOfDecimals:     d.Get("number_of_decimals").(int),
 		Orientation:          d.Get("orientation").(string),
 	}

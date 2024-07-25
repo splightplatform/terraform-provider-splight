@@ -6,25 +6,25 @@ import (
 	"fmt"
 )
 
-type DashboardBarChartParams struct {
+type DashboardStatChartParams struct {
 	DashboardChartParams
 	Type             string `json:"type"`
 	YAxisUnit        string `json:"y_axis_unit,omitempty"`
+	Border           bool   `json:"border"`
 	NumberOfDecimals int    `json:"number_of_decimals,omitempty"`
-	Orientation      string `json:"orientation,omitempty"`
 }
 
-type DashboardBarChart struct {
-	DashboardBarChartParams
+type DashboardStatChart struct {
+	DashboardStatChartParams
 	ID string `json:"id"`
 }
 
-func (c *Client) ListDashboardBarCharts() (*map[string]DashboardBarChart, error) {
+func (c *Client) ListDashboardStatCharts() (*map[string]DashboardStatChart, error) {
 	body, err := c.httpRequest("v2/engine/dashboard/charts/", "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	items := map[string]DashboardBarChart{}
+	items := map[string]DashboardStatChart{}
 	err = json.NewDecoder(body).Decode(&items)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (c *Client) ListDashboardBarCharts() (*map[string]DashboardBarChart, error)
 	return &items, nil
 }
 
-func (c *Client) CreateDashboardBarChart(item *DashboardBarChartParams) (*DashboardBarChart, error) {
+func (c *Client) CreateDashboardStatChart(item *DashboardStatChartParams) (*DashboardStatChart, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -43,7 +43,7 @@ func (c *Client) CreateDashboardBarChart(item *DashboardBarChartParams) (*Dashbo
 		return nil, err
 	}
 
-	asset := &DashboardBarChart{}
+	asset := &DashboardStatChart{}
 	err = json.NewDecoder(body).Decode(asset)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (c *Client) CreateDashboardBarChart(item *DashboardBarChartParams) (*Dashbo
 	return asset, nil
 }
 
-func (c *Client) UpdateDashboardBarChart(id string, item *DashboardBarChartParams) (*DashboardBarChart, error) {
+func (c *Client) UpdateDashboardStatChart(id string, item *DashboardStatChartParams) (*DashboardStatChart, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
 	if err != nil {
@@ -61,7 +61,7 @@ func (c *Client) UpdateDashboardBarChart(id string, item *DashboardBarChartParam
 	if err != nil {
 		return nil, err
 	}
-	asset := &DashboardBarChart{}
+	asset := &DashboardStatChart{}
 	err = json.NewDecoder(body).Decode(asset)
 	if err != nil {
 		return nil, err
@@ -69,12 +69,12 @@ func (c *Client) UpdateDashboardBarChart(id string, item *DashboardBarChartParam
 	return asset, nil
 }
 
-func (c *Client) RetrieveDashboardBarChart(id string) (*DashboardBarChart, error) {
+func (c *Client) RetrieveDashboardStatChart(id string) (*DashboardStatChart, error) {
 	body, err := c.httpRequest(fmt.Sprintf("v2/engine/dashboard/charts/%s/", id), "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	asset := &DashboardBarChart{}
+	asset := &DashboardStatChart{}
 	err = json.NewDecoder(body).Decode(asset)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (c *Client) RetrieveDashboardBarChart(id string) (*DashboardBarChart, error
 	return asset, nil
 }
 
-func (c *Client) DeleteDashboardBarChart(id string) error {
+func (c *Client) DeleteDashboardStatChart(id string) error {
 	_, err := c.httpRequest(fmt.Sprintf("v2/engine/dashboard/charts/%s/", id), "DELETE", bytes.Buffer{})
 	if err != nil {
 		return err
