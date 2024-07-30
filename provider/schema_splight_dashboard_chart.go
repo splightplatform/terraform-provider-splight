@@ -16,10 +16,77 @@ func schemaDashboardChart() map[string]*schema.Schema {
 			Required:    true,
 			Description: "id for the tab where to place the chart",
 		},
-		"type": {
+		"description": {
 			Type:        schema.TypeString,
-			Required:    true,
-			Description: "[timeseries|bargauge|..] chart type",
+			Optional:    true,
+			Description: "chart description",
+		},
+		"position_x": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Description: "chart x position",
+		},
+		"position_y": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Description: "chart y position",
+		},
+		"min_height": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     1,
+			Description: "minimum chart height",
+		},
+		"min_width": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     4,
+			Description: "minimum chart width",
+		},
+		"display_time_range": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+			Description: "whether to display the time range or not",
+		},
+		"labels_display": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+			Description: "whether to display the labels or not",
+		},
+		"labels_aggregation": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "last",
+			Description: "[last|avg|...] aggregation",
+		},
+		"labels_placement": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "bottom",
+			Description: "[right|bottom] placement",
+		},
+		"refresh_interval": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "refresh interval",
+		},
+		"relative_window_time": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "relative window time",
+		},
+		"show_beyond_data": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+			Description: "whether to show data which is beyond timestamp_lte or not",
+		},
+		"timezone": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "chart timezone",
 		},
 		"timestamp_lte": {
 			Type:        schema.TypeString,
@@ -90,44 +157,8 @@ func schemaDashboardChart() map[string]*schema.Schema {
 						Type:     schema.TypeString,
 						Required: true,
 					},
-					"query_filter_asset": {
-						Type:        schema.TypeSet,
-						Optional:    true,
-						Description: "asset filter",
-						Default:     nil,
-						MaxItems:    1,
-						Elem: &schema.Resource{
-							Schema: map[string]*schema.Schema{
-								"id": {
-									Type:     schema.TypeString,
-									Required: true,
-								},
-								"name": {
-									Type:     schema.TypeString,
-									Required: true,
-								},
-							},
-						},
-					},
-					"query_filter_attribute": {
-						Type:        schema.TypeSet,
-						Optional:    true,
-						Description: "Attribute filter",
-						Default:     nil,
-						MaxItems:    1,
-						Elem: &schema.Resource{
-							Schema: map[string]*schema.Schema{
-								"id": {
-									Type:     schema.TypeString,
-									Required: true,
-								},
-								"name": {
-									Type:     schema.TypeString,
-									Required: true,
-								},
-							},
-						},
-					},
+					"query_filter_asset":     QueryFilter(),
+					"query_filter_attribute": QueryFilter(),
 					"query_plain": {
 						Type:     schema.TypeString,
 						Required: true,
