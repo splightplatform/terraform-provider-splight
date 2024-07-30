@@ -31,12 +31,12 @@ resource "splight_asset_attribute" "AttributeTest2" {
 }
 
 
-resource "splight_dashboard" "DashboardTest_fz" {
+resource "splight_dashboard" "DashboardTest" {
   name           = "DashboardTest"
   related_assets = []
 }
 
-resource "splight_dashboard_tab" "DashboardTabTest_fz" {
+resource "splight_dashboard_tab" "DashboardTabTest" {
   name      = "TabTest"
   order     = 0
   dashboard = splight_dashboard.DashboardTest.id
