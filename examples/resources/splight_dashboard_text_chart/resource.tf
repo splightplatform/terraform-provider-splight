@@ -7,6 +7,29 @@ terraform {
   }
 }
 
+resource "splight_asset" "AssetTest" {
+  name        = "AssetTest"
+  description = "Created with Terraform"
+  geometry = jsonencode({
+    type       = "GeometryCollection"
+    geometries = []
+  })
+}
+
+resource "splight_asset_attribute" "AttributeTest1" {
+  name  = "Attribute1"
+  type  = "Number"
+  unit  = "meters"
+  asset = splight_asset.AssetTest.id
+}
+
+resource "splight_asset_attribute" "AttributeTest2" {
+  name  = "Attribute2"
+  type  = "Number"
+  unit  = "seconds"
+  asset = splight_asset.AssetTest.id
+}
+
 resource "splight_dashboard" "DashboardTest_fz" {
   name           = "DashboardTest"
   related_assets = []
@@ -43,18 +66,18 @@ resource "splight_dashboard_text_chart" "DashboardChartTest" {
     color            = "red"
     expression_plain = ""
     query_filter_asset {
-      id   = "1234-1234-1234-1234"
-      name = "query filter asset name"
+      id   = splight_asset.AssetTest.id
+      name = splight_asset.AssetTest.name
     }
     query_filter_attribute {
-      id   = "1234-1234-1234-1234"
-      name = "query filter attribute name"
+      id   = splight_asset.AttributeTest1.id
+      name = splight_asset.AttributeTest1.name
     }
     query_plain = jsonencode([
       {
         "$match" = {
-          asset     = "1234-1234-1234-1234"
-          attribute = "1234-1234-1234-1234"
+          asset     = splight_asset.AssetTest.id
+          attribute = splight_asset.AttributeTest1.id
         }
       },
       {
@@ -88,18 +111,18 @@ resource "splight_dashboard_text_chart" "DashboardChartTest" {
     type             = "QUERY"
     expression_plain = ""
     query_filter_asset {
-      id   = "1234-1234-1234-1234"
-      name = "query filter asset name"
+      id   = splight_asset.AssetTest.id
+      name = splight_asset.AssetTest.name
     }
     query_filter_attribute {
-      id   = "1234-1234-1234-1234"
-      name = "query filter attribute name"
+      id   = splight_asset.AttributeTest2.id
+      name = splight_asset.AttributeTest2.name
     }
     query_plain = jsonencode([
       {
         "$match" = {
-          asset     = "1234-1234-1234-1234"
-          attribute = "1234-1234-1234-1234"
+          asset     = splight_asset.AssetTest.id
+          attribute = splight_asset.AttributeTest2.id
         }
       },
       {
