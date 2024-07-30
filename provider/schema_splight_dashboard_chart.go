@@ -47,13 +47,13 @@ func schemaDashboardChart() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Default:     true,
-			Description: "wether to display the time range or not",
+			Description: "whether to display the time range or not",
 		},
 		"labels_display": {
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Default:     true,
-			Description: "wether to display the labels or not",
+			Description: "whether to display the labels or not",
 		},
 		"labels_aggregation": {
 			Type:        schema.TypeString,
@@ -81,7 +81,7 @@ func schemaDashboardChart() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Default:     true,
-			Description: "wheter to show data which is beyond timestamp_lte or not",
+			Description: "whether to show data which is beyond timestamp_lte or not",
 		},
 		"timezone": {
 			Type:        schema.TypeString,
