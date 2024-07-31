@@ -72,14 +72,14 @@ resource "splight_dashboard_alertevents_chart" "DashboardChartTest" {
       name = splight_asset.AssetTest.name
     }
     query_filter_attribute {
-      id   = splight_asset.AttributeTest1.id
-      name = splight_asset.AttributeTest1.name
+      id   = splight_asset_attribute.AttributeTest1.id
+      name = splight_asset_attribute.AttributeTest1.name
     }
     query_plain = jsonencode([
       {
         "$match" = {
           asset     = splight_asset.AssetTest.id
-          attribute = splight_asset.AttributeTest1.id
+          attribute = splight_asset_attribute.AttributeTest1.id
         }
       },
       {
@@ -117,14 +117,14 @@ resource "splight_dashboard_alertevents_chart" "DashboardChartTest" {
       name = splight_asset.AssetTest.name
     }
     query_filter_attribute {
-      id   = splight_asset.AttributeTest2.id
-      name = splight_asset.AttributeTest2.name
+      id   = splight_asset_attribute.AttributeTest2.id
+      name = splight_asset_attribute.AttributeTest2.name
     }
     query_plain = jsonencode([
       {
         "$match" = {
           asset     = splight_asset.AssetTest.id
-          attribute = splight_asset.AttributeTest2.id
+          attribute = splight_asset_attribute.AttributeTest2.id
         }
       },
       {
