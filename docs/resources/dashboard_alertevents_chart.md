@@ -16,8 +16,7 @@ description: |-
 terraform {
   required_providers {
     splight = {
-      source  = "splightplatform/splight"
-      version = "~> 0.1.0"
+      source = "splightplatform/splight"
     }
   }
 }
