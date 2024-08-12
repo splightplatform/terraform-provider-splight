@@ -27,7 +27,7 @@ provider: tidy
 	@go build -o $(BASE_NAME)
 
 debug: tidy
-	# TODO: only output my logs or sdk: see https://developer.hashicorp.com/terraform/plugin/log/managing#enable-logging
+	# see: https://developer.hashicorp.com/terraform/plugin/log/managing#enable-logging
 	@echo -e "$(GREEN)Debug binary: $(DEBUG_BINARY)$(RESET)"
 	@go build -gcflags=$(GCFLAGS) -o $(DEBUG_BINARY)
 	@trap '$(MAKE) clean-debug' INT TERM EXIT; dlv exec $(DEBUG_BINARY) -- -debug
