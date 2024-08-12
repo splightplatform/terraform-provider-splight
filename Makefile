@@ -9,7 +9,7 @@ RESET = \033[0m
 
 .PHONY: default docs tidy provider debug clean
 
-default: docs tidy provider
+default: docs tidy
 
 docs:
 	@go generate
