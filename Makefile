@@ -9,7 +9,7 @@ RESET = \033[0m
 
 .PHONY: default docs tidy provider debug snapshot clean
 
-default: docs tidy provider
+default: tidy provider
 
 docs:
 	@go generate
@@ -23,11 +23,12 @@ provider: tidy
 	@go build -o $(BASE_NAME)
 
 debug: tidy
-	@echo -e "$(GREEN)Building debug version: $(BASE_NAME)_debug$(RESET)"
+	# TODO: only output my logs or sdk: see https://developer.hashicorp.com/terraform/plugin/log/managing#enable-logging
+	@echo -e "$(GREEN)Building temporary binary: $(BASE_NAME)_debug$(RESET)"
 	@go build -gcflags="all=-N -l" -o $(BASE_NAME)_debug
 	@echo -e "$(GREEN)Starting debugger...$(RESET)"
-	@trap '$(MAKE) clean' INT TERM EXIT; dlv exec $(BASE_NAME)_debug -- -debug
-	@$(MAKE) clean
+	@trap 'rm -f $(BASE_NAME)_debug' INT TERM EXIT; dlv exec $(BASE_NAME)_debug -- -debug
+	@rm -f $(BASE_NAME)_debug
 
 clean:
-	@rm -f $(BASE_NAME) $(BASE_NAME)_debug
+	@rm -f $(BASE_NAME)
