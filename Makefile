@@ -7,9 +7,9 @@ BASE_NAME := terraform-provider-splight_${ARCH}_v${VERSION}
 GREEN = \033[0;32m
 RESET = \033[0m
 
-.PHONY: default docs tidy provider debug clean
+.PHONY: default docs tidy provider debug snapshot clean
 
-default: docs tidy
+default: docs tidy provider
 
 docs:
 	@go generate
