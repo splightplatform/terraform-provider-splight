@@ -18,24 +18,6 @@ type Node struct {
 	ID string `json:"id"`
 }
 
-func (c *Client) RetrieveOrgId() (string, error) {
-	body, err := c.httpRequest("v2/account/user/organizations/", "GET", bytes.Buffer{})
-	if err != nil {
-		return "", err
-	}
-	orgs := map[string]interface{}{}
-	err = json.NewDecoder(body).Decode(&orgs)
-	if err != nil {
-		return "", err
-	}
-	if len(orgs) == 0 {
-		return "", fmt.Errorf("No organizations found")
-	}
-	orgId := orgs["id"].(string)
-	return orgId, nil
-
-}
-
 func (c *Client) ListNodes() (*map[string]Node, error) {
 	body, err := c.httpRequest("v2/backoffice/compute/nodes/splighthosted/", "GET", bytes.Buffer{})
 	if err != nil {
