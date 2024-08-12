@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"runtime"
 	"time"
 )
 
@@ -31,8 +32,17 @@ func NewClient(hostname, token string) (*Client, error) {
 		return nil, err
 	}
 
-	// TODO: set version from linker
-	client.userAgent = fmt.Sprintf("terraform-provider-splight-version-%s", email)
+	// Get system details
+	goos := runtime.GOOS
+	goarch := runtime.GOARCH
+	goVersion := runtime.Version()
+
+	// Construct a detailed User-Agent string
+	client.userAgent = fmt.Sprintf(
+		"terraform-provider-splight-version-%s (OS: %s; Arch: %s; Go: %s)",
+		email, goos, goarch, goVersion,
+	)
+
 	return client, nil
 }
 
