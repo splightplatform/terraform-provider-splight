@@ -89,5 +89,5 @@ runtime.Breakpoint()
 To update the documentation, first manually update the examples. Then, run the following command to generate the updated docs:
 
 ```bash
-make generate-docs:
+make docs:
 ```
