@@ -37,9 +37,10 @@ func NewClient(hostname, token string) (*Client, error) {
 	goarch := runtime.GOARCH
 	goVersion := runtime.Version()
 
-	// Construct a detailed User-Agent string
+	// TODO: set version from linker
+	// Construct a User-Agent string
 	client.userAgent = fmt.Sprintf(
-		"terraform-provider-splight-version-%s (OS: %s; Arch: %s; Go: %s)",
+		"terraform-provider-splight/v1.0.0 (email=%s; OS=%s; Arch=%s; Go=%s)",
 		email, goos, goarch, goVersion,
 	)
 
