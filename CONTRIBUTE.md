@@ -6,7 +6,7 @@ For more details, see [Generate docs](#generate-docs).
 
 ### Requirements
 
-Install golang, terraform and delve (MacOS)
+Install golang, goreleaser, terraform and delve (MacOS)
 
 ```bash
 brew install go terraform delve
@@ -48,7 +48,7 @@ Explore the examples folder for a complete file with all available resources.
 Build the provider with debugging support:
 
 ```bash
-make debug-start
+make dlv
 ```
 
 You must do this each time you want to test new changes.
@@ -58,7 +58,7 @@ This will run the provider with debugging support for delve.
 When the debugger starts you will see the following output:
 
 ```bash
-❯ make debug-start
+❯ make dlv
 Type 'help' for list of commands.
 (dlv)
 ```
