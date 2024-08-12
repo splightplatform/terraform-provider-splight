@@ -9,7 +9,7 @@ For more details, see [Generate docs](#generate-docs).
 Install golang, goreleaser, terraform and delve (MacOS)
 
 ```bash
-brew install go terraform delve
+brew install go terraform delve goreleaser
 ```
 
 ### Installation
@@ -17,7 +17,7 @@ brew install go terraform delve
 Run
 
 ```bash
-make install
+make provider
 ```
 
 and set your ~/.terraformrc as follows:
@@ -25,7 +25,7 @@ and set your ~/.terraformrc as follows:
 ```hcl
 provider_installation {
   dev_overrides {
-      "splightplatform/splight" = "/Users/<you>/go/bin/"
+      "splightplatform/splight" = "/Users/<you>/path/to/your/binary"
   }
   direct {}
 }
