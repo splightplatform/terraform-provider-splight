@@ -31,6 +31,7 @@ func NewClient(hostname, token string) (*Client, error) {
 		return nil, err
 	}
 
+	// TODO: set version from linker
 	client.userAgent = fmt.Sprintf("terraform-provider-splight-version-%s", email)
 	return client, nil
 }
