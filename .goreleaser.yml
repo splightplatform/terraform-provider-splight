@@ -46,5 +46,3 @@ release:
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
 changelog:
   disable: true
-snapshot:
-  name_template: '{{ .Tag }}-snapshot'
