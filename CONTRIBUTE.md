@@ -25,7 +25,7 @@ and set your ~/.terraformrc as follows:
 ```hcl
 provider_installation {
   dev_overrides {
-      "splightplatform/splight" = "/Users/<you>/path/to/your/binary"
+      "splightplatform/splight" = "/Users/<you>/path/to/your/binary/terraform-provider-splight"
   }
   direct {}
 }
@@ -75,7 +75,7 @@ Copy the enviroment variable and try applying changes:
 TF_REATTACH_PROVIDERS=<output> terraform apply
 ```
 
-Don't forget to set breakpoints in your code with:
+You can set breakpoints in your code with:
 
 ```go
 runtime.Breakpoint()
@@ -86,5 +86,5 @@ runtime.Breakpoint()
 To update the documentation, first manually update the examples. Then, run the following command to generate the updated docs:
 
 ```bash
-make docs:
+make docs
 ```
