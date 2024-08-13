@@ -10,6 +10,9 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/utils"
 )
 
+// Version is initialized by the Go linker to contain the semver of this build.
+var Version string = "dev"
+
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -67,8 +70,15 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 	hostname := d.Get("hostname").(string)
 	token := d.Get("token").(string)
 
-	client, err := client.NewClient(hostname, token)
+	userAgentOptions := client.UserAgent{
+		ProductName:    "terraform-provider-splight",
+		ProductVersion: Version,
+	}
+
+	client, err := client.NewClient(hostname, token, userAgentOptions)
+
 	if err != nil {
+		// TODO: review the diags
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Failed to create client",
