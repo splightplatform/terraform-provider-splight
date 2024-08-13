@@ -124,23 +124,18 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadClose
 
 	defer resp.Body.Close()
 
+	// Read the response body into a buffer
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
+	}
+
 	if resp.StatusCode != statusCodeAccepted {
-		respBody, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read response body: %v", err)
-		}
 		return nil, &httpError{
 			statusCode: resp.StatusCode,
 			body:       string(respBody),
 			message:    fmt.Sprintf("got a non-valid status code: %v - %s", resp.StatusCode, string(respBody)),
 		}
-	}
-
-	// Read the response body
-	respBody, err := io.ReadAll(resp.Body)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
 	return io.NopCloser(bytes.NewBuffer(respBody)), nil
