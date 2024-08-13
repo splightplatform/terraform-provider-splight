@@ -1,7 +1,5 @@
 SHELL := /bin/bash
-VERSION := $(shell cat version)
-ARCH := $(shell uname -m)
-BASE_NAME := terraform-provider-splight_${ARCH}_v${VERSION}
+BASE_NAME := terraform-provider-splight
 DEBUG_BINARY := $(BASE_NAME)_debug
 
 # ANSI color codes
