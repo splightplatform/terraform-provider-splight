@@ -1,9 +1,6 @@
 # Terraform Provider release workflow.
 name: Release
-on:
-  push:
-    branches:
-      - master
+on: workflow_dispatch
 permissions:
   contents: write
 jobs:
