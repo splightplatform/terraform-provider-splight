@@ -9,7 +9,7 @@ RESET = \033[0m
 # Go build flags
 GCFLAGS := "all=-N -l"
 
-.PHONY: default docs tidy provider debug snapshot clean clean-debug
+.PHONY: default docs tidy provider debug snapshot clean
 
 default: tidy provider
 
@@ -31,7 +31,7 @@ debug: tidy
 	@trap '$(MAKE) clean-debug' INT TERM EXIT; dlv exec $(DEBUG_BINARY) -- -debug
 
 clean:
-	@rm -f $(BASE_NAME)
+	@rm -f $(BASE_NAME) $(DEBUG_BINARY)
 
 clean-debug:
 	@rm -f $(DEBUG_BINARY)
