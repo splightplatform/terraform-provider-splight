@@ -26,7 +26,6 @@ func main() {
 		context.Background(),
 		provider.Provider().GRPCProvider,
 	)
-
 	if err != nil {
 		log.Fatalf("Failed to upgrade provider server: %v", err)
 	}

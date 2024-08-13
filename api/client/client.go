@@ -33,7 +33,6 @@ func NewClient(hostname, token string, opts UserAgent) (*Client, error) {
 
 	// Retrieve the email to configure the User-Agent
 	email, err := client.RetrieveEmail()
-
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +95,6 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadClo
 
 func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
 	req, err := http.NewRequest(method, c.requestPath(path), &body)
-
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +115,6 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadClose
 	log.Printf("Sending %s request to %s", method, req.URL)
 
 	resp, err := c.httpClient.Do(req)
-
 	if err != nil {
 		return nil, err
 	}
