@@ -18,8 +18,13 @@ type Client struct {
 	userAgent  string
 }
 
-// NewClient initializes the client with the given hostname and token, and configures the User-Agent header
-func NewClient(hostname, token string) (*Client, error) {
+type UserAgent struct {
+	ProductName    string
+	ProductVersion string
+	ExtraInfo      map[string]string
+}
+
+func NewClient(hostname, token string, opts UserAgent) (*Client, error) {
 	client := &Client{
 		hostname:   hostname,
 		authToken:  token,
@@ -28,21 +33,31 @@ func NewClient(hostname, token string) (*Client, error) {
 
 	// Retrieve the email to configure the User-Agent
 	email, err := client.RetrieveEmail()
+
 	if err != nil {
 		return nil, err
 	}
 
-	// Get system details
-	goos := runtime.GOOS
-	goarch := runtime.GOARCH
-	goVersion := runtime.Version()
+	// Get system details and default values
+	defaultInfo := map[string]string{
+		"email": email,
+		"OS":    runtime.GOOS,
+		"Arch":  runtime.GOARCH,
+		"Go":    runtime.Version(),
+	}
 
-	// TODO: set version from linker
-	// Construct a User-Agent string
-	client.userAgent = fmt.Sprintf(
-		"terraform-provider-splight/v1.0.0 (email=%s; OS=%s; Arch=%s; Go=%s)",
-		email, goos, goarch, goVersion,
-	)
+	// Merge default values with provided options
+	for key, value := range opts.ExtraInfo {
+		defaultInfo[key] = value
+	}
+
+	// Construct the User-Agent string
+	userAgent := fmt.Sprintf("%s/%s", opts.ProductName, opts.ProductVersion)
+	for key, value := range defaultInfo {
+		userAgent += fmt.Sprintf(";%s=%s", key, value)
+	}
+
+	client.userAgent = userAgent
 
 	return client, nil
 }
@@ -61,9 +76,12 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadClo
 			return respBody, nil
 		}
 
-		// If error is not due to a 503 status code, don't retry
-		if err, ok := err.(*httpError); ok && err.statusCode != http.StatusServiceUnavailable {
-			return nil, err
+		// Check if the HTTP response status code it's an httpError
+		if httpErr, ok := err.(*httpError); ok {
+			// Retry only if the status code is 503 (Service Unavailable)
+			if httpErr.statusCode != http.StatusServiceUnavailable {
+				return nil, httpErr
+			}
 		}
 
 		log.Printf("Attempt %d: %v", attempts, err)
@@ -78,12 +96,15 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadClo
 
 func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
 	req, err := http.NewRequest(method, c.requestPath(path), &body)
+
 	if err != nil {
 		return nil, err
 	}
+
 	req.Header.Add("Authorization", c.authToken)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("User-Agent", c.userAgent)
+
 	statusCodeAccepted := http.StatusOK
 
 	switch method {
@@ -96,19 +117,17 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadClose
 	log.Printf("Sending %s request to %s", method, req.URL)
 
 	resp, err := c.httpClient.Do(req)
+
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusNotFound {
-		return nil, fmt.Errorf("element not found: %v", resp.StatusCode)
-	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != statusCodeAccepted {
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return nil, fmt.Errorf("failed to read from body: %v", resp.StatusCode)
+			return nil, fmt.Errorf("failed to read response body: %v", err)
 		}
 		return nil, &httpError{
 			statusCode: resp.StatusCode,
@@ -119,15 +138,12 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadClose
 
 	// Read the response body
 	respBody, err := io.ReadAll(resp.Body)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
 	return io.NopCloser(bytes.NewBuffer(respBody)), nil
-}
-
-func (c *Client) requestPath(path string) string {
-	return fmt.Sprintf("%s/%s", c.hostname, path)
 }
 
 func (c *Client) RetrieveOrgId() (string, error) {
@@ -161,6 +177,10 @@ func (c *Client) RetrieveEmail() (string, error) {
 		return email, nil
 	}
 	return "", fmt.Errorf("User email not found")
+}
+
+func (c *Client) requestPath(path string) string {
+	return fmt.Sprintf("%s/%s", c.hostname, path)
 }
 
 // httpError represents an HTTP error with a status code and message
