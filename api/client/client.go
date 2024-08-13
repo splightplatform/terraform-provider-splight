@@ -2,7 +2,6 @@ package client
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +10,7 @@ import (
 	"time"
 )
 
+// Client holds all of the information required to connect to a server
 type Client struct {
 	hostname   string
 	authToken  string
@@ -24,11 +24,14 @@ type UserAgent struct {
 	ExtraInfo      map[string]string
 }
 
+// NewClient returns a new client configured to communicate on a server with the
+// given hostname and port and to send an Authorization Header with the value of
+// token
 func NewClient(hostname, token string, opts UserAgent) (*Client, error) {
 	client := &Client{
 		hostname:   hostname,
 		authToken:  token,
-		httpClient: &http.Client{Timeout: 30 * time.Second},
+		httpClient: &http.Client{Timeout: 60 * time.Second},
 	}
 
 	// Retrieve the email to configure the User-Agent
@@ -136,39 +139,6 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadClose
 	}
 
 	return io.NopCloser(bytes.NewBuffer(respBody)), nil
-}
-
-func (c *Client) RetrieveOrgId() (string, error) {
-	body, err := c.httpRequest("v2/account/user/organizations/", "GET", bytes.Buffer{})
-	if err != nil {
-		return "", err
-	}
-	orgs := map[string]interface{}{}
-	err = json.NewDecoder(body).Decode(&orgs)
-	if err != nil {
-		return "", err
-	}
-	if len(orgs) == 0 {
-		return "", fmt.Errorf("No organizations found")
-	}
-	orgId := orgs["id"].(string)
-	return orgId, nil
-}
-
-func (c *Client) RetrieveEmail() (string, error) {
-	body, err := c.httpRequest("v2/account/user/profile/", "GET", bytes.Buffer{})
-	if err != nil {
-		return "", err
-	}
-	profile := map[string]interface{}{}
-	err = json.NewDecoder(body).Decode(&profile)
-	if err != nil {
-		return "", err
-	}
-	if email, ok := profile["email"].(string); ok {
-		return email, nil
-	}
-	return "", fmt.Errorf("User email not found")
 }
 
 func (c *Client) requestPath(path string) string {
