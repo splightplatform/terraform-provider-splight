@@ -75,7 +75,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 		ProductVersion: Version,
 	}
 
-	client, err := client.NewClient(hostname, token, userAgentOptions)
+	client, err := client.NewClient(hostname, token, ctx, userAgentOptions)
 
 	if err != nil {
 		// TODO: review the diags
