@@ -1,40 +1,59 @@
 # Terraform Provider release workflow.
 name: Release
-
-# This GitHub action creates a release when a tag that matches the pattern
-# "v*" (e.g. v0.1.0) is created.
 on:
   push:
-    tags:
-      - "v*"
-
-# Releases need permissions to read and write the repository contents.
-# GitHub considers creating releases and uploading assets as writing contents.
+    branches:
+      - master
 permissions:
   contents: write
-
 jobs:
+  tag_version:
+    runs-on: ubuntu-latest
+    name: Create tag version on GitHub repository
+    steps:
+      - name: Checkout to feature branch
+        uses: actions/checkout@v3
+
+      - name: Get version from feature branch
+        id: get_version
+        run: echo "CURRENT_VERSION=v$(cat version)" >> "$GITHUB_ENV"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "${{ env.CURRENT_VERSION }}" >/dev/null 2>&1; then
+            echo "Tag ${{ env.CURRENT_VERSION }} already exists"
+            exit 1
+          fi
+
+      - name: Create tag
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release ${{ env.CURRENT_VERSION }}
+          tag_name: ${{ env.CURRENT_VERSION }}
+
   goreleaser:
     runs-on: ubuntu-latest
+    needs: tag_version
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@v3
         with:
-          # Allow goreleaser to access older tag information.
           fetch-depth: 0
-      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
+      - uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
           cache: true
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4 # v6.1.0
+        uses: crazy-max/ghaction-import-gpg@v6.1.0
         id: import_gpg
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8 # v5.0.0
+        uses: goreleaser/goreleaser-action@v5
         with:
           args: release --clean
         env:
-          # GitHub sets the GITHUB_TOKEN secret automatically.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
