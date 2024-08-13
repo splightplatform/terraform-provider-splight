@@ -6,10 +6,10 @@ For more details, see [Generate docs](#generate-docs).
 
 ### Requirements
 
-Install golang, goreleaser, terraform and delve (MacOS)
+Install golang, terraform and delve (MacOS)
 
 ```bash
-brew install go terraform delve goreleaser
+brew install go terraform delve
 ```
 
 ### Installation
