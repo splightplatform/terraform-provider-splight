@@ -10,23 +10,26 @@ import (
 	"time"
 )
 
-// Client holds all of the information required to connect to a server
+// Client holds the configuration needed to communicate with a server
 type Client struct {
-	hostname   string
-	authToken  string
-	httpClient *http.Client
-	userAgent  string
+	hostname   string       // Server hostname or IP address
+	authToken  string       // Authorization token for HTTP requests
+	httpClient *http.Client // Underlying HTTP client for making requests
+	userAgent  string       // User-Agent header value for HTTP requests
 }
 
+// UserAgent defines the structure for constructing the User-Agent header
 type UserAgent struct {
-	ProductName    string
-	ProductVersion string
-	ExtraInfo      map[string]string
+	ProductName    string            // Name of the product making the request
+	ProductVersion string            // Version of the product making the request
+	ExtraInfo      map[string]string // Additional information to include in the User-Agent header
 }
 
-// NewClient returns a new client configured to communicate on a server with the
-// given hostname and port and to send an Authorization Header with the value of
-// token
+// NewClient creates and configures a new Client instance
+// hostname: Server hostname or IP address
+// token: Authorization token for HTTP requests
+// opts: UserAgent configuration for setting the User-Agent header
+// Returns: A new Client instance or an error if configuration fails
 func NewClient(hostname, token string, opts UserAgent) (*Client, error) {
 	client := &Client{
 		hostname:   hostname,
@@ -64,6 +67,11 @@ func NewClient(hostname, token string, opts UserAgent) (*Client, error) {
 	return client, nil
 }
 
+// httpRequest performs an HTTP request with retry logic
+// path: API endpoint path
+// method: HTTP method (GET, POST, etc.)
+// body: Request body to be sent (if applicable)
+// Returns: Response body reader and nil on success, or an error if the request fails
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
 	var respBody io.ReadCloser
 	var err error
@@ -96,6 +104,11 @@ func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadClo
 	return nil, fmt.Errorf("failed after %d attempts: %w", maxAttempts, err)
 }
 
+// doRequest creates and sends an HTTP request
+// path: API endpoint path
+// method: HTTP method (GET, POST, etc.)
+// body: Request body to be sent (if applicable)
+// Returns: Response body reader and nil on success, or an error if the request fails
 func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
 	req, err := http.NewRequest(method, c.requestPath(path), &body)
 	if err != nil {
@@ -141,17 +154,21 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer) (io.ReadClose
 	return io.NopCloser(bytes.NewBuffer(respBody)), nil
 }
 
+// requestPath constructs the full request URL by appending the path to the hostname
+// path: API endpoint path
+// Returns: The full request URL
 func (c *Client) requestPath(path string) string {
 	return fmt.Sprintf("%s/%s", c.hostname, path)
 }
 
-// httpError represents an HTTP error with a status code and message
+// httpError represents an HTTP error with details
 type httpError struct {
-	statusCode int
-	body       string
-	message    string
+	statusCode int    // HTTP status code of the error response
+	body       string // Body of the error response
+	message    string // Error message
 }
 
+// Error returns a string representation of the httpError
 func (e *httpError) Error() string {
 	return e.message
 }
