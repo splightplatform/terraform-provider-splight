@@ -34,6 +34,7 @@ func toAssetAttribute(d *schema.ResourceData) *client.AssetAttributeParams {
 
 func saveAssetAttributeToState(d *schema.ResourceData, assetAttribute *client.AssetAttribute) {
 	d.SetId(assetAttribute.ID)
+
 	d.Set("name", assetAttribute.Name)
 	d.Set("type", assetAttribute.Type)
 	d.Set("asset", assetAttribute.Asset)

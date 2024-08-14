@@ -35,6 +35,7 @@ func toAssetMetadata(d *schema.ResourceData) *client.AssetMetadataParams {
 
 func saveAssetMetadataToState(d *schema.ResourceData, assetMetadata *client.AssetMetadata) {
 	d.SetId(assetMetadata.ID)
+
 	d.Set("asset", assetMetadata.Asset)
 	d.Set("name", assetMetadata.Name)
 	d.Set("type", assetMetadata.Type)
