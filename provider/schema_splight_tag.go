@@ -6,6 +6,8 @@ import (
 
 func schemaTag() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		// NOTE: I included this field to able to reuse the schema in the data source
+		// but its not necessary
 		"id": {
 			Type:        schema.TypeString,
 			Computed:    true,
@@ -13,8 +15,8 @@ func schemaTag() map[string]*schema.Schema {
 		},
 		"name": {
 			Type:        schema.TypeString,
-			Computed:    true,
 			Description: "name of the resource",
+			Required:    true,
 		},
 	}
 }

@@ -52,7 +52,7 @@ resource "splight_function" "FunctionTest" {
   type            = "rate"
   rate_unit       = "minute"
   rate_value      = 10
-  time_window     = 3600 * 12
+  time_window     = 3600
   target_variable = "B"
 
   target_asset {

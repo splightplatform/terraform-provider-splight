@@ -32,7 +32,7 @@ resource "splight_alert" "my_alert" {
   type        = "rate"
   rate_unit   = "minute"
   rate_value  = 10
-  time_window = 3600 * 12
+  time_window = 3600
 
   thresholds {
     value       = 1

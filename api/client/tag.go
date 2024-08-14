@@ -16,7 +16,7 @@ type Tag struct {
 }
 
 func (c *Client) ListTags() ([]Tag, error) {
-	body, err := c.httpRequest("v2/account/tags", "GET", bytes.Buffer{})
+	body, err := c.httpRequest("v2/account/tags/", "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Client) CreateTag(item *TagParams) (*Tag, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, err := c.httpRequest("v2/account/tags", "POST", buf)
+	body, err := c.httpRequest("v2/account/tags/", "POST", buf)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (c *Client) RetrieveTag(id string) (*Tag, error) {
 }
 
 func (c *Client) DeleteTag(id string) error {
-	_, err := c.httpRequest(fmt.Sprintf("v2/account/tag/%s/", id), "DELETE", bytes.Buffer{})
+	_, err := c.httpRequest(fmt.Sprintf("v2/account/tags/%s/", id), "DELETE", bytes.Buffer{})
 	if err != nil {
 		return err
 	}
