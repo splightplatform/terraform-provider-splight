@@ -8,12 +8,12 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 )
 
-func dataSourceAssetKind() *schema.Resource {
+func dataSourceTag() *schema.Resource {
 	return &schema.Resource{
-		Description: "Data source to fetch all asset kinds defined in the platform",
-		ReadContext: dataSourceKindRead,
+		Description: "Data source to fetch all tags defined in the organization account",
+		ReadContext: dataSourceTagRead,
 		Schema: map[string]*schema.Schema{
-			"kinds": {
+			"tags": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
@@ -35,25 +35,25 @@ func dataSourceAssetKind() *schema.Resource {
 	}
 }
 
-func dataSourceKindRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	apiClient := meta.(*client.Client)
-	assetKinds, err := apiClient.ListAssetKinds()
+	tags, err := apiClient.ListTags()
 
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	var kinds []map[string]string
+	var taglist []map[string]string
 
-	for _, kind := range *assetKinds {
-		kindMap := map[string]string{
-			"id":   kind.ID,
-			"name": kind.Name,
+	for _, tag := range *tags {
+		tagMap := map[string]string{
+			"id":   tag.ID,
+			"name": tag.Name,
 		}
-		kinds = append(kinds, kindMap)
+		taglist = append(taglist, tagMap)
 	}
 
-	if err := d.Set("kinds", kinds); err != nil {
+	if err := d.Set("tags", taglist); err != nil {
 		return diag.FromErr(err)
 	}
 

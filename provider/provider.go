@@ -58,6 +58,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"splight_asset_kinds": dataSourceAssetKind(),
+			"splight_tags":        dataSourceTag(),
 		},
 
 		ConfigureContextFunc: providerConfigure,
