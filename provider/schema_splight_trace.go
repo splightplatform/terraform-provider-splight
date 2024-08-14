@@ -43,7 +43,7 @@ func Trace() *schema.Schema {
 				},
 				"query_filter_asset":     QueryFilter(),
 				"query_filter_attribute": QueryFilter(),
-				"query_group_filter": {
+				"query_group_function": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "function used to aggregate data",

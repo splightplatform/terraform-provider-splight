@@ -81,6 +81,9 @@ resource "splight_function" "FunctionTest" {
       name = splight_asset_attribute.my_attribute.name
     }
 
+    query_group_function = "avg"
+    query_group_unit     = "day"
+
     query_plain = jsonencode([
       {
         "$match" = {

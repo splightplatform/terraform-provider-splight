@@ -61,6 +61,9 @@ resource "splight_alert" "my_alert" {
       name = splight_asset_attribute.my_attribute.name
     }
 
+    query_group_function = "avg"
+    query_group_unit     = "day"
+
     query_plain = jsonencode(
       [
         {

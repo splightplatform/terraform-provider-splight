@@ -66,7 +66,7 @@ func convertFunctionItems(functionItemsInterface []interface{}) []client.Functio
 		functionItem := item.(map[string]interface{})
 		queryFilterAsset := functionItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
 		queryFilterAttribute := functionItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
-		queryGroupFilter := functionItem["query_group_filter"].(string)
+		queryGroupFunction := functionItem["query_group_function"].(string)
 		queryGroupUnit := functionItem["query_group_unit"].(string)
 		functionItems[i] = client.FunctionItem{
 			RefID:           functionItem["ref_id"].(string),
@@ -82,8 +82,8 @@ func convertFunctionItems(functionItemsInterface []interface{}) []client.Functio
 				Name: queryFilterAttribute["name"].(string),
 				ID:   queryFilterAttribute["id"].(string),
 			},
-			QueryGroupFilter: queryGroupFilter,
-			QueryGroupUnit:   queryGroupUnit,
+			QueryGroupFunction: queryGroupFunction,
+			QueryGroupUnit:     queryGroupUnit,
 		}
 	}
 	return functionItems

@@ -15,7 +15,7 @@ type AlertItem struct {
 	QueryPlain           string          `json:"query_plain"`
 	QueryFilterAsset     AlertTargetItem `json:"query_filter_asset"`
 	QueryFilterAttribute AlertTargetItem `json:"query_filter_attribute"`
-	QueryGroupFilter     string          `json:"query_group_filter"`
+	QueryGroupFunction   string          `json:"query_group_function"`
 	QueryGroupUnit       string          `json:"query_group_unit"`
 }
 
