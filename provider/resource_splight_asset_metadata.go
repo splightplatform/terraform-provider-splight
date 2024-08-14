@@ -50,7 +50,7 @@ func resourceCreateAssetMetadata(ctx context.Context, d *schema.ResourceData, m 
 	createdAssetMetadata, err := apiClient.CreateAssetMetadata(item)
 
 	if err != nil {
-		return diag.Errorf("Error creating ASSETMETADATA: %s", err)
+		return diag.Errorf("Error creating AssetMetadata: %s", err)
 	}
 
 	saveAssetMetadataToState(d, createdAssetMetadata)
@@ -67,7 +67,7 @@ func resourceUpdateAssetMetadata(ctx context.Context, d *schema.ResourceData, m 
 
 	updatedAssetMetadata, err := apiClient.UpdateAssetMetadata(itemId, item)
 	if err != nil {
-		return diag.Errorf("Error updating ASSETMETADATA with ID '%s': %s", itemId, err)
+		return diag.Errorf("Error updating AssetMetadata with ID '%s': %s", itemId, err)
 	}
 
 	saveAssetMetadataToState(d, updatedAssetMetadata)
@@ -86,7 +86,7 @@ func resourceReadAssetMetadata(ctx context.Context, d *schema.ResourceData, m in
 			d.SetId("")
 			return nil
 		} else {
-			return diag.Errorf("Error finding ASSETMETADATA with ID '%s': %s", itemId, err)
+			return diag.Errorf("Error finding AssetMetadata with ID '%s': %s", itemId, err)
 		}
 	}
 
@@ -102,7 +102,7 @@ func resourceDeleteAssetMetadata(ctx context.Context, d *schema.ResourceData, m 
 
 	err := apiClient.DeleteAssetMetadata(itemId)
 	if err != nil {
-		return diag.Errorf("Error deleting ASSETMETADATA with ID '%s': %s", itemId, err)
+		return diag.Errorf("Error deleting AssetMetadata with ID '%s': %s", itemId, err)
 	}
 
 	d.SetId("")
