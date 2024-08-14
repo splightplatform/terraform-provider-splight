@@ -1,21 +1,10 @@
-# Visit https://goreleaser.com for documentation on how to customize this
-# behavior.
 version: 2
-before:
-  hooks:
-    # this is just an example and not a requirement for provider building/publishing
-    - go mod tidy
 builds:
   - env:
-      # goreleaser does not work with CGO, it could also complicate
-      # usage by users in CI/CD systems like Terraform Cloud where
-      # they are unable to install libraries.
       - CGO_ENABLED=0
     mod_timestamp: "{{ .CommitTimestamp }}"
-    flags:
-      - -trimpath
     ldflags:
-      - "-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}"
+      - "-s -w -X github.com/splightplatform/terraform-provider-splight/provider.Version={{.Version}}"
     goos:
       - freebsd
       - windows
@@ -23,12 +12,12 @@ builds:
       - darwin
     goarch:
       - amd64
-      - "386"
+      - '386'
       - arm
       - arm64
     ignore:
       - goos: darwin
-        goarch: "386"
+        goarch: '386'
     binary: "{{ .ProjectName }}_v{{ .Version }}"
 archives:
   - format: zip
@@ -55,7 +44,5 @@ release:
   extra_files:
     - glob: "terraform-registry-manifest.json"
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
-  # If you want to manually examine the release before its live, uncomment this line:
-  # draft: true
 changelog:
   disable: true

@@ -17,7 +17,7 @@ brew install go terraform delve
 Run
 
 ```bash
-make install
+make
 ```
 
 and set your ~/.terraformrc as follows:
@@ -25,19 +25,16 @@ and set your ~/.terraformrc as follows:
 ```hcl
 provider_installation {
   dev_overrides {
-      "splightplatform/splight" = "/Users/<you>/go/bin/"
+      "splightplatform/splight" = "/Users/<you>/path/to/your/binary/terraform-provider-splight"
   }
   direct {}
 }
 ```
 
-or any path configured for your go modules.
-
-Remove the ```.terraform``` directory and the ```.terraform.lock.hcl``` file from your workspace folder.
-
-The try out the provider your a configuration:
+The try out the provider your configuration:
 
 ```bash
+terraform init
 terraform apply
 ```
 
@@ -48,7 +45,7 @@ Explore the examples folder for a complete file with all available resources.
 Build the provider with debugging support:
 
 ```bash
-make debug-start
+make debug
 ```
 
 You must do this each time you want to test new changes.
@@ -58,7 +55,7 @@ This will run the provider with debugging support for delve.
 When the debugger starts you will see the following output:
 
 ```bash
-❯ make debug-start
+❯ make debug
 Type 'help' for list of commands.
 (dlv)
 ```
@@ -78,7 +75,7 @@ Copy the enviroment variable and try applying changes:
 TF_REATTACH_PROVIDERS=<output> terraform apply
 ```
 
-Don't forget to set breakpoints in your code with:
+You can set breakpoints in your code with:
 
 ```go
 runtime.Breakpoint()
@@ -89,5 +86,5 @@ runtime.Breakpoint()
 To update the documentation, first manually update the examples. Then, run the following command to generate the updated docs:
 
 ```bash
-make generate-docs:
+make docs
 ```

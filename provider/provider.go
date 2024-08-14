@@ -1,10 +1,17 @@
 package provider
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 	"github.com/splightplatform/terraform-provider-splight/utils"
 )
+
+// Version is initialized by the Go linker to contain the semver of this build.
+var Version string = "dev"
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -53,12 +60,33 @@ func Provider() *schema.Provider {
 			"splight_asset_kinds": dataSourceAssetKind(),
 		},
 
-		ConfigureFunc: providerConfigure,
+		ConfigureContextFunc: providerConfigure,
 	}
 }
 
-func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
 	hostname := d.Get("hostname").(string)
 	token := d.Get("token").(string)
-	return client.NewClient(hostname, token), nil
+
+	userAgentOptions := client.UserAgent{
+		ProductName:    "terraform-provider-splight",
+		ProductVersion: Version,
+	}
+
+	client, err := client.NewClient(hostname, token, ctx, userAgentOptions)
+
+	if err != nil {
+		// TODO: review the diags
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Failed to create client",
+			Detail:   fmt.Sprintf("Error creating client: %v", err),
+		})
+		return nil, diags
+	}
+
+	// Return the client and no diagnostics if successful
+	return client, diags
 }
