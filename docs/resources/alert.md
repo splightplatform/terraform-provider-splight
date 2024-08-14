@@ -76,6 +76,9 @@ resource "splight_alert" "my_alert" {
       name = splight_asset_attribute.my_attribute.name
     }
 
+    query_group_function = "avg"
+    query_group_unit     = "day"
+
     query_plain = jsonencode(
       [
         {
@@ -134,6 +137,11 @@ Required:
 - `query_plain` (String) actual mongo query
 - `ref_id` (String) identifier of the variable (i.e 'A')
 - `type` (String) either QUERY or EXPRESSION
+
+Optional:
+
+- `query_group_function` (String) function used to aggregate data
+- `query_group_unit` (String) time window to apply the aggregation
 
 Read-Only:
 
