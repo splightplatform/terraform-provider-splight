@@ -15,6 +15,8 @@ type FunctionItem struct {
 	QueryPlain           string             `json:"query_plain"`
 	QueryFilterAsset     FunctionTargetItem `json:"query_filter_asset"`
 	QueryFilterAttribute FunctionTargetItem `json:"query_filter_attribute"`
+	QueryGroupFilter     string             `json:"query_group_filter"`
+	QueryGroupUnit       string             `json:"query_group_unit"`
 }
 
 type FunctionTargetItem struct {

@@ -58,6 +58,8 @@ func convertAlertItems(alertItemsInterface []interface{}) []client.AlertItem {
 		alertItem := item.(map[string]interface{})
 		queryFilterAsset := alertItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
 		queryFilterAttribute := alertItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+		queryGroupFilter := alertItem["query_group_filter"].(string)
+		queryGroupUnit := alertItem["query_group_unit"].(string)
 		alertItems[i] = client.AlertItem{
 			RefID:           alertItem["ref_id"].(string),
 			Type:            alertItem["type"].(string),
@@ -72,6 +74,8 @@ func convertAlertItems(alertItemsInterface []interface{}) []client.AlertItem {
 				Name: queryFilterAttribute["name"].(string),
 				ID:   queryFilterAttribute["id"].(string),
 			},
+			QueryGroupFilter: queryGroupFilter,
+			QueryGroupUnit:   queryGroupUnit,
 		}
 	}
 	return alertItems
