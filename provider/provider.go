@@ -55,6 +55,7 @@ func Provider() *schema.Provider {
 			"splight_function":                    resourceFunction(),
 			"splight_secret":                      resourceSecret(),
 			"splight_node":                        resourceNode(),
+			"splight_tag":                         resourceTag(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"splight_asset_kinds": dataSourceAssetKind(),

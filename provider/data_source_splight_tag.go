@@ -17,18 +17,7 @@ func dataSourceTag() *schema.Resource {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "ID of the resource",
-						},
-						"name": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "name of the resource",
-						},
-					},
+					Schema: schemaTag(),
 				},
 			},
 		},
@@ -45,7 +34,7 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interfa
 
 	var taglist []map[string]string
 
-	for _, tag := range *tags {
+	for _, tag := range tags {
 		tagMap := map[string]string{
 			"id":   tag.ID,
 			"name": tag.Name,

@@ -6,9 +6,14 @@ import (
 
 func schemaTag() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"id": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Description: "ID of the resource",
+		},
 		"name": {
 			Type:        schema.TypeString,
-			Required:    true,
+			Computed:    true,
 			Description: "name of the resource",
 		},
 	}
