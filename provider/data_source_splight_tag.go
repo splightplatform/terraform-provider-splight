@@ -34,6 +34,7 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interfa
 
 	var taglist []map[string]string
 
+	// TODO: give the slice to d.Set() directly
 	for _, tag := range tags {
 		tagMap := map[string]string{
 			"id":   tag.ID,

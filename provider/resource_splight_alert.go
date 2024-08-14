@@ -22,8 +22,6 @@ func resourceAlert() *schema.Resource {
 	}
 }
 
-// TODO: rename and add to an interface for the generic resource.
-// ToSchema? or fromSchema?
 func toAlert(d *schema.ResourceData) *client.AlertParams {
 	// Convert alert items
 	alertItems := convertAlertItems(d.Get("alert_items").([]interface{}))

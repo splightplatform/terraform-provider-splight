@@ -36,6 +36,8 @@ func dataSourceAssetKind() *schema.Resource {
 }
 
 func dataSourceKindRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	// TODO: this data type can be simplified
+	// change the client as well (see Tags)
 	apiClient := meta.(*client.Client)
 	assetKinds, err := apiClient.ListAssetKinds()
 
@@ -45,6 +47,7 @@ func dataSourceKindRead(ctx context.Context, d *schema.ResourceData, meta interf
 
 	var kinds []map[string]string
 
+	// TODO: give the slice to d.Set() directly
 	for _, kind := range *assetKinds {
 		kindMap := map[string]string{
 			"id":   kind.ID,
