@@ -57,5 +57,7 @@ func dataSourceKindRead(ctx context.Context, d *schema.ResourceData, meta interf
 		return diag.FromErr(err)
 	}
 
+	d.SetId("kinds")
+
 	return nil
 }

@@ -46,5 +46,7 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interfa
 		return diag.FromErr(err)
 	}
 
+	d.SetId("tags")
+
 	return nil
 }
