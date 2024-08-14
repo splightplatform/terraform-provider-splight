@@ -1,21 +1,21 @@
 package provider
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 )
 
 func resourceAlert() *schema.Resource {
 	return &schema.Resource{
-		Schema: schemaAlert(),
-		Create: resourceCreateAlert,
-		Read:   resourceReadAlert,
-		Update: resourceUpdateAlert,
-		Delete: resourceDeleteAlert,
-		Exists: resourceExistsAlert,
+		Schema:        schemaAlert(),
+		CreateContext: resourceCreateAlert,
+		ReadContext:   resourceReadAlert,
+		UpdateContext: resourceUpdateAlert,
+		DeleteContext: resourceDeleteAlert,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -58,6 +58,8 @@ func convertAlertItems(alertItemsInterface []interface{}) []client.AlertItem {
 		alertItem := item.(map[string]interface{})
 		queryFilterAsset := alertItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
 		queryFilterAttribute := alertItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+		queryGroupFunction := alertItem["query_group_function"].(string)
+		queryGroupUnit := alertItem["query_group_unit"].(string)
 		alertItems[i] = client.AlertItem{
 			RefID:           alertItem["ref_id"].(string),
 			Type:            alertItem["type"].(string),
@@ -72,6 +74,8 @@ func convertAlertItems(alertItemsInterface []interface{}) []client.AlertItem {
 				Name: queryFilterAttribute["name"].(string),
 				ID:   queryFilterAttribute["id"].(string),
 			},
+			QueryGroupFunction: queryGroupFunction,
+			QueryGroupUnit:     queryGroupUnit,
 		}
 	}
 	return alertItems
@@ -123,7 +127,7 @@ func saveAlertToState(d *schema.ResourceData, alert *client.Alert) {
 	d.Set("alert_items", alert.AlertItems)
 }
 
-func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
+func resourceCreateAlert(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	item := toAlert(d)
@@ -131,7 +135,7 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	createdAlert, err := apiClient.CreateAlert(item)
 
 	if err != nil {
-		return fmt.Errorf("error creating Alert %s", err.Error())
+		return diag.Errorf("error creating Alert: %s", err.Error())
 	}
 
 	saveAlertToState(d, createdAlert)
@@ -139,7 +143,7 @@ func resourceCreateAlert(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
+func resourceUpdateAlert(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
@@ -149,7 +153,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	updateAlert, err := apiClient.UpdateAlert(itemId, item)
 
 	if err != nil {
-		return fmt.Errorf("error updating Alert with ID '%s': %s", itemId, err.Error())
+		return diag.Errorf("error updating Alert with ID '%s': %s", itemId, err.Error())
 	}
 
 	saveAlertToState(d, updateAlert)
@@ -157,7 +161,7 @@ func resourceUpdateAlert(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
+func resourceReadAlert(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
@@ -165,7 +169,12 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 	retrievedAlert, err := apiClient.RetrieveAlert(itemId)
 
 	if err != nil {
-		return fmt.Errorf("error reading Alert with ID '%s': %s", itemId, err.Error())
+		if strings.Contains(err.Error(), "not found") {
+			d.SetId("")
+			return nil
+		} else {
+			return diag.Errorf("error reading Alert with ID '%s': %s", itemId, err.Error())
+		}
 	}
 
 	saveAlertToState(d, retrievedAlert)
@@ -173,7 +182,7 @@ func resourceReadAlert(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceDeleteAlert(d *schema.ResourceData, m interface{}) error {
+func resourceDeleteAlert(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
@@ -181,28 +190,10 @@ func resourceDeleteAlert(d *schema.ResourceData, m interface{}) error {
 	err := apiClient.DeleteAlert(itemId)
 
 	if err != nil {
-		return fmt.Errorf("error deleting Alert with ID '%s': %s", itemId, err.Error())
+		return diag.Errorf("error deleting Alert with ID '%s': %s", itemId, err.Error())
 	}
 
 	d.SetId("")
 
 	return nil
-}
-
-func resourceExistsAlert(d *schema.ResourceData, m interface{}) (bool, error) {
-	apiClient := m.(*client.Client)
-
-	itemId := d.Id()
-
-	_, err := apiClient.RetrieveAlert(itemId)
-
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			return false, nil
-		} else {
-			return false, fmt.Errorf("error finding Alert with ID '%s': %s", itemId, err.Error())
-		}
-	}
-
-	return true, nil
 }

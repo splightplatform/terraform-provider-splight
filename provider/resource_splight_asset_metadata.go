@@ -1,9 +1,10 @@
 package provider
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 	"github.com/splightplatform/terraform-provider-splight/utils"
@@ -11,104 +12,101 @@ import (
 
 func resourceAssetMetadata() *schema.Resource {
 	return &schema.Resource{
-		Schema: schemaAssetMetadata(),
-		Create: resourceCreateAssetMetadata,
-		Read:   resourceReadAssetMetadata,
-		Update: resourceUpdateAssetMetadata,
-		Delete: resourceDeleteAssetMetadata,
-		Exists: resourceExistsAssetMetadata,
+		Schema:        schemaAssetMetadata(),
+		CreateContext: resourceCreateAssetMetadata,
+		ReadContext:   resourceReadAssetMetadata,
+		UpdateContext: resourceUpdateAssetMetadata,
+		DeleteContext: resourceDeleteAssetMetadata,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
 
-func resourceCreateAssetMetadata(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-	item := client.AssetMetadataParams{
+func toAssetMetadata(d *schema.ResourceData) *client.AssetMetadataParams {
+	return &client.AssetMetadataParams{
 		Asset: d.Get("asset").(string),
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Value: d.Get("value").(string),
 		Unit:  utils.ValidateNullableString(d.Get("unit").(string)),
 	}
-	createdAssetMetadata, err := apiClient.CreateAssetMetadata(&item)
+}
+
+func saveAssetMetadataToState(d *schema.ResourceData, assetMetadata *client.AssetMetadata) {
+	d.SetId(assetMetadata.ID)
+
+	d.Set("asset", assetMetadata.Asset)
+	d.Set("name", assetMetadata.Name)
+	d.Set("type", assetMetadata.Type)
+	d.Set("value", assetMetadata.Value)
+	d.Set("unit", assetMetadata.Unit)
+}
+
+func resourceCreateAssetMetadata(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	apiClient := m.(*client.Client)
+
+	item := toAssetMetadata(d)
+
+	createdAssetMetadata, err := apiClient.CreateAssetMetadata(item)
+
 	if err != nil {
-		return fmt.Errorf("Error creating asset %s", err)
+		return diag.Errorf("Error creating AssetMetadata: %s", err)
 	}
-	d.SetId(createdAssetMetadata.ID)
+
+	saveAssetMetadataToState(d, createdAssetMetadata)
+
 	return nil
 }
 
-func resourceUpdateAssetMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceUpdateAssetMetadata(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
-	itemId := d.Id()
-	item := client.AssetMetadataParams{
-		Asset: d.Get("asset").(string),
-		Name:  d.Get("name").(string),
-		Type:  d.Get("type").(string),
-		Value: d.Get("value").(string),
-		Unit:  utils.ValidateNullableString(d.Get("unit").(string)),
-	}
-	updatedAssetMetadata, err := apiClient.UpdateAssetMetadata(itemId, &item)
 
+	itemId := d.Id()
+
+	item := toAssetMetadata(d)
+
+	updatedAssetMetadata, err := apiClient.UpdateAssetMetadata(itemId, item)
 	if err != nil {
-		return err
+		return diag.Errorf("Error updating AssetMetadata with ID '%s': %s", itemId, err)
 	}
-	d.Set("asset", updatedAssetMetadata.Asset)
-	d.Set("name", updatedAssetMetadata.Name)
-	d.Set("type", updatedAssetMetadata.Type)
-	d.Set("value", updatedAssetMetadata.Value)
-	d.Set("unit", updatedAssetMetadata.Unit)
+
+	saveAssetMetadataToState(d, updatedAssetMetadata)
+
 	return nil
 }
 
-func resourceReadAssetMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceReadAssetMetadata(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
 	retrievedAssetMetadata, err := apiClient.RetrieveAssetMetadata(itemId)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			d.SetId("")
+			return nil
 		} else {
-			return fmt.Errorf("error finding AssetMetadata with ID %s", itemId)
+			return diag.Errorf("Error finding AssetMetadata with ID '%s': %s", itemId, err)
 		}
 	}
 
-	d.SetId(retrievedAssetMetadata.ID)
-	d.Set("asset", retrievedAssetMetadata.Asset)
-	d.Set("name", retrievedAssetMetadata.Name)
-	d.Set("type", retrievedAssetMetadata.Type)
-	d.Set("value", retrievedAssetMetadata.Value)
-	d.Set("unit", retrievedAssetMetadata.Unit)
+	saveAssetMetadataToState(d, retrievedAssetMetadata)
+
 	return nil
 }
 
-func resourceDeleteAssetMetadata(d *schema.ResourceData, m interface{}) error {
+func resourceDeleteAssetMetadata(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
 
 	err := apiClient.DeleteAssetMetadata(itemId)
 	if err != nil {
-		return err
+		return diag.Errorf("Error deleting AssetMetadata with ID '%s': %s", itemId, err)
 	}
+
 	d.SetId("")
+
 	return nil
-}
-
-func resourceExistsAssetMetadata(d *schema.ResourceData, m interface{}) (bool, error) {
-	apiClient := m.(*client.Client)
-
-	itemId := d.Id()
-	_, err := apiClient.RetrieveAssetMetadata(itemId)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			return false, nil
-		} else {
-			return false, err
-		}
-	}
-	return true, nil
 }

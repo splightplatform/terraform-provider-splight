@@ -78,7 +78,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 	client, err := client.NewClient(hostname, token, ctx, userAgentOptions)
 
 	if err != nil {
-		// TODO: review the diags
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Failed to create client",

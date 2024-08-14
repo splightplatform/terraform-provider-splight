@@ -1,9 +1,10 @@
 package provider
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 	"github.com/splightplatform/terraform-provider-splight/utils"
@@ -11,100 +12,102 @@ import (
 
 func resourceAssetAttribute() *schema.Resource {
 	return &schema.Resource{
-		Schema: schemaAssetAttribute(),
-		Create: resourceCreateAssetAttribute,
-		Read:   resourceReadAssetAttribute,
-		Update: resourceUpdateAssetAttribute,
-		Delete: resourceDeleteAssetAttribute,
-		Exists: resourceExistsAssetAttribute,
+		Schema:        schemaAssetAttribute(),
+		CreateContext: resourceCreateAssetAttribute,
+		ReadContext:   resourceReadAssetAttribute,
+		UpdateContext: resourceUpdateAssetAttribute,
+		DeleteContext: resourceDeleteAssetAttribute,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
 
-func resourceCreateAssetAttribute(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-	item := client.AssetAttributeParams{
+func toAssetAttribute(d *schema.ResourceData) *client.AssetAttributeParams {
+	return &client.AssetAttributeParams{
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
 		Asset: d.Get("asset").(string),
 		Unit:  utils.ValidateNullableString(d.Get("unit").(string)),
 	}
-	createdAssetAttribute, err := apiClient.CreateAssetAttribute(&item)
+}
+
+func saveAssetAttributeToState(d *schema.ResourceData, assetAttribute *client.AssetAttribute) {
+	d.SetId(assetAttribute.ID)
+
+	d.Set("name", assetAttribute.Name)
+	d.Set("type", assetAttribute.Type)
+	d.Set("asset", assetAttribute.Asset)
+	d.Set("unit", assetAttribute.Unit)
+}
+
+func resourceCreateAssetAttribute(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	apiClient := m.(*client.Client)
+
+	item := toAssetAttribute(d)
+
+	createdAssetAttribute, err := apiClient.CreateAssetAttribute(item)
+
 	if err != nil {
-		return fmt.Errorf("Error creating asset %s", err)
+		return diag.Errorf("error creating AssetAttribute: %s", err.Error())
 	}
-	d.SetId(createdAssetAttribute.ID)
+
+	saveAssetAttributeToState(d, createdAssetAttribute)
+
 	return nil
 }
 
-func resourceUpdateAssetAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceUpdateAssetAttribute(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
+
 	itemId := d.Id()
-	item := client.AssetAttributeParams{
-		Name:  d.Get("name").(string),
-		Type:  d.Get("type").(string),
-		Asset: d.Get("asset").(string),
-		Unit:  utils.ValidateNullableString(d.Get("unit").(string)),
-	}
-	updatedAssetAttribute, err := apiClient.UpdateAssetAttribute(itemId, &item)
+
+	item := toAssetAttribute(d)
+
+	updatedAssetAttribute, err := apiClient.UpdateAssetAttribute(itemId, item)
 
 	if err != nil {
-		return err
+		return diag.Errorf("error updating AssetAttribute with ID '%s': %s", itemId, err.Error())
 	}
-	d.Set("name", updatedAssetAttribute.Name)
-	d.Set("type", updatedAssetAttribute.Type)
-	d.Set("asset", updatedAssetAttribute.Asset)
-	d.Set("unit", updatedAssetAttribute.Unit)
+
+	saveAssetAttributeToState(d, updatedAssetAttribute)
+
 	return nil
 }
 
-func resourceReadAssetAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceReadAssetAttribute(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
+
 	retrievedAssetAttribute, err := apiClient.RetrieveAssetAttribute(itemId)
+
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			d.SetId("")
+			return nil
 		} else {
-			return fmt.Errorf("error finding AssetAttribute with ID %s", itemId)
+			return diag.Errorf("error reading AssetAttribute with ID '%s': %s", itemId, err.Error())
 		}
 	}
 
-	d.SetId(retrievedAssetAttribute.ID)
-	d.Set("name", retrievedAssetAttribute.Name)
-	d.Set("type", retrievedAssetAttribute.Type)
-	d.Set("unit", retrievedAssetAttribute.Unit)
-	d.Set("asset", retrievedAssetAttribute.Asset)
+	saveAssetAttributeToState(d, retrievedAssetAttribute)
+
 	return nil
 }
 
-func resourceDeleteAssetAttribute(d *schema.ResourceData, m interface{}) error {
+func resourceDeleteAssetAttribute(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
 
 	err := apiClient.DeleteAssetAttribute(itemId)
+
 	if err != nil {
-		return err
+		return diag.Errorf("error deleting AssetAttribute with ID '%s': %s", itemId, err.Error())
 	}
+
 	d.SetId("")
+
 	return nil
-}
-
-func resourceExistsAssetAttribute(d *schema.ResourceData, m interface{}) (bool, error) {
-	apiClient := m.(*client.Client)
-
-	itemId := d.Id()
-	_, err := apiClient.RetrieveAssetAttribute(itemId)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			return false, nil
-		} else {
-			return false, err
-		}
-	}
-	return true, nil
 }
