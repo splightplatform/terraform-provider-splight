@@ -32,18 +32,7 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interfa
 		return diag.FromErr(err)
 	}
 
-	var taglist []map[string]string
-
-	// TODO: give the slice to d.Set() directly
-	for _, tag := range tags {
-		tagMap := map[string]string{
-			"id":   tag.ID,
-			"name": tag.Name,
-		}
-		taglist = append(taglist, tagMap)
-	}
-
-	if err := d.Set("tags", taglist); err != nil {
+	if err := d.Set("tags", tags); err != nil {
 		return diag.FromErr(err)
 	}
 
