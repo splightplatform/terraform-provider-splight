@@ -23,20 +23,43 @@ func schemaAsset() map[string]*schema.Schema {
 			Description:      "geo position and shape of the resource",
 			DiffSuppressFunc: utils.JSONStringEqualSupressFunc,
 		},
+		"tags": {
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Description: "tags of the resource",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag name",
+					},
+				},
+			},
+		},
 		"kind": {
 			Type:        schema.TypeSet,
 			Optional:    true,
+			MaxItems:    1,
+			ForceNew:    true,
 			Description: "kind of the resource",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"id": {
 						Type:        schema.TypeString,
 						Required:    true,
+						ForceNew:    true,
 						Description: "kind id",
 					},
 					"name": {
 						Type:        schema.TypeString,
 						Required:    true,
+						ForceNew:    true,
 						Description: "kind name",
 					},
 				},

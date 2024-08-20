@@ -19,6 +19,7 @@ type ComponentInputParam struct {
 type ComponentParams struct {
 	Name        string                `json:"name"`
 	Description string                `json:"description"`
+	Tags        []Tag                 `json:"tags"`
 	Version     string                `json:"version"`
 	Input       []ComponentInputParam `json:"input"`
 }

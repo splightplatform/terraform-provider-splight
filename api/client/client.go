@@ -76,7 +76,6 @@ func NewClient(hostname, token string, context context.Context, opts UserAgent) 
 // method: HTTP method (GET, POST, etc.)
 // body: Request body to be sent (if applicable)
 // Returns: Response body reader and nil on success, or an error if the request fails
-
 func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
 	var respBody io.ReadCloser
 	var err error

@@ -24,6 +24,19 @@ func resourceComponent() *schema.Resource {
 }
 
 func ToComponent(d *schema.ResourceData) *client.ComponentParams {
+
+	tagsInterface := d.Get("tags").(*schema.Set).List()
+	tags := make([]client.Tag, len(tagsInterface))
+	for i, tagInterface := range tagsInterface {
+		tagMap := tagInterface.(map[string]interface{})
+		tags[i] = client.Tag{
+			ID: tagMap["id"].(string),
+			TagParams: client.TagParams{
+				Name: tagMap["name"].(string),
+			},
+		}
+	}
+
 	componentInputInterface := d.Get("input").(*schema.Set).List()
 	componentInputInterfaceList := make([]map[string]interface{}, len(componentInputInterface))
 	for i, componentInputInterfaceItem := range componentInputInterface {
@@ -50,6 +63,7 @@ func ToComponent(d *schema.ResourceData) *client.ComponentParams {
 		Description: d.Get("description").(string),
 		Version:     d.Get("version").(string),
 		Input:       componentInput,
+		Tags:        tags,
 	}
 }
 
@@ -67,6 +81,7 @@ func resourceCreateComponent(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", createdComponent.Name)
 	d.Set("description", createdComponent.Description)
 	d.Set("version", createdComponent.Version)
+	d.Set("tags", createdComponent.Tags)
 
 	// We need to initialize the memory for nested elements
 	// Needed because d.Set() can not handle properly json.RawMessage
@@ -103,10 +118,32 @@ func resourceUpdateComponent(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	d.Set("tags", updatedComponent.Tags)
 	d.Set("name", updatedComponent.Name)
 	d.Set("description", updatedComponent.Description)
+	d.Set("tags", updatedComponent.Tags)
 	d.Set("version", updatedComponent.Version)
-	d.Set("input", updatedComponent.Input)
+
+	// We need to initialize the memory for nested elements
+	// Needed because d.Set() can not handle properly json.RawMessage
+	if _, ok := d.GetOk("input"); !ok {
+		d.Set("input", []interface{}{})
+	}
+
+	inputInterface := make([]map[string]interface{}, len(updatedComponent.Input))
+	for i, inputItem := range updatedComponent.Input {
+		inputInterface[i] = map[string]interface{}{
+			"name":        inputItem.Name,
+			"description": inputItem.Description,
+			"multiple":    inputItem.Multiple,
+			"required":    inputItem.Required,
+			"sensitive":   inputItem.Sensitive,
+			"type":        inputItem.Type,
+			"value":       inputItem.Value,
+		}
+	}
+	d.Set("input", inputInterface)
+
 	return nil
 }
 
@@ -126,8 +163,29 @@ func resourceReadComponent(d *schema.ResourceData, m interface{}) error {
 	d.SetId(retrievedComponent.ID)
 	d.Set("name", retrievedComponent.Name)
 	d.Set("description", retrievedComponent.Description)
+	d.Set("tags", retrievedComponent.Tags)
 	d.Set("version", retrievedComponent.Version)
-	d.Set("input", retrievedComponent.Input)
+
+	// We need to initialize the memory for nested elements
+	// Needed because d.Set() can not handle properly json.RawMessage
+	if _, ok := d.GetOk("input"); !ok {
+		d.Set("input", []interface{}{})
+	}
+
+	inputInterface := make([]map[string]interface{}, len(retrievedComponent.Input))
+	for i, inputItem := range retrievedComponent.Input {
+		inputInterface[i] = map[string]interface{}{
+			"name":        inputItem.Name,
+			"description": inputItem.Description,
+			"multiple":    inputItem.Multiple,
+			"required":    inputItem.Required,
+			"sensitive":   inputItem.Sensitive,
+			"type":        inputItem.Type,
+			"value":       inputItem.Value,
+		}
+	}
+	d.Set("input", inputInterface)
+
 	return nil
 }
 

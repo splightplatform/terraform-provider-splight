@@ -17,7 +17,18 @@ func dataSourceTag() *schema.Resource {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
-					Schema: schemaTag(),
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "ID of the resource",
+						},
+						"name": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "name of the resource",
+						},
+					},
 				},
 			},
 		},
@@ -32,10 +43,19 @@ func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interfa
 		return diag.FromErr(err)
 	}
 
-	if err := d.Set("tags", tags); err != nil {
-		return diag.FromErr(err)
+	var tagsMap []map[string]string
+
+	for _, tag := range tags {
+		tagMap := map[string]string{
+			"id":   tag.ID,
+			"name": tag.Name,
+		}
+		tagsMap = append(tagsMap, tagMap)
 	}
 
+	if err := d.Set("tags", tagsMap); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId("tags")
 
 	return nil

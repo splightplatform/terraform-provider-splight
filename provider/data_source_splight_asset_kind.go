@@ -37,16 +37,25 @@ func dataSourceAssetKind() *schema.Resource {
 
 func dataSourceKindRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	apiClient := meta.(*client.Client)
-
 	assetKinds, err := apiClient.ListAssetKinds()
+
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	if err := d.Set("kinds", assetKinds); err != nil {
-		return diag.FromErr(err)
+	var kinds []map[string]string
+
+	for _, kind := range assetKinds {
+		kindMap := map[string]string{
+			"id":   kind.ID,
+			"name": kind.Name,
+		}
+		kinds = append(kinds, kindMap)
 	}
 
+	if err := d.Set("kinds", kinds); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId("kinds")
 
 	return nil

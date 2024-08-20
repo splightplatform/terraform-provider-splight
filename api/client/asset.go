@@ -15,6 +15,7 @@ type AssetParams struct {
 	Name          string          `json:"name"`
 	Description   string          `json:"description"`
 	RelatedAssets []RelatedAsset  `json:"assets"`
+	Tags          []Tag           `json:"tags"`
 	Kind          *AssetKind      `json:"kind"`
 }
 
