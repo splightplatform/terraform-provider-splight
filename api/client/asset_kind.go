@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"runtime"
 )
 
 type AssetKind struct {
@@ -16,6 +17,8 @@ func (c *Client) ListAssetKinds() ([]AssetKind, error) {
 		return nil, err
 	}
 	items := []AssetKind{}
+	// TODO: revert back to the original code that read from "results"
+	runtime.Breakpoint()
 	err = json.NewDecoder(body).Decode(&items)
 	if err != nil {
 		return nil, err

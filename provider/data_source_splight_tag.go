@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"runtime"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -17,7 +18,18 @@ func dataSourceTag() *schema.Resource {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
-					Schema: schemaTag(),
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "ID of the resource",
+						},
+						"name": {
+							Type:        schema.TypeString,
+							Description: "name of the resource",
+							Required:    true,
+						},
+					},
 				},
 			},
 		},
@@ -26,6 +38,7 @@ func dataSourceTag() *schema.Resource {
 
 func dataSourceTagRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	apiClient := meta.(*client.Client)
+	runtime.Breakpoint()
 	tags, err := apiClient.ListTags()
 
 	if err != nil {

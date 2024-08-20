@@ -48,6 +48,7 @@ func InputParameter() *schema.Schema {
 						"url",
 						"Asset",
 						"Attribute",
+						"DataAddress",
 						"Component",
 						"File",
 						"Crontab",

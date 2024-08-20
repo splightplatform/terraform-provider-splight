@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"runtime"
 )
 
 type TagParams struct {
@@ -21,6 +22,7 @@ func (c *Client) ListTags() ([]Tag, error) {
 		return nil, err
 	}
 	items := []Tag{}
+	runtime.Breakpoint()
 	err = json.NewDecoder(body).Decode(&items)
 	if err != nil {
 		return nil, err
