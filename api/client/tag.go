@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"runtime"
 )
 
 type TagParams struct {
@@ -16,18 +15,21 @@ type Tag struct {
 	ID string `json:"id"`
 }
 
+type Tags struct {
+	Tags []Tag `json:"results"`
+}
+
 func (c *Client) ListTags() ([]Tag, error) {
 	body, err := c.httpRequest("v2/account/tags/", "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
 	}
-	items := []Tag{}
-	runtime.Breakpoint()
+	items := Tags{}
 	err = json.NewDecoder(body).Decode(&items)
 	if err != nil {
 		return nil, err
 	}
-	return items, nil
+	return items.Tags, nil
 }
 
 func (c *Client) CreateTag(item *TagParams) (*Tag, error) {

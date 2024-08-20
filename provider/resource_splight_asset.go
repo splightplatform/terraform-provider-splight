@@ -1,148 +1,123 @@
 package provider
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
+	"runtime"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/terraform-provider-splight/api/client"
 )
 
 func resourceAsset() *schema.Resource {
 	return &schema.Resource{
-		Schema: schemaAsset(),
-		Create: resourceCreateAsset,
-		Read:   resourceReadAsset,
-		Update: resourceUpdateAsset,
-		Delete: resourceDeleteAsset,
-		Exists: resourceExistsAsset,
+		Schema:        schemaAsset(),
+		CreateContext: resourceCreateAsset,
+		ReadContext:   resourceReadAsset,
+		UpdateContext: resourceUpdateAsset,
+		DeleteContext: resourceDeleteAsset,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
 
-func resourceCreateAsset(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
-
-	assetRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
-	assetRelatedAssets := make([]client.RelatedAsset, len(assetRelatedAssetsSet))
-	for i, relatedAsset := range assetRelatedAssetsSet {
-		assetRelatedAssets[i] = client.RelatedAsset{
+func toAsset(d *schema.ResourceData) *client.AssetParams {
+	relatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
+	relatedAssets := make([]client.RelatedAsset, len(relatedAssetsSet))
+	for i, relatedAsset := range relatedAssetsSet {
+		relatedAssets[i] = client.RelatedAsset{
 			Id: relatedAsset.(string),
 		}
 	}
 
-	// Initialize the kind variable
-	var kind map[string]interface{}
+	var kind *client.AssetKind
 	kinds := d.Get("kind").(*schema.Set).List()
 	if len(kinds) > 0 {
-		kind = kinds[0].(map[string]interface{})
-	}
-
-	// Prepare the item with a check on kind
-	item := client.AssetParams{
-		Name:          d.Get("name").(string),
-		Description:   d.Get("description").(string),
-		Geometry:      json.RawMessage(d.Get("geometry").(string)),
-		RelatedAssets: assetRelatedAssets,
-	}
-
-	if kind != nil {
-		item.Kind = &client.AssetKind{
-			ID:   kind["id"].(string),
-			Name: kind["name"].(string),
+		kindMap := kinds[0].(map[string]interface{})
+		kind = &client.AssetKind{
+			ID:   kindMap["id"].(string),
+			Name: kindMap["name"].(string),
 		}
 	}
 
-	createdAsset, err := apiClient.CreateAsset(&item)
-	if err != nil {
-		return err
-	}
-
-	d.SetId(createdAsset.ID)
-	d.Set("name", createdAsset.Name)
-	d.Set("description", createdAsset.Description)
-	d.Set("related_assets", createdAsset.RelatedAssets)
-	d.Set("geometry", string(createdAsset.Geometry))
-
-	// Set kind as a set
-	if kind != nil {
-		d.Set("kind", []map[string]interface{}{
-			{
-				"id":   createdAsset.Kind.ID,
-				"name": createdAsset.Kind.Name,
+	runtime.Breakpoint()
+	tagsInterface := d.Get("tags").(*schema.Set).List()
+	tags := make([]client.Tag, len(tagsInterface))
+	for i, item := range tagsInterface {
+		tagItem := item.(map[string]interface{})
+		tags[i] = client.Tag{
+			ID: tagItem["id"].(string),
+			TagParams: client.TagParams{
+				Name: tagItem["name"].(string),
 			},
-		})
+		}
 	}
 
-	return nil
+	return &client.AssetParams{
+		Name:          d.Get("name").(string),
+		Description:   d.Get("description").(string),
+		Geometry:      json.RawMessage(d.Get("geometry").(string)),
+		RelatedAssets: relatedAssets,
+		Tags:          tags,
+		Kind:          kind,
+	}
 }
 
-func resourceUpdateAsset(d *schema.ResourceData, m interface{}) error {
-	apiClient := m.(*client.Client)
+func saveAssetToState(d *schema.ResourceData, asset *client.Asset) {
+	d.SetId(asset.ID)
+	d.Set("name", asset.Name)
+	d.Set("description", asset.Description)
+	d.Set("related_assets", asset.RelatedAssets)
+	d.Set("geometry", string(asset.Geometry))
+	d.Set("tags", asset.Tags)
 
-	itemId := d.Id()
-
-	assetRelatedAssetsSet := d.Get("related_assets").(*schema.Set).List()
-	assetRelatedAssets := make([]client.RelatedAsset, len(assetRelatedAssetsSet))
-	for i, relatedAsset := range assetRelatedAssetsSet {
-		assetRelatedAssets[i] = client.RelatedAsset{
-			Id: relatedAsset.(string),
-		}
-	}
-
-	// Initialize the kind variable
-	var kind map[string]interface{}
-	kinds := d.Get("kind").(*schema.Set).List()
-	if len(kinds) > 0 {
-		kind = kinds[0].(map[string]interface{})
-	}
-
-	// Prepare the item
-	item := client.AssetParams{
-		Name:          d.Get("name").(string),
-		Description:   d.Get("description").(string),
-		Geometry:      json.RawMessage(d.Get("geometry").(string)),
-		RelatedAssets: assetRelatedAssets,
-	}
-
-	// Only set Kind if kind is not nil
-	if kind != nil {
-		item.Kind = &client.AssetKind{
-			ID:   kind["id"].(string),
-			Name: kind["name"].(string),
-		}
-	}
-
-	updatedAsset, err := apiClient.UpdateAsset(itemId, &item)
-	if err != nil {
-		return err
-	}
-
-	d.Set("name", updatedAsset.Name)
-	d.Set("description", updatedAsset.Description)
-	d.Set("related_assets", updatedAsset.RelatedAssets)
-	d.Set("geometry", string(updatedAsset.Geometry))
-
-	// Set kind as a set if it's not nil
-	if kind != nil {
+	if asset.Kind != nil {
 		d.Set("kind", []map[string]interface{}{
 			{
-				"id":   updatedAsset.Kind.ID,
-				"name": updatedAsset.Kind.Name,
+				"id":   asset.Kind.ID,
+				"name": asset.Kind.Name,
 			},
 		})
 	} else {
-		// Clear the kind field if it was not provided
 		d.Set("kind", nil)
 	}
+}
+
+func resourceCreateAsset(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	apiClient := m.(*client.Client)
+
+	item := toAsset(d)
+
+	createdAsset, err := apiClient.CreateAsset(item)
+	if err != nil {
+		return diag.Errorf("error creating Asset: %s", err.Error())
+	}
+
+	saveAssetToState(d, createdAsset)
 
 	return nil
 }
 
-func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
+func resourceUpdateAsset(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	apiClient := m.(*client.Client)
+
+	itemId := d.Id()
+	item := toAsset(d)
+
+	updatedAsset, err := apiClient.UpdateAsset(itemId, item)
+	if err != nil {
+		return diag.Errorf("error updating Asset with ID '%s': %s", itemId, err.Error())
+	}
+
+	saveAssetToState(d, updatedAsset)
+
+	return nil
+}
+
+func resourceReadAsset(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
@@ -150,58 +125,28 @@ func resourceReadAsset(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			d.SetId("")
+			return nil
 		} else {
-			return fmt.Errorf("error finding Asset with ID %s", itemId)
+			return diag.Errorf("error reading Asset with ID '%s': %s", itemId, err.Error())
 		}
-		return nil
 	}
 
-	d.SetId(retrievedAsset.ID)
-	d.Set("name", retrievedAsset.Name)
-	d.Set("description", retrievedAsset.Description)
-	d.Set("related_assets", retrievedAsset.RelatedAssets)
-	d.Set("geometry", string(retrievedAsset.Geometry))
-
-	// Check if kind is present in the retrieved asset
-	if retrievedAsset.Kind != nil {
-		d.Set("kind", []map[string]interface{}{
-			{
-				"id":   retrievedAsset.Kind.ID,
-				"name": retrievedAsset.Kind.Name,
-			},
-		})
-	} else {
-		// Clear the kind field if it was not provided
-		d.Set("kind", nil)
-	}
+	saveAssetToState(d, retrievedAsset)
 
 	return nil
 }
 
-func resourceDeleteAsset(d *schema.ResourceData, m interface{}) error {
+func resourceDeleteAsset(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	apiClient := m.(*client.Client)
 
 	itemId := d.Id()
 
 	err := apiClient.DeleteAsset(itemId)
 	if err != nil {
-		return err
+		return diag.Errorf("error deleting Asset with ID '%s': %s", itemId, err.Error())
 	}
+
 	d.SetId("")
+
 	return nil
-}
-
-func resourceExistsAsset(d *schema.ResourceData, m interface{}) (bool, error) {
-	apiClient := m.(*client.Client)
-
-	itemId := d.Id()
-	_, err := apiClient.RetrieveAsset(itemId)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
-			return false, nil
-		} else {
-			return false, err
-		}
-	}
-	return true, nil
 }
