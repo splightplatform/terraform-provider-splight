@@ -19,18 +19,18 @@ func schemaComponent() map[string]*schema.Schema {
 		"tags": {
 			Type:        schema.TypeSet,
 			Optional:    true,
-			Description: "tags for the component",
+			Description: "tags of the resource",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"id": {
 						Type:        schema.TypeString,
 						Required:    true,
-						Description: "ID of the resource",
+						Description: "tag id",
 					},
 					"name": {
 						Type:        schema.TypeString,
-						Description: "name of the resource",
 						Required:    true,
+						Description: "tag name",
 					},
 				},
 			},
