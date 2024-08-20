@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"runtime"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -43,7 +42,6 @@ func toAsset(d *schema.ResourceData) *client.AssetParams {
 		}
 	}
 
-	runtime.Breakpoint()
 	tagsInterface := d.Get("tags").(*schema.Set).List()
 	tags := make([]client.Tag, len(tagsInterface))
 	for i, item := range tagsInterface {

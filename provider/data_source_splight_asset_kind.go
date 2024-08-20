@@ -45,7 +45,7 @@ func dataSourceKindRead(ctx context.Context, d *schema.ResourceData, meta interf
 
 	var kinds []map[string]string
 
-	for _, kind := range *assetKinds {
+	for _, kind := range assetKinds {
 		kindMap := map[string]string{
 			"id":   kind.ID,
 			"name": kind.Name,

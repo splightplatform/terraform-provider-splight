@@ -8,12 +8,11 @@ terraform {
 
 # Create a tag
 resource "splight_tag" "my_tag" {
-  name = "MyTag"
+  name = "My Tag"
 }
 
 # Fetch tags
 data "splight_tags" "my_tags" {}
-data "splight_asset_kinds" "my_kinds" {}
 
 resource "splight_component" "MQTTConnector" {
   name        = "My Component"
@@ -30,7 +29,17 @@ resource "splight_component" "MQTTConnector" {
     }
   }
 
-  # Or set one individually
+  # You can use the existing tags in the platform
+  # by name
+  dynamic "tags" {
+    for_each = length(data.splight_tags.my_tags.tags) > 0 ? [0] : []
+    content {
+      name = "ExistingTagName"
+      id   = one([for t in data.splight_tags.my_tags.tags : t.id if t.name == "ExistingTagName"])
+    }
+  }
+
+  # Or use the one created
   tags {
     name = splight_tag.my_tag.name
     id   = splight_tag.my_tag.id

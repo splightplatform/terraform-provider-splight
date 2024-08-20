@@ -15,7 +15,7 @@ type AssetKinds struct {
 	Kinds []AssetKind `json:"results"`
 }
 
-func (c *Client) ListAssetKinds() (*[]AssetKind, error) {
+func (c *Client) ListAssetKinds() ([]AssetKind, error) {
 	body, err := c.httpRequest("v2/engine/asset/kinds/", "GET", bytes.Buffer{})
 	if err != nil {
 		return nil, err
@@ -25,5 +25,5 @@ func (c *Client) ListAssetKinds() (*[]AssetKind, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &items.Kinds, nil
+	return items.Kinds, nil
 }
