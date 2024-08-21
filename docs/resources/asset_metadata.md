@@ -51,7 +51,7 @@ resource "splight_asset_metadata" "my_asset_metadata" {
 
 - `asset` (String) reference to the asset to be linked to
 - `name` (String) name of the resource
-- `type` (String) [string|boolean|number] type of the data to be ingested in this attribute
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
 - `value` (String) metadata value
 
 ### Optional

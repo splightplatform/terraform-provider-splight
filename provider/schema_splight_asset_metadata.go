@@ -15,11 +15,11 @@ func schemaAssetMetadata() map[string]*schema.Schema {
 		"type": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "[string|boolean|number] type of the data to be ingested in this attribute",
+			Description: "[String|Boolean|Number] type of the data to be ingested in this attribute",
 			ValidateFunc: validation.StringInSlice([]string{
-				"string",
-				"boolean",
-				"number",
+				"String",
+				"Boolean",
+				"Number",
 			}, false),
 		},
 		"unit": {

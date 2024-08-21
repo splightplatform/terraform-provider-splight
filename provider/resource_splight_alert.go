@@ -125,8 +125,43 @@ func saveAlertToState(d *schema.ResourceData, alert *client.Alert) {
 	d.Set("cron_year", alert.CronYear)
 	d.Set("severity", alert.Severity)
 	d.Set("related_assets", alert.RelatedAssets)
-	d.Set("thresholds", alert.Thresholds)
-	d.Set("alert_items", alert.AlertItems)
+
+	thresholds := make([]map[string]interface{}, len(alert.Thresholds))
+	for i, alert := range alert.Thresholds {
+		thresholds[i] = map[string]interface{}{
+			"value":       alert.Value,
+			"status":      alert.Status,
+			"status_text": alert.StatusText,
+		}
+	}
+	d.Set("thresholds", thresholds)
+
+	alertItems := make([]map[string]interface{}, len(alert.AlertItems))
+	for i, alert := range alert.AlertItems {
+		alertItems[i] = map[string]interface{}{
+			"id":               alert.ID,
+			"ref_id":           alert.RefID,
+			"type":             alert.Type,
+			"expression":       alert.Expression,
+			"expression_plain": alert.ExpressionPlain,
+			"query_plain":      alert.QueryPlain,
+			"query_filter_asset": []map[string]interface{}{
+				{
+					"id":   alert.QueryFilterAsset.ID,
+					"name": alert.QueryFilterAsset.Name,
+				},
+			},
+			"query_filter_attribute": []map[string]interface{}{
+				{
+					"id":   alert.QueryFilterAttribute.ID,
+					"name": alert.QueryFilterAttribute.Name,
+				},
+			},
+			"query_group_function": alert.QueryGroupFunction,
+			"query_group_unit":     alert.QueryGroupUnit,
+		}
+	}
+	d.Set("alert_items", alertItems)
 }
 
 func resourceCreateAlert(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

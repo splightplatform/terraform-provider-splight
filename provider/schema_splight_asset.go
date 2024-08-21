@@ -20,7 +20,7 @@ func schemaAsset() map[string]*schema.Schema {
 		"geometry": {
 			Type:             schema.TypeString,
 			Required:         true,
-			Description:      "geo position and shape of the resource",
+			Description:      "GeoJSON GeomtryCollection",
 			DiffSuppressFunc: utils.JSONStringEqualSupressFunc,
 		},
 		"tags": {

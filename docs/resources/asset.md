@@ -75,7 +75,7 @@ resource "splight_asset" "my_asset" {
 
 ### Required
 
-- `geometry` (String) geo position and shape of the resource
+- `geometry` (String) GeoJSON GeomtryCollection
 - `name` (String) name of the resource
 
 ### Optional
