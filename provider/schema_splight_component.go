@@ -41,5 +41,6 @@ func schemaComponent() map[string]*schema.Schema {
 			Description: "[NAME-VERSION] the version of the hub component",
 		},
 		"input": InputParameter(),
+		// TODO: compute node
 	}
 }

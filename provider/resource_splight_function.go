@@ -100,8 +100,18 @@ func saveFunctionToState(d *schema.ResourceData, function *client.Function) {
 	// Since the schemas for these params are 'TypeSet' we must convert
 	// our structs to a slice of 'FunctionTargetItem'.
 	// Otherwise the SDK will raise a type error.
-	d.Set("target_asset", []client.FunctionTargetItem{function.TargetAsset})
-	d.Set("target_attribute", []client.FunctionTargetItem{function.TargetAttribute})
+	d.Set("target_asset", []map[string]interface{}{
+		{
+			"id":   function.TargetAsset.ID,
+			"name": function.TargetAsset.Name,
+		},
+	})
+	d.Set("target_attribute", []map[string]interface{}{
+		{
+			"id":   function.TargetAttribute.ID,
+			"name": function.TargetAttribute.Name,
+		},
+	})
 
 	d.Set("rate_unit", function.RateUnit)
 	d.Set("rate_value", function.RateValue)
@@ -111,7 +121,33 @@ func saveFunctionToState(d *schema.ResourceData, function *client.Function) {
 	d.Set("cron_month", function.CronMonth)
 	d.Set("cron_dow", function.CronDOW)
 	d.Set("cron_year", function.CronYear)
-	d.Set("function_items", function.FunctionItems)
+
+	functionItems := make([]map[string]interface{}, len(function.FunctionItems))
+	for i, function := range function.FunctionItems {
+		functionItems[i] = map[string]interface{}{
+			"id":               function.ID,
+			"ref_id":           function.RefID,
+			"type":             function.Type,
+			"expression":       function.Expression,
+			"expression_plain": function.ExpressionPlain,
+			"query_plain":      function.QueryPlain,
+			"query_filter_asset": []map[string]interface{}{
+				{
+					"id":   function.QueryFilterAsset.ID,
+					"name": function.QueryFilterAsset.Name,
+				},
+			},
+			"query_filter_attribute": []map[string]interface{}{
+				{
+					"id":   function.QueryFilterAttribute.ID,
+					"name": function.QueryFilterAttribute.Name,
+				},
+			},
+			"query_group_function": function.QueryGroupFunction,
+			"query_group_unit":     function.QueryGroupUnit,
+		}
+	}
+	d.Set("function_items", functionItems)
 }
 
 func resourceCreateFunction(d *schema.ResourceData, m interface{}) error {

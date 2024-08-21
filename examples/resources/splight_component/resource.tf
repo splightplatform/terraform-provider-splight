@@ -19,23 +19,13 @@ resource "splight_component" "MQTTConnector" {
   description = "My Component Description"
   version     = "MQTT-6.5.5"
 
-  # You can set all the tags in the platform
+  # Use an existing tag if it exists in the platform by name
   dynamic "tags" {
-    for_each = { for idx, tag in data.splight_tags.my_tags.tags : idx => tag }
+    for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
 
     content {
-      id   = tags.value.id
       name = tags.value.name
-    }
-  }
-
-  # You can use the existing tags in the platform
-  # by name
-  dynamic "tags" {
-    for_each = length(data.splight_tags.my_tags.tags) > 0 ? [0] : []
-    content {
-      name = "ExistingTagName"
-      id   = one([for t in data.splight_tags.my_tags.tags : t.id if t.name == "ExistingTagName"])
+      id   = tags.value.id
     }
   }
 

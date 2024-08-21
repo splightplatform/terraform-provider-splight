@@ -13,11 +13,33 @@ description: |-
 ## Example Usage
 
 ```terraform
-resource "splight_asset_attribute" "AssetTestFunctionAttribute" {
-  name  = "Attribute"
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
+  }
+}
+
+resource "splight_asset" "my_asset" {
+  name        = "My Asset"
+  description = "My Asset Description"
+  geometry = jsonencode({
+    type = "GeometryCollection"
+    geometries = [
+      {
+        type        = "Point"
+        coordinates = [0, 0]
+      }
+    ]
+  })
+}
+
+resource "splight_asset_attribute" "my_attribute" {
+  name  = "My Attribute"
   type  = "Number"
   unit  = "meters"
-  asset = "1234-1234-1234-1234"
+  asset = splight_asset.my_asset.id
 }
 ```
 
@@ -28,7 +50,7 @@ resource "splight_asset_attribute" "AssetTestFunctionAttribute" {
 
 - `asset` (String) reference to the asset to be linked to
 - `name` (String) name of the resource
-- `type` (String) [string|boolean|number] type of the data to be ingested in this attribute
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
 
 ### Optional
 
