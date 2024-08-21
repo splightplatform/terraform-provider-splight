@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func schemaAlert() map[string]*schema.Schema {
@@ -20,12 +21,21 @@ func schemaAlert() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "[cron|rate] type for the cron",
+			ValidateFunc: validation.StringInSlice([]string{
+				"cron",
+				"rate",
+			}, false),
 		},
 		"rate_unit": {
 			Type:        schema.TypeString,
 			Optional:    true, // Optional for CronAlert
 			Computed:    true, // Computed for RateAlert
 			Description: "[day|hour|minute] schedule unit",
+			ValidateFunc: validation.StringInSlice([]string{
+				"day",
+				"hour",
+				"minute",
+			}, false),
 		},
 		"rate_value": {
 			Type:        schema.TypeInt,
@@ -88,6 +98,11 @@ func schemaAlert() map[string]*schema.Schema {
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "[alert|warning|no_alert] status value for the threshold",
+						ValidateFunc: validation.StringInSlice([]string{
+							"alert",
+							"warning",
+							"no_alert",
+						}, false),
 					},
 					"status_text": {
 						Type:        schema.TypeString,
@@ -102,18 +117,42 @@ func schemaAlert() map[string]*schema.Schema {
 			Required:    true,
 			Description: "[sev1,...,sev8] severity for the alert",
 			Elem:        &schema.Schema{Type: schema.TypeString},
+			ValidateFunc: validation.StringInSlice([]string{
+				"sev1",
+				"sev2",
+				"sev3",
+				"sev4",
+				"sev5",
+				"sev6",
+				"sev7",
+				"sev8",
+			}, false),
 		},
 		"operator": {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "operator to be used to compare the read value with the threshold value",
 			Elem:        &schema.Schema{Type: schema.TypeString},
+			ValidateFunc: validation.StringInSlice([]string{
+				"gt",
+				"ge",
+				"lt",
+				"le",
+				"eq",
+			}, false),
 		},
 		"aggregation": {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "aggregation to be applied to reads before comparisson",
 			Elem:        &schema.Schema{Type: schema.TypeString},
+			ValidateFunc: validation.StringInSlice([]string{
+				"max",
+				"min",
+				"avg",
+				"sum",
+				"last",
+			}, false),
 		},
 		"target_variable": {
 			Type:        schema.TypeString,

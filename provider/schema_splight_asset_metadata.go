@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func schemaAssetMetadata() map[string]*schema.Schema {
@@ -15,6 +16,11 @@ func schemaAssetMetadata() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "[string|boolean|number] type of the data to be ingested in this attribute",
+			ValidateFunc: validation.StringInSlice([]string{
+				"string",
+				"boolean",
+				"number",
+			}, false),
 		},
 		"unit": {
 			Type:        schema.TypeString,

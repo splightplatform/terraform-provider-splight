@@ -21,13 +21,13 @@ resource "splight_asset" "my_asset" {
   name        = "My Asset"
   description = "My Asset Description"
 
-  # You can use the existing tags in the platform
-  # by name
+  # Use an existing tag if it exists in the platform by name
   dynamic "tags" {
-    for_each = length(data.splight_tags.my_tags.tags) > 0 ? [0] : []
+    for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
+
     content {
-      name = "ExistingTagName"
-      id   = one([for t in data.splight_tags.my_tags.tags : t.id if t.name == "ExistingTagName"])
+      name = tags.value.name
+      id   = tags.value.id
     }
   }
 

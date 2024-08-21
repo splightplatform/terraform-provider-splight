@@ -13,18 +13,60 @@ description: |-
 ## Example Usage
 
 ```terraform
-resource "splight_asset" "AssetMainTest" {
-  name        = "AssetTF"
-  description = "Created with Terraform"
-  geometry = jsonencode({
-    type       = "GeometryCollection"
-    geometries = []
-  })
-
-  kind {
-    id   = "1234-1234-1234-1234"
-    name = "Line"
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
   }
+}
+
+# Fetch kinds
+data "splight_asset_kinds" "my_kinds" {}
+
+# Create a tag
+resource "splight_tag" "my_tag" {
+  name = "My Tag"
+}
+
+# Fetch tags
+data "splight_tags" "my_tags" {}
+
+resource "splight_asset" "my_asset" {
+  name        = "My Asset"
+  description = "My Asset Description"
+
+  # Use an existing tag if it exists in the platform by name
+  dynamic "tags" {
+    for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
+
+    content {
+      name = tags.value.name
+      id   = tags.value.id
+    }
+  }
+
+  # Or use the one created
+  tags {
+    name = splight_tag.my_tag.name
+    id   = splight_tag.my_tag.id
+  }
+
+  # Choose the kind by name
+  kind {
+    name = "Line"
+    id   = one([for k in data.splight_asset_kinds.my_kinds.kinds : k.id if k.name == "Line"])
+  }
+
+  geometry = jsonencode({
+    type = "GeometryCollection"
+    geometries = [
+      {
+        type        = "Point"
+        coordinates = [0, 0]
+      }
+    ]
+  })
 }
 ```
 
@@ -33,14 +75,15 @@ resource "splight_asset" "AssetMainTest" {
 
 ### Required
 
+- `geometry` (String) geo position and shape of the resource
 - `name` (String) name of the resource
 
 ### Optional
 
 - `description` (String) description of the resource
-- `geometry` (String) geo position and shape of the resource
-- `kind` (Block Set) kind of the resource (see [below for nested schema](#nestedblock--kind))
+- `kind` (Block Set, Max: 1) kind of the resource (see [below for nested schema](#nestedblock--kind))
 - `related_assets` (Set of String) linked assets
+- `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
 
@@ -53,6 +96,15 @@ Required:
 
 - `id` (String) kind id
 - `name` (String) kind name
+
+
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `id` (String) tag id
+- `name` (String) tag name
 
 ## Import
 

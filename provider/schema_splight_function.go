@@ -2,6 +2,7 @@ package provider
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func schemaFunction() map[string]*schema.Schema {
@@ -20,12 +21,21 @@ func schemaFunction() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 			Description: "[cron|rate] type for the cron",
+			ValidateFunc: validation.StringInSlice([]string{
+				"cron",
+				"rate",
+			}, false),
 		},
 		"rate_unit": {
 			Type:        schema.TypeString,
 			Optional:    true, // Optional for CronAlert
 			Computed:    true, // Computed for RateAlert
 			Description: "[day|hour|minute] schedule unit",
+			ValidateFunc: validation.StringInSlice([]string{
+				"day",
+				"hour",
+				"minute",
+			}, false),
 		},
 		"rate_value": {
 			Type:        schema.TypeInt,

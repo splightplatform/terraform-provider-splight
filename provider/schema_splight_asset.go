@@ -19,7 +19,7 @@ func schemaAsset() map[string]*schema.Schema {
 		},
 		"geometry": {
 			Type:             schema.TypeString,
-			Optional:         true,
+			Required:         true,
 			Description:      "geo position and shape of the resource",
 			DiffSuppressFunc: utils.JSONStringEqualSupressFunc,
 		},

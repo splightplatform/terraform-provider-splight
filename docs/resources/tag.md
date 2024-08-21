@@ -35,7 +35,7 @@ resource "splight_tag" "my_tag" {
 
 ### Read-Only
 
-- `id` (String) ID of the resource
+- `id` (String) The ID of this resource.
 
 ## Import
 
