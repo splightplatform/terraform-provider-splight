@@ -47,8 +47,14 @@ resource "splight_action" "my_action" {
 
 resource "splight_command" "my_command" {
   name = "My Command"
+
   actions {
     id   = splight_action.my_action.id
     name = splight_action.my_action.name
+
+    asset {
+      id   = splight_asset.my_asset.id
+      name = splight_asset.my_asset.name
+    }
   }
 }
