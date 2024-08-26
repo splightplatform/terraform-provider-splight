@@ -23,39 +23,34 @@ func resourceCommand() *schema.Resource {
 }
 
 func toCommand(d *schema.ResourceData) *client.CommandParams {
-	actions := convertQueryFilters(d.Get("actions").(*schema.Set).List())
-	assetInterface := d.Get("asset").(*schema.Set).List()
-
-	var asset *client.QueryFilter
-	if len(assetInterface) > 0 {
-		assetInterface := assetInterface[0].(map[string]interface{})
-		asset = &client.QueryFilter{
-			Id:   assetInterface["id"].(string),
-			Name: assetInterface["name"].(string),
-		}
-	}
+	actions := convertActions(d.Get("actions").(*schema.Set).List())
 
 	return &client.CommandParams{
-		Name:    d.Get("name").(string),
-		Asset:   asset,
-		Actions: actions,
+		Name:        d.Get("name").(string),
+		Description: d.Get("description").(string),
+		Actions:     actions,
 	}
 }
 
-func convertQueryFilters(queryFiltersInterface []interface{}) []client.QueryFilter {
-	queryFilters := make([]client.QueryFilter, len(queryFiltersInterface))
+func convertActions(actionInterface []interface{}) []client.Action {
+	actions := make([]client.Action, len(actionInterface))
 
-	for i, item := range queryFiltersInterface {
-		queryFilter := item.(map[string]interface{})
-		queryFilters[i] = client.QueryFilter{
-			Id:   queryFilter["id"].(string),
-			Name: queryFilter["id"].(string),
+	for i, item := range actionInterface {
+		action := item.(map[string]interface{})
+		asset := action["asset"].(*schema.Set).List()[0].(map[string]interface{})
+		actions[i] = client.Action{
+			ID: action["id"].(string),
+			ActionParams: client.ActionParams{
+				Name: "setpoint",
+				Asset: client.QueryFilter{
+					Id:   asset["id"].(string),
+					Name: asset["name"].(string),
+				},
+			},
 		}
-
 	}
 
-	return queryFilters
-
+	return actions
 }
 
 func saveCommandToState(d *schema.ResourceData, command *client.Command) {
@@ -63,21 +58,21 @@ func saveCommandToState(d *schema.ResourceData, command *client.Command) {
 
 	d.Set("name", command.Name)
 
-	// Remember this is a Set in the schema
-	if command.Asset != nil {
-		d.Set("asset", []map[string]string{
-			{
-				"id":   command.Asset.Id,
-				"name": command.Asset.Name,
-			},
-		})
-	}
-
 	actionsInterface := make([]map[string]interface{}, len(command.Actions))
 	for i, action := range command.Actions {
+
+		// Remember this is a Set in the schema
+		asset := []map[string]string{
+			{
+				"id":   action.Asset.Id,
+				"name": action.Asset.Name,
+			},
+		}
+
 		actionsInterface[i] = map[string]interface{}{
-			"id":   action.Id,
-			"name": action.Name,
+			"id":    action.ID,
+			"name":  action.Name,
+			"asset": asset,
 		}
 	}
 	d.Set("setpoints", actionsInterface)

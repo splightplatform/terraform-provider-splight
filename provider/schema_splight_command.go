@@ -11,25 +11,10 @@ func schemaCommand() map[string]*schema.Schema {
 			Required:    true,
 			Description: "the name of the command to be created",
 		},
-		"asset": {
-			Type:        schema.TypeSet,
+		"description": {
+			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "associated asset to the command",
-			MaxItems:    1,
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "asset id",
-					},
-					"name": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "asset name",
-					},
-				},
-			},
+			Description: "the description of the command to be created",
 		},
 		"actions": {
 			Type:        schema.TypeSet,
@@ -37,14 +22,34 @@ func schemaCommand() map[string]*schema.Schema {
 			Description: "command actions",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"asset": {
+						Type:        schema.TypeSet,
+						Required:    true,
+						Description: "asset associated with the action (to be deprecated)",
+						MaxItems:    1,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"id": {
+									Type:        schema.TypeString,
+									Required:    true,
+									Description: "asset id",
+								},
+								"name": {
+									Type:        schema.TypeString,
+									Required:    true,
+									Description: "asset name",
+								},
+							},
+						},
+					},
 					"id": {
 						Type:        schema.TypeString,
-						Computed:    true,
+						Required:    true,
 						Description: "action ID",
 					},
 					"name": {
 						Type:        schema.TypeString,
-						Computed:    true,
+						Required:    true,
 						Description: "setpoint name",
 					},
 				},

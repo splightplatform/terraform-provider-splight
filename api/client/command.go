@@ -7,9 +7,9 @@ import (
 )
 
 type CommandParams struct {
-	Name    string        `json:"name"`
-	Asset   *QueryFilter  `json:"asset"`
-	Actions []QueryFilter `json:"actions"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Actions     []Action `json:"actions"`
 }
 
 type Command struct {
