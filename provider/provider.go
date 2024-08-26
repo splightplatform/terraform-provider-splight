@@ -30,6 +30,8 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"splight_alert":                       resourceAlert(),
 			"splight_asset":                       resourceAsset(),
+			"splight_action":                      resourceAction(),
+			"splight_command":                     resourceCommand(),
 			"splight_asset_attribute":             resourceAssetAttribute(),
 			"splight_asset_metadata":              resourceAssetMetadata(),
 			"splight_component":                   resourceComponent(),

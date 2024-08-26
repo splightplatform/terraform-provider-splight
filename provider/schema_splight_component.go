@@ -14,7 +14,7 @@ func schemaComponent() map[string]*schema.Schema {
 		"description": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "optinal description to add details of the resource",
+			Description: "optional description to add details of the resource",
 		},
 		"tags": {
 			Type:        schema.TypeSet,

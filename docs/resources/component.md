@@ -135,7 +135,7 @@ resource "splight_component" "MQTTConnector" {
 
 ### Optional
 
-- `description` (String) optinal description to add details of the resource
+- `description` (String) optional description to add details of the resource
 - `input` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--input))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
