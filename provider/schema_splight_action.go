@@ -55,7 +55,7 @@ func schemaAction() map[string]*schema.Schema {
 					"attribute": {
 						Type:        schema.TypeSet,
 						Required:    true,
-						Description: "The target attribute of the setpoint which should also be an attribute of the specified asset",
+						Description: "the target attribute of the setpoint which should also be an attribute of the specified asset",
 						MaxItems:    1,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{

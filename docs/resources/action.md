@@ -88,7 +88,7 @@ Required:
 
 Required:
 
-- `attribute` (Block Set, Min: 1, Max: 1) The target attribute of the setpoint which should also be an attribute of the specified asset (see [below for nested schema](#nestedblock--setpoints--attribute))
+- `attribute` (Block Set, Min: 1, Max: 1) the target attribute of the setpoint which should also be an attribute of the specified asset (see [below for nested schema](#nestedblock--setpoints--attribute))
 - `value` (String) JSON encoded scalar value
 
 Read-Only:
