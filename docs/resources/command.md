@@ -113,5 +113,5 @@ Required:
 Import is supported using the following syntax:
 
 ```shell
-terraform import [options] splight_action.<name> <action_id>
+terraform import [options] splight_command.<name> <command_id>
 ```
