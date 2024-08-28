@@ -6,20 +6,17 @@ permissions:
 jobs:
   tag_version:
     runs-on: ubuntu-latest
-    name: Create tag version on GitHub repository
     steps:
-      - name: Checkout to feature branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Get version from feature branch
         id: get_version
         run: echo "CURRENT_VERSION=v$(cat version)" >> "$GITHUB_ENV"
-      - name: Create tag
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
         with:
-          name: Release ${{ env.CURRENT_VERSION }}
-          tag_name: ${{ env.CURRENT_VERSION }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ env.CURRENT_VERSION }}
   goreleaser:
     runs-on: ubuntu-latest
     needs: tag_version
@@ -37,7 +34,7 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           args: release --clean
         env:
