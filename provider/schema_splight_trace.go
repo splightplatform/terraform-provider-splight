@@ -45,9 +45,10 @@ func Trace() *schema.Schema {
 				"query_filter_attribute": QueryFilter(),
 				"query_group_function": {
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 					Description: "function used to aggregate data",
 					ValidateFunc: validation.StringInSlice([]string{
+						"",
 						"max",
 						"min",
 						"avg",
@@ -57,9 +58,10 @@ func Trace() *schema.Schema {
 				},
 				"query_group_unit": {
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 					Description: "time window to apply the aggregation",
 					ValidateFunc: validation.StringInSlice([]string{
+						"",
 						"second",
 						"minute",
 						"hour",
