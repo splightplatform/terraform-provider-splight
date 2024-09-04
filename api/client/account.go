@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// TODO: do once this
 func (c *Client) RetrieveOrgId() (string, error) {
 	body, err := c.HttpRequest("v2/account/user/organizations/", "GET", bytes.Buffer{})
 	if err != nil {
@@ -23,6 +24,7 @@ func (c *Client) RetrieveOrgId() (string, error) {
 	return orgId, nil
 }
 
+// TODO: do once this
 func (c *Client) RetrieveEmail() (string, error) {
 	body, err := c.HttpRequest("v2/account/user/profile/", "GET", bytes.Buffer{})
 	if err != nil {

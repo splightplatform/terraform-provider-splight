@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/splightplatform/terraform-provider-splight/api/settings"
 )
 
 // Client holds the configuration needed to communicate with a server
@@ -35,8 +36,7 @@ type UserAgent struct {
 // opts: UserAgent configuration for setting the User-Agent header
 // Returns: A new Client instance or an error if configuration fails
 func NewClient(context context.Context, opts UserAgent) (*Client, error) {
-	// TODO: cargar cuando levanta el provider
-	config, err := LoadConfig()
+	config, err := settings.LoadSplightConfig(nil)
 	if err != nil {
 		return nil, err
 	}
@@ -48,17 +48,15 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 		context:    context,
 	}
 
-	// // Retrieve the email to configure the User-Agent
-	// email, err := client.RetrieveEmail()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Retrieve the email to configure the User-Agent
+	email, err := client.RetrieveEmail()
+	if err != nil {
+		return nil, err
+	}
 
 	// Get system details and default values
 	defaultInfo := map[string]string{
-		// TODO: uncomment "email": email,
-		// TODO: sacar desde el provider
-		"email": "asd@gmail.com",
+		"email": email,
 		"OS":    runtime.GOOS,
 		"Arch":  runtime.GOARCH,
 		"Go":    runtime.Version(),
@@ -85,7 +83,7 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 // method: HTTP method (GET, POST, etc.)
 // body: Request body to be sent (if applicable)
 // Returns: Response body reader and nil on success, or an error if the request fails
-func (c *Client) httpRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
+func (c *Client) HttpRequest(path, method string, body bytes.Buffer) (io.ReadCloser, error) {
 	var respBody io.ReadCloser
 	var err error
 

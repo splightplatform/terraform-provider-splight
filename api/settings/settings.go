@@ -19,7 +19,7 @@ type Config struct {
 	Workspaces map[string]Workspace `yaml:"workspaces"`
 }
 
-type SplightConfigOptions struct {
+type SplightConfigOverrides struct {
 	HostnameOverride string
 	TokenOverride    string
 }
@@ -32,7 +32,7 @@ var (
 
 // LoadSplightConfig reads the Splight configuration from the YAML file once and caches it.
 // It takes optional configuration options to override specific values.
-func LoadSplightConfig(options SplightConfigOptions) (*Config, error) {
+func LoadSplightConfig(options *SplightConfigOverrides) (*Config, error) {
 	configOnce.Do(func() {
 		filename := os.Getenv("HOME") + "/.splight/config"
 		buf, err := os.ReadFile(filename)
