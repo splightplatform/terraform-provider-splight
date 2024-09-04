@@ -7,7 +7,7 @@ import (
 )
 
 func (c *Client) RetrieveOrgId() (string, error) {
-	body, err := c.httpRequest("v2/account/user/organizations/", "GET", bytes.Buffer{})
+	body, err := c.HttpRequest("v2/account/user/organizations/", "GET", bytes.Buffer{})
 	if err != nil {
 		return "", err
 	}
@@ -24,7 +24,7 @@ func (c *Client) RetrieveOrgId() (string, error) {
 }
 
 func (c *Client) RetrieveEmail() (string, error) {
-	body, err := c.httpRequest("v2/account/user/profile/", "GET", bytes.Buffer{})
+	body, err := c.HttpRequest("v2/account/user/profile/", "GET", bytes.Buffer{})
 	if err != nil {
 		return "", err
 	}

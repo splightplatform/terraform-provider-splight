@@ -16,6 +16,7 @@ import (
 type Client struct {
 	hostname   string       // Server hostname or IP address
 	authToken  string       // Authorization token for HTTP requests
+	orgID      string       // Splight organization ID
 	httpClient *http.Client // Underlying HTTP client for making requests
 	userAgent  string       // User-Agent header value for HTTP requests
 	context    context.Context
@@ -33,23 +34,31 @@ type UserAgent struct {
 // token: Authorization token for HTTP requests
 // opts: UserAgent configuration for setting the User-Agent header
 // Returns: A new Client instance or an error if configuration fails
-func NewClient(hostname, token string, context context.Context, opts UserAgent) (*Client, error) {
-	client := &Client{
-		hostname:   hostname,
-		authToken:  token,
-		httpClient: &http.Client{Timeout: 60 * time.Second},
-		context:    context,
-	}
-
-	// Retrieve the email to configure the User-Agent
-	email, err := client.RetrieveEmail()
+func NewClient(context context.Context, opts UserAgent) (*Client, error) {
+	// TODO: cargar cuando levanta el provider
+	config, err := LoadConfig()
 	if err != nil {
 		return nil, err
 	}
 
+	client := &Client{
+		hostname:   config.Workspaces[config.Current].Hostname,
+		authToken:  config.Workspaces[config.Current].SecretKey,
+		httpClient: &http.Client{Timeout: 60 * time.Second},
+		context:    context,
+	}
+
+	// // Retrieve the email to configure the User-Agent
+	// email, err := client.RetrieveEmail()
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	// Get system details and default values
 	defaultInfo := map[string]string{
-		"email": email,
+		// TODO: uncomment "email": email,
+		// TODO: sacar desde el provider
+		"email": "asd@gmail.com",
 		"OS":    runtime.GOOS,
 		"Arch":  runtime.GOARCH,
 		"Go":    runtime.Version(),
