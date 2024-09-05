@@ -93,7 +93,7 @@ func schemaFunction() map[string]*schema.Schema {
 		"target_asset": &schema.Schema{
 			Type:        schema.TypeSet,
 			Required:    true,
-			Description: "Asset/Attribute filter",
+			Description: "Asset filter",
 			Default:     nil,
 			MaxItems:    1,
 			Elem: &schema.Resource{
@@ -114,7 +114,7 @@ func schemaFunction() map[string]*schema.Schema {
 		"target_attribute": &schema.Schema{
 			Type:        schema.TypeSet,
 			Required:    true,
-			Description: "Asset/Attribute filter",
+			Description: "Attribute filter",
 			Default:     nil,
 			MaxItems:    1,
 			Elem: &schema.Resource{

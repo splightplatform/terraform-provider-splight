@@ -140,8 +140,8 @@ resource "splight_function" "FunctionTest" {
 - `description` (String) The description of the resource
 - `function_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--function_items))
 - `name` (String) The name of the resource
-- `target_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_asset))
-- `target_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
+- `target_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--target_asset))
+- `target_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
 - `target_variable` (String) variable to be considered to be ingested
 - `time_window` (Number) window to fetch data from. Data out of that window will not be considered for evaluation
 - `type` (String) [cron|rate] type for the cron
@@ -196,6 +196,7 @@ Optional:
 
 - `id` (String) ID of the resource
 - `name` (String) name of the resource
+- `type` (String) type of the resource
 
 
 
@@ -215,6 +216,7 @@ Optional:
 
 - `id` (String) ID of the resource
 - `name` (String) name of the resource
+- `type` (String) type of the resource
 
 ## Import
 
