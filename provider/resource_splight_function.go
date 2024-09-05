@@ -24,10 +24,16 @@ func resourceFunction() *schema.Resource {
 
 func toFunction(d *schema.ResourceData) *client.FunctionParams {
 	// Convert target asset
-	targetAsset := convertFunctionTargetItem(d.Get("target_asset").(*schema.Set).List())
+	targetAsset := convertFunctionTargetItem(
+		d.Get("target_asset").(*schema.Set).List(),
+		false,
+	)
 
 	// Convert target attribute
-	targetAttribute := convertFunctionTargetItem(d.Get("target_attribute").(*schema.Set).List())
+	targetAttribute := convertFunctionTargetItem(
+		d.Get("target_attribute").(*schema.Set).List(),
+		true,
+	)
 
 	// Convert function items
 	functionItems := convertFunctionItems(d.Get("function_items").([]interface{}))
@@ -41,19 +47,32 @@ func toFunction(d *schema.ResourceData) *client.FunctionParams {
 		RateUnit:        d.Get("rate_unit").(string),
 		RateValue:       d.Get("rate_value").(int),
 		TargetVariable:  d.Get("target_variable").(string),
-		TargetAsset:     targetAsset,
-		TargetAttribute: targetAttribute,
+		TargetAsset:     targetAsset.(client.FunctionTargetItem),
+		TargetAttribute: targetAttribute.(client.TypedFunctionTargetItem),
 		FunctionItems:   functionItems,
 	}
 
 	return &item
 }
 
-func convertFunctionTargetItem(targetItemList []interface{}) client.FunctionTargetItem {
+func convertFunctionTargetItem(targetItemList []interface{}, typed bool) interface{} {
 	if len(targetItemList) == 0 {
+		if typed {
+			return client.TypedFunctionTargetItem{}
+		}
 		return client.FunctionTargetItem{}
 	}
+
 	valueData := targetItemList[0].(map[string]interface{})
+
+	if typed {
+		return client.TypedFunctionTargetItem{
+			Name: valueData["name"].(string),
+			ID:   valueData["id"].(string),
+			Type: valueData["type"].(string),
+		}
+	}
+
 	return client.FunctionTargetItem{
 		Name: valueData["name"].(string),
 		ID:   valueData["id"].(string),
@@ -78,9 +97,10 @@ func convertFunctionItems(functionItemsInterface []interface{}) []client.Functio
 				Name: queryFilterAsset["name"].(string),
 				ID:   queryFilterAsset["id"].(string),
 			},
-			QueryFilterAttribute: client.FunctionTargetItem{
+			QueryFilterAttribute: client.TypedFunctionTargetItem{
 				Name: queryFilterAttribute["name"].(string),
 				ID:   queryFilterAttribute["id"].(string),
+				Type: queryFilterAttribute["type"].(string),
 			},
 			QueryGroupFunction: queryGroupFunction,
 			QueryGroupUnit:     queryGroupUnit,
@@ -110,6 +130,7 @@ func saveFunctionToState(d *schema.ResourceData, function *client.Function) {
 		{
 			"id":   function.TargetAttribute.ID,
 			"name": function.TargetAttribute.Name,
+			"type": function.TargetAttribute.Type,
 		},
 	})
 
@@ -141,6 +162,7 @@ func saveFunctionToState(d *schema.ResourceData, function *client.Function) {
 				{
 					"id":   function.QueryFilterAttribute.ID,
 					"name": function.QueryFilterAttribute.Name,
+					"type": function.QueryFilterAttribute.Type,
 				},
 			},
 			"query_group_function": function.QueryGroupFunction,

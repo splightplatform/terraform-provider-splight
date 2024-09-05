@@ -78,6 +78,7 @@ resource "splight_function" "FunctionTest" {
   target_attribute {
     id   = splight_asset_attribute.my_target_attribute.id
     name = splight_asset_attribute.my_target_attribute.name
+    type = "Number"
   }
 
   function_items {
@@ -94,6 +95,7 @@ resource "splight_function" "FunctionTest" {
     query_filter_attribute {
       id   = splight_asset_attribute.my_attribute.id
       name = splight_asset_attribute.my_attribute.name
+      type = "Number"
     }
 
     query_group_function = "avg"
@@ -126,6 +128,9 @@ resource "splight_function" "FunctionTest" {
 
     query_filter_attribute {}
 
+    query_group_function = ""
+    query_group_unit     = ""
+
     query_plain = ""
 
   }
@@ -140,8 +145,8 @@ resource "splight_function" "FunctionTest" {
 - `description` (String) The description of the resource
 - `function_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--function_items))
 - `name` (String) The name of the resource
-- `target_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_asset))
-- `target_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
+- `target_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--target_asset))
+- `target_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
 - `target_variable` (String) variable to be considered to be ingested
 - `time_window` (Number) window to fetch data from. Data out of that window will not be considered for evaluation
 - `type` (String) [cron|rate] type for the cron
@@ -168,8 +173,8 @@ Required:
 
 - `expression` (String) how the expression is shown (i.e 'A * 2')
 - `expression_plain` (String) actual mongo query containing the expression
-- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
-- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
 - `query_group_function` (String) function used to aggregate data
 - `query_group_unit` (String) time window to apply the aggregation
 - `query_plain` (String) actual mongo query
@@ -196,6 +201,7 @@ Optional:
 
 - `id` (String) ID of the resource
 - `name` (String) name of the resource
+- `type` (String) type of the resource
 
 
 
@@ -215,6 +221,7 @@ Optional:
 
 - `id` (String) ID of the resource
 - `name` (String) name of the resource
+- `type` (String) type of the resource
 
 ## Import
 
