@@ -225,8 +225,8 @@ Required:
 
 - `color` (String)
 - `expression_plain` (String)
-- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--chart_items--query_filter_asset))
-- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--chart_items--query_filter_attribute))
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--chart_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--chart_items--query_filter_attribute))
 - `query_plain` (String)
 - `ref_id` (String)
 - `type` (String)
