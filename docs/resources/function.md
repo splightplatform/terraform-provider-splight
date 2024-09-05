@@ -168,8 +168,8 @@ Required:
 
 - `expression` (String) how the expression is shown (i.e 'A * 2')
 - `expression_plain` (String) actual mongo query containing the expression
-- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
-- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
 - `query_group_function` (String) function used to aggregate data
 - `query_group_unit` (String) time window to apply the aggregation
 - `query_plain` (String) actual mongo query
