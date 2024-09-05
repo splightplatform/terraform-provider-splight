@@ -78,6 +78,7 @@ resource "splight_function" "FunctionTest" {
   target_attribute {
     id   = splight_asset_attribute.my_target_attribute.id
     name = splight_asset_attribute.my_target_attribute.name
+    type = "Number"
   }
 
   function_items {
@@ -94,6 +95,7 @@ resource "splight_function" "FunctionTest" {
     query_filter_attribute {
       id   = splight_asset_attribute.my_attribute.id
       name = splight_asset_attribute.my_attribute.name
+      type = "Number"
     }
 
     query_group_function = "avg"
@@ -125,6 +127,9 @@ resource "splight_function" "FunctionTest" {
     query_filter_asset {}
 
     query_filter_attribute {}
+
+    query_group_function = ""
+    query_group_unit     = ""
 
     query_plain = ""
 
