@@ -1,5 +1,6 @@
 package utils
 
+// TODO: move to the corresponding resource
 import (
 	"crypto/md5"
 	"encoding/hex"

@@ -19,7 +19,7 @@ docs:
 
 tidy:
 	@go mod tidy
-	@gofmt -w .
+	@gofumpt -w .
 
 provider: tidy
 	@echo -e "$(GREEN)Building provider: $(BASE_NAME)$(RESET)"
