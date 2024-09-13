@@ -13,7 +13,8 @@ func getDashboardChartParams(d *schema.ResourceData) client.DashboardChartParams
 	}
 	chartItems := make([]client.DashboardChartItem, len(chartItemInterfaceList))
 	for i, chartItemItem := range chartItemInterfaceList {
-
+		filter_asset_item := chartItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
+		filter_attr_item := chartItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
 		chartItems[i] = client.DashboardChartItem{
 			Color:              chartItemItem["color"].(string),
 			RefID:              chartItemItem["ref_id"].(string),
@@ -23,24 +24,17 @@ func getDashboardChartParams(d *schema.ResourceData) client.DashboardChartParams
 			QueryGroupUnit:     chartItemItem["query_group_unit"].(string),
 			QueryGroupFunction: chartItemItem["query_group_function"].(string),
 			ExpressionPlain:    chartItemItem["expression_plain"].(string),
+			QueryFilterAsset: client.QueryFilter{
+				Id:   filter_asset_item["id"].(string),
+				Name: filter_asset_item["name"].(string),
+			},
+			QueryFilterAttribute: client.QueryFilter{
+				Id:   filter_attr_item["id"].(string),
+				Name: filter_attr_item["name"].(string),
+			},
 			QueryPlain:         chartItemItem["query_plain"].(string),
 			QuerySortDirection: chartItemItem["query_sort_direction"].(int),
 			QueryLimit:         chartItemItem["query_limit"].(int),
-		}
-
-		if chartItemItem["query_filter_asset"].(*schema.Set).Len() > 0 {
-			filter_asset_item := chartItemItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
-			chartItems[i].QueryFilterAsset = &client.QueryFilter{
-				Id:   filter_asset_item["id"].(string),
-				Name: filter_asset_item["name"].(string),
-			}
-		}
-		if chartItemItem["query_filter_attribute"].(*schema.Set).Len() > 0 {
-			filter_attr_item := chartItemItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
-			chartItems[i].QueryFilterAttribute = &client.QueryFilter{
-				Id:   filter_attr_item["id"].(string),
-				Name: filter_attr_item["name"].(string),
-			}
 		}
 
 	}

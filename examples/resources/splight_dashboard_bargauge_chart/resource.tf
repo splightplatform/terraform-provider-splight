@@ -120,6 +120,8 @@ resource "splight_dashboard_bargauge_chart" "DashboardChartTest" {
             }
         }
     )
+    query_filter_asset {}
+    query_filter_attribute {}
   }
 
   thresholds {

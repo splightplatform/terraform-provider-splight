@@ -1,5 +1,33 @@
 package client
 
+import "encoding/json"
+
+// Implement custom JSON marshalling to omit the struct if both fields are empty
+func (fti QueryFilter) MarshalJSON() ([]byte, error) {
+	if fti.Id == "" && fti.Name == "" {
+		return []byte("null"), nil
+	}
+	type Alias QueryFilter
+	return json.Marshal((Alias)(fti))
+}
+
+// Implement custom JSON unmarshalling to initialize the struct if the field is null
+func (fti *QueryFilter) UnmarshalJSON(data []byte) error {
+	type Alias QueryFilter
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(fti),
+	}
+
+	if string(data) == "null" {
+		*fti = QueryFilter{}
+		return nil
+	}
+
+	return json.Unmarshal(data, &aux)
+}
+
 type QueryFilter struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
@@ -19,19 +47,19 @@ type DashboardThreshold struct {
 }
 
 type DashboardChartItem struct {
-	Color                string       `json:"color"`
-	RefID                string       `json:"ref_id"`
-	Type                 string       `json:"type"`
-	Label                string       `json:"label"`
-	Hidden               bool         `json:"hidden"`
-	QueryGroupUnit       string       `json:"query_group_unit"`
-	QueryGroupFunction   string       `json:"query_group_function"`
-	ExpressionPlain      string       `json:"expression_plain"`
-	QueryFilterAsset     *QueryFilter `json:"query_filter_asset"`
-	QueryFilterAttribute *QueryFilter `json:"query_filter_attribute"`
-	QueryPlain           string       `json:"query_plain"`
-	QuerySortDirection   int          `json:"query_sort_direction"`
-	QueryLimit           int          `json:"query_limit"`
+	Color                string      `json:"color"`
+	RefID                string      `json:"ref_id"`
+	Type                 string      `json:"type"`
+	Label                string      `json:"label"`
+	Hidden               bool        `json:"hidden"`
+	QueryGroupUnit       string      `json:"query_group_unit"`
+	QueryGroupFunction   string      `json:"query_group_function"`
+	ExpressionPlain      string      `json:"expression_plain"`
+	QueryFilterAsset     QueryFilter `json:"query_filter_asset"`
+	QueryFilterAttribute QueryFilter `json:"query_filter_attribute"`
+	QueryPlain           string      `json:"query_plain"`
+	QuerySortDirection   int         `json:"query_sort_direction"`
+	QueryLimit           int         `json:"query_limit"`
 }
 
 type DashboardChartParams struct {
