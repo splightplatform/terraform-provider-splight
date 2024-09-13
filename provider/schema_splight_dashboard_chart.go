@@ -159,7 +159,7 @@ func schemaDashboardChart() map[string]*schema.Schema {
 					},
 					"query_filter_asset": &schema.Schema{
 						Type:        schema.TypeSet,
-						Required:    true,
+						Optional:    true,
 						Description: "Asset filter",
 						Default:     nil,
 						MaxItems:    1,
@@ -181,7 +181,7 @@ func schemaDashboardChart() map[string]*schema.Schema {
 
 					"query_filter_attribute": &schema.Schema{
 						Type:        schema.TypeSet,
-						Required:    true,
+						Optional:    true,
 						Description: "Attribute filter",
 						Default:     nil,
 						MaxItems:    1,
