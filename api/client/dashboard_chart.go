@@ -1,5 +1,33 @@
 package client
 
+import "encoding/json"
+
+// Implement custom JSON marshalling to omit the struct if both fields are empty
+func (fti QueryFilter) MarshalJSON() ([]byte, error) {
+	if fti.Id == "" && fti.Name == "" {
+		return []byte("null"), nil
+	}
+	type Alias QueryFilter
+	return json.Marshal((Alias)(fti))
+}
+
+// Implement custom JSON unmarshalling to initialize the struct if the field is null
+func (fti *QueryFilter) UnmarshalJSON(data []byte) error {
+	type Alias QueryFilter
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(fti),
+	}
+
+	if string(data) == "null" {
+		*fti = QueryFilter{}
+		return nil
+	}
+
+	return json.Unmarshal(data, &aux)
+}
+
 type QueryFilter struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
