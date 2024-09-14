@@ -60,6 +60,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"splight_asset":           resourceForType[*models.Asset](schemas.SchemaAsset),
 			"splight_asset_attribute": resourceForType[*models.AssetAttribute](schemas.SchemaAssetAttribute),
+			"splight_asset_metadata":  resourceForType[*models.AssetMetadata](schemas.SchemaAssetMetadata),
 			"splight_tag":             resourceForType[*models.Tag](schemas.SchemaTag),
 			"splight_alert":           resourceForType[*models.Alert](schemas.SchemaAlert),
 			"splight_function":        resourceForType[*models.Function](schemas.SchemaFunction),
