@@ -1,8 +1,8 @@
-package provider
+package schemas
 
 import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-func schemaAssetKinds() map[string]*schema.Schema {
+func SchemaAssetKinds() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"kinds": {
 			Type:     schema.TypeList,

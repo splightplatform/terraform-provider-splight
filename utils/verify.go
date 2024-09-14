@@ -9,13 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func ValidateNullableString(s string) *string {
-	if s == "" {
-		return nil
-	}
-	return &s
-}
-
 func JSONStringEqualSupressFunc(k, old, new string, d *schema.ResourceData) bool {
 	return JSONStringEqual(old, new)
 }

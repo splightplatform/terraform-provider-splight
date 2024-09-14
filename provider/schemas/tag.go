@@ -1,8 +1,8 @@
-package provider
+package schemas
 
 import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-func schemaTag() map[string]*schema.Schema {
+func SchemaTag() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,
@@ -12,7 +12,7 @@ func schemaTag() map[string]*schema.Schema {
 	}
 }
 
-func schemaTags() map[string]*schema.Schema {
+func SchemaTags() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"tags": {
 			Type:     schema.TypeList,

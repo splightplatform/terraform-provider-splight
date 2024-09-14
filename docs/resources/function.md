@@ -78,6 +78,7 @@ resource "splight_function" "FunctionTest" {
   target_attribute {
     id   = splight_asset_attribute.my_target_attribute.id
     name = splight_asset_attribute.my_target_attribute.name
+    type = "Number"
   }
 
   function_items {
@@ -94,6 +95,7 @@ resource "splight_function" "FunctionTest" {
     query_filter_attribute {
       id   = splight_asset_attribute.my_attribute.id
       name = splight_asset_attribute.my_attribute.name
+      type = "Number"
     }
 
     query_group_function = "avg"
@@ -126,6 +128,9 @@ resource "splight_function" "FunctionTest" {
 
     query_filter_attribute {}
 
+    query_group_function = ""
+    query_group_unit     = ""
+
     query_plain = ""
 
   }
@@ -137,14 +142,12 @@ resource "splight_function" "FunctionTest" {
 
 ### Required
 
-- `aggregation` (String) aggregation to be applied to reads before comparisson
-- `alert_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--alert_items))
 - `description` (String) The description of the resource
+- `function_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--function_items))
 - `name` (String) The name of the resource
-- `operator` (String) operator to be used to compare the read value with the threshold value
-- `severity` (String) [sev1,...,sev8] severity for the alert
-- `target_variable` (String) variable to be used to compare with thresholds
-- `thresholds` (Block List, Min: 1) (see [below for nested schema](#nestedblock--thresholds))
+- `target_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--target_asset))
+- `target_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
+- `target_variable` (String) variable to be considered to be ingested
 - `time_window` (Number) window to fetch data from. Data out of that window will not be considered for evaluation
 - `type` (String) [cron|rate] type for the cron
 
@@ -158,21 +161,20 @@ resource "splight_function" "FunctionTest" {
 - `cron_year` (Number) schedule value for cron
 - `rate_unit` (String) [day|hour|minute] schedule unit
 - `rate_value` (Number) schedule value
-- `related_assets` (Set of String) related assets to be linked. In case one of these alerts triggers it will be reflected on each of these assets.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--alert_items"></a>
-### Nested Schema for `alert_items`
+<a id="nestedblock--function_items"></a>
+### Nested Schema for `function_items`
 
 Required:
 
 - `expression` (String) how the expression is shown (i.e 'A * 2')
 - `expression_plain` (String) actual mongo query containing the expression
-- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--alert_items--query_filter_asset))
-- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--alert_items--query_filter_attribute))
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
 - `query_group_function` (String) function used to aggregate data
 - `query_group_unit` (String) time window to apply the aggregation
 - `query_plain` (String) actual mongo query
@@ -183,8 +185,8 @@ Read-Only:
 
 - `id` (String) ID of the function item
 
-<a id="nestedblock--alert_items--query_filter_asset"></a>
-### Nested Schema for `alert_items.query_filter_asset`
+<a id="nestedblock--function_items--query_filter_asset"></a>
+### Nested Schema for `function_items.query_filter_asset`
 
 Optional:
 
@@ -192,8 +194,19 @@ Optional:
 - `name` (String) name of the resource
 
 
-<a id="nestedblock--alert_items--query_filter_attribute"></a>
-### Nested Schema for `alert_items.query_filter_attribute`
+<a id="nestedblock--function_items--query_filter_attribute"></a>
+### Nested Schema for `function_items.query_filter_attribute`
+
+Optional:
+
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+- `type` (String) type of the resource
+
+
+
+<a id="nestedblock--target_asset"></a>
+### Nested Schema for `target_asset`
 
 Optional:
 
@@ -201,18 +214,14 @@ Optional:
 - `name` (String) name of the resource
 
 
-
-<a id="nestedblock--thresholds"></a>
-### Nested Schema for `thresholds`
-
-Required:
-
-- `status` (String) [alert|warning|no_alert] status value for the threshold
-- `value` (Number) value to be considered to compare
+<a id="nestedblock--target_attribute"></a>
+### Nested Schema for `target_attribute`
 
 Optional:
 
-- `status_text` (String) optional custom value to be displayed in the platform.
+- `id` (String) ID of the resource
+- `name` (String) name of the resource
+- `type` (String) type of the resource
 
 ## Import
 

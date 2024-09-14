@@ -1,11 +1,11 @@
-package provider
+package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/splightplatform/terraform-provider-splight/utils"
 )
 
-func schemaAsset() map[string]*schema.Schema {
+func SchemaAsset() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,

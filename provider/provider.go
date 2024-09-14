@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/splightplatform/terraform-provider-splight/provider/schemas"
 	"github.com/splightplatform/terraform-provider-splight/splight/client"
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 	"github.com/splightplatform/terraform-provider-splight/splight/settings"
@@ -57,14 +58,15 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"splight_asset":    resourceForType[*models.Asset](schemaAsset),
-			"splight_tag":      resourceForType[*models.Tag](schemaTag),
-			"splight_alert":    resourceForType[*models.Alert](schemaAlert),
-			"splight_function": resourceForType[*models.Function](schemaAlert),
+			"splight_asset":           resourceForType[*models.Asset](schemas.SchemaAsset),
+			"splight_asset_attribute": resourceForType[*models.AssetAttribute](schemas.SchemaAssetAttribute),
+			"splight_tag":             resourceForType[*models.Tag](schemas.SchemaTag),
+			"splight_alert":           resourceForType[*models.Alert](schemas.SchemaAlert),
+			"splight_function":        resourceForType[*models.Function](schemas.SchemaFunction),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"splight_asset_kinds": dataSourceForType[*models.AssetKinds](schemaAssetKinds),
-			"splight_tags":        dataSourceForType[*models.Tags](schemaTags),
+			"splight_asset_kinds": dataSourceForType[*models.AssetKinds](schemas.SchemaAssetKinds),
+			"splight_tags":        dataSourceForType[*models.Tags](schemas.SchemaTags),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
