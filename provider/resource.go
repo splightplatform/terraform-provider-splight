@@ -11,7 +11,9 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 )
 
+// TODO: catch errors from Toschema and fromschema
 // InstantiateType creates a new instance of type T, ensuring that T is a pointer type
+// We could just use a switch too
 func InstantiateType[T models.SplightObject]() T {
 	var model T
 	modelType := reflect.TypeOf(model)

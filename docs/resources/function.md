@@ -137,12 +137,14 @@ resource "splight_function" "FunctionTest" {
 
 ### Required
 
+- `aggregation` (String) aggregation to be applied to reads before comparisson
+- `alert_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--alert_items))
 - `description` (String) The description of the resource
-- `function_items` (Block List, Min: 1) traces to be used to compute the results (see [below for nested schema](#nestedblock--function_items))
 - `name` (String) The name of the resource
-- `target_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_asset))
-- `target_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--target_attribute))
-- `target_variable` (String) variable to be considered to be ingested
+- `operator` (String) operator to be used to compare the read value with the threshold value
+- `severity` (String) [sev1,...,sev8] severity for the alert
+- `target_variable` (String) variable to be used to compare with thresholds
+- `thresholds` (Block List, Min: 1) (see [below for nested schema](#nestedblock--thresholds))
 - `time_window` (Number) window to fetch data from. Data out of that window will not be considered for evaluation
 - `type` (String) [cron|rate] type for the cron
 
@@ -156,20 +158,21 @@ resource "splight_function" "FunctionTest" {
 - `cron_year` (Number) schedule value for cron
 - `rate_unit` (String) [day|hour|minute] schedule unit
 - `rate_value` (Number) schedule value
+- `related_assets` (Set of String) related assets to be linked. In case one of these alerts triggers it will be reflected on each of these assets.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--function_items"></a>
-### Nested Schema for `function_items`
+<a id="nestedblock--alert_items"></a>
+### Nested Schema for `alert_items`
 
 Required:
 
 - `expression` (String) how the expression is shown (i.e 'A * 2')
 - `expression_plain` (String) actual mongo query containing the expression
-- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_asset))
-- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Asset/Attribute filter (see [below for nested schema](#nestedblock--function_items--query_filter_attribute))
+- `query_filter_asset` (Block Set, Min: 1, Max: 1) Asset filter (see [below for nested schema](#nestedblock--alert_items--query_filter_asset))
+- `query_filter_attribute` (Block Set, Min: 1, Max: 1) Attribute filter (see [below for nested schema](#nestedblock--alert_items--query_filter_attribute))
 - `query_group_function` (String) function used to aggregate data
 - `query_group_unit` (String) time window to apply the aggregation
 - `query_plain` (String) actual mongo query
@@ -180,8 +183,8 @@ Read-Only:
 
 - `id` (String) ID of the function item
 
-<a id="nestedblock--function_items--query_filter_asset"></a>
-### Nested Schema for `function_items.query_filter_asset`
+<a id="nestedblock--alert_items--query_filter_asset"></a>
+### Nested Schema for `alert_items.query_filter_asset`
 
 Optional:
 
@@ -189,8 +192,8 @@ Optional:
 - `name` (String) name of the resource
 
 
-<a id="nestedblock--function_items--query_filter_attribute"></a>
-### Nested Schema for `function_items.query_filter_attribute`
+<a id="nestedblock--alert_items--query_filter_attribute"></a>
+### Nested Schema for `alert_items.query_filter_attribute`
 
 Optional:
 
@@ -199,22 +202,17 @@ Optional:
 
 
 
-<a id="nestedblock--target_asset"></a>
-### Nested Schema for `target_asset`
+<a id="nestedblock--thresholds"></a>
+### Nested Schema for `thresholds`
+
+Required:
+
+- `status` (String) [alert|warning|no_alert] status value for the threshold
+- `value` (Number) value to be considered to compare
 
 Optional:
 
-- `id` (String) ID of the resource
-- `name` (String) name of the resource
-
-
-<a id="nestedblock--target_attribute"></a>
-### Nested Schema for `target_attribute`
-
-Optional:
-
-- `id` (String) ID of the resource
-- `name` (String) name of the resource
+- `status_text` (String) optional custom value to be displayed in the platform.
 
 ## Import
 

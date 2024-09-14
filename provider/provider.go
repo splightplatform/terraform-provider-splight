@@ -57,8 +57,10 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"splight_asset": resourceForType[*models.Asset](schemaAsset),
-			"splight_tag":   resourceForType[*models.Tag](schemaTag),
+			"splight_asset":    resourceForType[*models.Asset](schemaAsset),
+			"splight_tag":      resourceForType[*models.Tag](schemaTag),
+			"splight_alert":    resourceForType[*models.Alert](schemaAlert),
+			"splight_function": resourceForType[*models.Function](schemaAlert),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"splight_asset_kinds": dataSourceForType[*models.AssetKinds](schemaAssetKinds),

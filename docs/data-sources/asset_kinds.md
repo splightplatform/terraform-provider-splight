@@ -3,12 +3,12 @@
 page_title: "splight_asset_kinds Data Source - terraform-provider-splight"
 subcategory: ""
 description: |-
-  Data source to fetch all asset kinds defined in the platform
+  
 ---
 
 # splight_asset_kinds (Data Source)
 
-Data source to fetch all asset kinds defined in the platform
+
 
 ## Example Usage
 
