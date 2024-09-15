@@ -68,7 +68,7 @@ func Provider() *schema.Provider {
 			"splight_command":           resourceForType[*models.Command](schemas.SchemaCommand),
 			"splight_component":         resourceForType[*models.Component](schemas.SchemaComponent),
 			"splight_component_routine": resourceForType[*models.ComponentRoutine](schemas.SchemaComponentRoutine),
-			// "splight_dashboard":                   resourceForType[*models.Dashboard](schemas.SchemaDashboard),
+			"splight_dashboard":         resourceForType[*models.Dashboard](schemas.SchemaDashboard),
 			// "splight_dashboard_tab":               resourceForType[*models.DashboardTab](schemas.SchemaDashboarTab),
 			// "splight_dashboard_table_chart":       resourceForType[*models.DashboardTableChart](schemas.SchemaDashboardTableChart),
 			// "splight_dashboard_timeseries_chart":  resourceForType[*models.DashboardTimeseriesChart](schemas.SchemaDashboardTimeseriesChart),
