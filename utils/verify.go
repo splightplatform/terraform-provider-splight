@@ -1,5 +1,6 @@
 package utils
 
+// TODO: move to the corresponding resource
 import (
 	"bytes"
 	"encoding/json"
@@ -7,13 +8,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
-
-func ValidateNullableString(s string) *string {
-	if s == "" {
-		return nil
-	}
-	return &s
-}
 
 func JSONStringEqualSupressFunc(k, old, new string, d *schema.ResourceData) bool {
 	return JSONStringEqual(old, new)
@@ -32,6 +26,7 @@ func JSONStringEqual(s1, s2 string) bool {
 
 	return JSONBytesEqual(b1.Bytes(), b2.Bytes())
 }
+
 func JSONBytesEqual(b1, b2 []byte) bool {
 	var o1 interface{}
 	if err := json.Unmarshal(b1, &o1); err != nil {

@@ -118,7 +118,6 @@ func (c *Client) CreateAlert(item *AlertParams) (*Alert, error) {
 func (c *Client) UpdateAlert(id string, item *AlertParams) (*Alert, error) {
 	buf := bytes.Buffer{}
 	err := json.NewEncoder(&buf).Encode(item)
-
 	if err != nil {
 		return nil, err
 	}
