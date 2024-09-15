@@ -1,6 +1,8 @@
 module github.com/splightplatform/terraform-provider-splight
 
-go 1.21.6
+go 1.22
+
+toolchain go1.22.7
 
 require (
 	github.com/hashicorp/terraform-plugin-docs v0.18.0
@@ -9,6 +11,7 @@ require (
 	github.com/hashicorp/terraform-plugin-mux v0.16.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
 	gopkg.in/yaml.v3 v3.0.1
+	mvdan.cc/gofumpt v0.7.0
 )
 
 require (
@@ -47,7 +50,6 @@ require (
 	github.com/hashicorp/yamux v0.1.1 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
-	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
