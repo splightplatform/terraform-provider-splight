@@ -3,7 +3,7 @@ package models
 import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 type Tags struct {
-	Tags []Tag `json:"results"`
+	Tags []QueryFilter `json:"results"`
 }
 
 func (m *Tags) ResourcePath() string {
@@ -13,10 +13,10 @@ func (m *Tags) ResourcePath() string {
 func (m *Tags) ToSchema(d *schema.ResourceData) error {
 	var tagsMap []map[string]string
 
-	for _, tag := range m.Tags {
+	for _, queryFilter := range m.Tags {
 		tagMap := map[string]string{
-			"id":   tag.Id,
-			"name": tag.Name,
+			"id":   queryFilter.Id,
+			"name": queryFilter.Name,
 		}
 		tagsMap = append(tagsMap, tagMap)
 	}
