@@ -1,104 +1,39 @@
 package models
 
 import (
-	"encoding/json"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type FunctionItem struct {
-	Id                   string                  `json:"id,omitempty"`
-	RefId                string                  `json:"ref_id"`
-	Type                 string                  `json:"type"`
-	Expression           string                  `json:"expression"`
-	ExpressionPlain      string                  `json:"expression_plain"`
-	QueryPlain           string                  `json:"query_plain"`
-	QueryFilterAsset     FunctionTargetItem      `json:"query_filter_asset"`
-	QueryFilterAttribute TypedFunctionTargetItem `json:"query_filter_attribute"`
-	QueryGroupFunction   string                  `json:"query_group_function"`
-	QueryGroupUnit       string                  `json:"query_group_unit"`
-}
-
-type TypedFunctionTargetItem struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
-}
-
-type FunctionTargetItem struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-// Implement custom JSON marshalling to omit the struct if both fields are empty
-func (fti TypedFunctionTargetItem) MarshalJSON() ([]byte, error) {
-	if fti.Id == "" && fti.Name == "" && fti.Type == "" {
-		return []byte("null"), nil
-	}
-	type Alias TypedFunctionTargetItem
-	return json.Marshal((Alias)(fti))
-}
-
-// Implement custom JSON unmarshalling to initialize the struct if the field is null
-func (fti *TypedFunctionTargetItem) UnmarshalJSON(data []byte) error {
-	type Alias TypedFunctionTargetItem
-	aux := &struct {
-		*Alias
-	}{
-		Alias: (*Alias)(fti),
-	}
-
-	if string(data) == "null" {
-		*fti = TypedFunctionTargetItem{}
-		return nil
-	}
-
-	return json.Unmarshal(data, &aux)
-}
-
-// Implement custom JSON marshalling to omit the struct if both fields are empty
-func (fti FunctionTargetItem) MarshalJSON() ([]byte, error) {
-	if fti.Id == "" && fti.Name == "" {
-		return []byte("null"), nil
-	}
-	type Alias FunctionTargetItem
-	return json.Marshal((Alias)(fti))
-}
-
-// Implement custom JSON unmarshalling to initialize the struct if the field is null
-func (fti *FunctionTargetItem) UnmarshalJSON(data []byte) error {
-	type Alias FunctionTargetItem
-	aux := &struct {
-		*Alias
-	}{
-		Alias: (*Alias)(fti),
-	}
-
-	if string(data) == "null" {
-		*fti = FunctionTargetItem{}
-		return nil
-	}
-
-	return json.Unmarshal(data, &aux)
+	Id                   string           `json:"id,omitempty"`
+	RefId                string           `json:"ref_id"`
+	Type                 string           `json:"type"`
+	Expression           string           `json:"expression"`
+	ExpressionPlain      string           `json:"expression_plain"`
+	QueryPlain           string           `json:"query_plain"`
+	QueryFilterAsset     QueryFilter      `json:"query_filter_asset"`
+	QueryFilterAttribute TypedQueryFilter `json:"query_filter_attribute"`
+	QueryGroupFunction   string           `json:"query_group_function"`
+	QueryGroupUnit       string           `json:"query_group_unit"`
 }
 
 type FunctionParams struct {
-	Name            string                  `json:"name"`
-	Description     string                  `json:"description"`
-	Type            string                  `json:"type"`
-	TimeWindow      int                     `json:"time_window"`
-	TargetAsset     FunctionTargetItem      `json:"target_asset"`
-	TargetAttribute TypedFunctionTargetItem `json:"target_attribute"`
-	TargetVariable  string                  `json:"target_variable"`
-	RateUnit        string                  `json:"rate_unit"`
-	RateValue       int                     `json:"rate_value"`
-	CronMinutes     int                     `json:"cron_minutes"`
-	CronHours       int                     `json:"cron_hours"`
-	CronDOM         int                     `json:"cron_dom"`
-	CronMonth       int                     `json:"cron_month"`
-	CronDOW         int                     `json:"cron_dow"`
-	CronYear        int                     `json:"cron_year"`
-	FunctionItems   []FunctionItem          `json:"function_items"`
+	Name            string           `json:"name"`
+	Description     string           `json:"description"`
+	Type            string           `json:"type"`
+	TimeWindow      int              `json:"time_window"`
+	TargetAsset     QueryFilter      `json:"target_asset"`
+	TargetAttribute TypedQueryFilter `json:"target_attribute"`
+	TargetVariable  string           `json:"target_variable"`
+	RateUnit        string           `json:"rate_unit"`
+	RateValue       int              `json:"rate_value"`
+	CronMinutes     int              `json:"cron_minutes"`
+	CronHours       int              `json:"cron_hours"`
+	CronDOM         int              `json:"cron_dom"`
+	CronMonth       int              `json:"cron_month"`
+	CronDOW         int              `json:"cron_dow"`
+	CronYear        int              `json:"cron_year"`
+	FunctionItems   []FunctionItem   `json:"function_items"`
 }
 
 type Function struct {
@@ -119,17 +54,8 @@ func (m *Function) ResourcePath() string {
 }
 
 func (m *Function) FromSchema(d *schema.ResourceData) error {
-	// Convert target asset
-	targetAsset := convertFunctionTargetItem(
-		d.Get("target_asset").(*schema.Set).List(),
-		false,
-	)
-
-	// Convert target attribute
-	targetAttribute := convertFunctionTargetItem(
-		d.Get("target_attribute").(*schema.Set).List(),
-		true,
-	)
+	targetAsset := convertSingleQueryFilter(d.Get("target_asset").(*schema.Set).List())
+	targetAttribute := convertSingleTypedQueryFilter(d.Get("target_attribute").(*schema.Set).List())
 
 	// Convert function items
 	functionItems := convertFunctionItems(d.Get("function_items").([]interface{}))
@@ -143,63 +69,34 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 		RateUnit:        d.Get("rate_unit").(string),
 		RateValue:       d.Get("rate_value").(int),
 		TargetVariable:  d.Get("target_variable").(string),
-		TargetAsset:     targetAsset.(FunctionTargetItem),
-		TargetAttribute: targetAttribute.(TypedFunctionTargetItem),
+		TargetAsset:     targetAsset,
+		TargetAttribute: targetAttribute,
 		FunctionItems:   functionItems,
 	}
 
 	return nil
 }
 
-func convertFunctionTargetItem(targetItemList []interface{}, typed bool) interface{} {
-	if len(targetItemList) == 0 {
-		if typed {
-			return TypedFunctionTargetItem{}
-		}
-		return FunctionTargetItem{}
-	}
-
-	valueData := targetItemList[0].(map[string]interface{})
-
-	if typed {
-		return TypedFunctionTargetItem{
-			Name: valueData["name"].(string),
-			Id:   valueData["id"].(string),
-			Type: valueData["type"].(string),
-		}
-	}
-
-	return FunctionTargetItem{
-		Name: valueData["name"].(string),
-		Id:   valueData["id"].(string),
-	}
-}
-
 func convertFunctionItems(functionItemsInterface []interface{}) []FunctionItem {
 	functionItems := make([]FunctionItem, len(functionItemsInterface))
 	for i, item := range functionItemsInterface {
 		functionItem := item.(map[string]interface{})
-		queryFilterAsset := functionItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
-		queryFilterAttribute := functionItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+		queryFilterAssetSchema := functionItem["query_filter_asset"].(*schema.Set).List()
+		queryFilterAttributeSchema := functionItem["query_filter_attribute"].(*schema.Set).List()
+		queryFilterAsset := convertSingleQueryFilter(queryFilterAssetSchema)
+		queryFilterAttribute := convertSingleTypedQueryFilter(queryFilterAttributeSchema)
 		queryGroupFunction := functionItem["query_group_function"].(string)
 		queryGroupUnit := functionItem["query_group_unit"].(string)
 		functionItems[i] = FunctionItem{
-			RefId:           functionItem["ref_id"].(string),
-			Type:            functionItem["type"].(string),
-			Expression:      functionItem["expression"].(string),
-			ExpressionPlain: functionItem["expression_plain"].(string),
-			QueryPlain:      functionItem["query_plain"].(string),
-			QueryFilterAsset: FunctionTargetItem{
-				Name: queryFilterAsset["name"].(string),
-				Id:   queryFilterAsset["id"].(string),
-			},
-			QueryFilterAttribute: TypedFunctionTargetItem{
-				Name: queryFilterAttribute["name"].(string),
-				Id:   queryFilterAttribute["id"].(string),
-				Type: queryFilterAttribute["type"].(string),
-			},
-			QueryGroupFunction: queryGroupFunction,
-			QueryGroupUnit:     queryGroupUnit,
+			RefId:                functionItem["ref_id"].(string),
+			Type:                 functionItem["type"].(string),
+			Expression:           functionItem["expression"].(string),
+			ExpressionPlain:      functionItem["expression_plain"].(string),
+			QueryPlain:           functionItem["query_plain"].(string),
+			QueryFilterAsset:     queryFilterAsset,
+			QueryFilterAttribute: queryFilterAttribute,
+			QueryGroupFunction:   queryGroupFunction,
+			QueryGroupUnit:       queryGroupUnit,
 		}
 	}
 	return functionItems
