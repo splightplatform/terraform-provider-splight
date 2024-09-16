@@ -65,11 +65,5 @@ func SchemaAsset() map[string]*schema.Schema {
 				},
 			},
 		},
-		"related_assets": {
-			Type:        schema.TypeSet,
-			Optional:    true,
-			Description: "linked assets",
-			Elem:        &schema.Schema{Type: schema.TypeString},
-		},
 	}
 }
