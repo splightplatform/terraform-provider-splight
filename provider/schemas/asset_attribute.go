@@ -27,6 +27,7 @@ func SchemaAssetAttribute() map[string]*schema.Schema {
 			Required:    false,
 			Optional:    true,
 			Description: "optional reference to the unit of the measure",
+			ForceNew:    true,
 		},
 		"asset": {
 			Type:        schema.TypeString,

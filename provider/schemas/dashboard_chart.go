@@ -168,7 +168,7 @@ func schemaDashboardChart() map[string]*schema.Schema {
 								"id": {
 									Type:        schema.TypeString,
 									Optional:    true,
-									Description: "ID of the resource",
+									Description: "Id of the resource",
 								},
 								"name": {
 									Type:        schema.TypeString,
@@ -190,7 +190,7 @@ func schemaDashboardChart() map[string]*schema.Schema {
 								"id": {
 									Type:        schema.TypeString,
 									Optional:    true,
-									Description: "ID of the resource",
+									Description: "Id of the resource",
 								},
 								"name": {
 									Type:        schema.TypeString,

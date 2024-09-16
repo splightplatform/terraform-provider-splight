@@ -1,10 +1,10 @@
 package models
 
 type FileParams struct {
-	Name          string         `json:"name"`
-	Description   string         `json:"description"`
-	Parent        string         `json:"parent"`
-	RelatedAssets []RelatedAsset `json:"assets"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Parent      string        `json:"parent"`
+	Assets      []QueryFilter `json:"assets"`
 }
 
 type FileURL struct {
@@ -19,5 +19,5 @@ type FileDetails struct {
 
 type File struct {
 	FileParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

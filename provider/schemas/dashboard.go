@@ -14,13 +14,45 @@ func SchemaDashboard() map[string]*schema.Schema {
 		"description": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "complementary information for the dashboard",
+			Description: "dashboard description",
 		},
-		"related_assets": {
+		"tags": {
 			Type:        schema.TypeSet,
 			Optional:    true,
-			Description: "assets linked",
-			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "tags of the resource",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag name",
+					},
+				},
+			},
+		},
+		"assets": {
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Description: "related assets of the resource",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "asset id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "asset name",
+					},
+				},
+			},
 		},
 	}
 }

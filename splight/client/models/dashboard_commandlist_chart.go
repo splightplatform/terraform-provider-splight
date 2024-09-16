@@ -9,5 +9,5 @@ type DashboardCommandListChartParams struct {
 
 type DashboardCommandListChart struct {
 	DashboardCommandListChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

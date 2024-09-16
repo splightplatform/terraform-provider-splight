@@ -183,14 +183,14 @@ Required:
 
 Read-Only:
 
-- `id` (String) ID of the function item
+- `id` (String) Id of the function item
 
 <a id="nestedblock--function_items--query_filter_asset"></a>
 ### Nested Schema for `function_items.query_filter_asset`
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 
@@ -199,7 +199,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 - `type` (String) type of the resource
 
@@ -210,7 +210,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 
@@ -219,7 +219,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 - `type` (String) type of the resource
 

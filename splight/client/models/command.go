@@ -10,11 +10,11 @@ type CommandParams struct {
 
 type Command struct {
 	CommandParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
-func (m *Command) GetID() string {
-	return m.ID
+func (m *Command) GetId() string {
+	return m.Id
 }
 
 func (m *Command) GetParams() Params {
@@ -42,15 +42,12 @@ func convertActions(actionInterface []interface{}) []Action {
 
 	for i, item := range actionInterface {
 		action := item.(map[string]interface{})
-		asset := action["asset"].(*schema.Set).List()[0].(map[string]interface{})
+		asset := convertSingleQueryFilter(action["asset"].(*schema.Set).List())
 		actions[i] = Action{
-			ID: action["id"].(string),
+			Id: action["id"].(string),
 			ActionParams: ActionParams{
-				Name: "setpoint",
-				Asset: QueryFilter{
-					Id:   asset["id"].(string),
-					Name: asset["name"].(string),
-				},
+				Name:  "setpoint",
+				Asset: asset,
 			},
 		}
 	}
@@ -59,7 +56,7 @@ func convertActions(actionInterface []interface{}) []Action {
 }
 
 func (m *Command) ToSchema(d *schema.ResourceData) error {
-	d.SetId(m.ID)
+	d.SetId(m.Id)
 
 	d.Set("name", m.Name)
 
@@ -75,7 +72,7 @@ func (m *Command) ToSchema(d *schema.ResourceData) error {
 		}
 
 		actionsInterface[i] = map[string]interface{}{
-			"id":    action.ID,
+			"id":    action.Id,
 			"name":  action.Name,
 			"asset": asset,
 		}

@@ -1,53 +1,20 @@
 package models
 
 import (
-	"encoding/json"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type AlertItem struct {
-	ID                   string          `json:"id,omitempty"`
-	RefID                string          `json:"ref_id"`
-	Type                 string          `json:"type"`
-	Expression           string          `json:"expression"`
-	ExpressionPlain      string          `json:"expression_plain"`
-	QueryPlain           string          `json:"query_plain"`
-	QueryFilterAsset     AlertTargetItem `json:"query_filter_asset"`
-	QueryFilterAttribute AlertTargetItem `json:"query_filter_attribute"`
-	QueryGroupFunction   string          `json:"query_group_function"`
-	QueryGroupUnit       string          `json:"query_group_unit"`
-}
-
-type AlertTargetItem struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
-// Implement custom JSON marshalling to omit the struct if both fields are empty
-func (ati AlertTargetItem) MarshalJSON() ([]byte, error) {
-	if ati.ID == "" && ati.Name == "" {
-		return []byte("null"), nil
-	}
-	type Alias AlertTargetItem
-	return json.Marshal((Alias)(ati))
-}
-
-// Implement custom JSON unmarshalling to initialize the struct if the field is null
-func (ati *AlertTargetItem) UnmarshalJSON(data []byte) error {
-	type Alias AlertTargetItem
-	aux := &struct {
-		*Alias
-	}{
-		Alias: (*Alias)(ati),
-	}
-
-	if string(data) == "null" {
-		*ati = AlertTargetItem{}
-		return nil
-	}
-
-	return json.Unmarshal(data, &aux)
+	Id                   string      `json:"id,omitempty"`
+	RefId                string      `json:"ref_id"`
+	Type                 string      `json:"type"`
+	Expression           string      `json:"expression"`
+	ExpressionPlain      string      `json:"expression_plain"`
+	QueryPlain           string      `json:"query_plain"`
+	QueryFilterAsset     QueryFilter `json:"query_filter_asset"`
+	QueryFilterAttribute QueryFilter `json:"query_filter_attribute"`
+	QueryGroupFunction   string      `json:"query_group_function"`
+	QueryGroupUnit       string      `json:"query_group_unit"`
 }
 
 type AlertThreshold struct {
@@ -75,16 +42,15 @@ type AlertParams struct {
 	CronDOW        int              `json:"cron_dow"`
 	CronYear       int              `json:"cron_year"`
 	AlertItems     []AlertItem      `json:"alert_items"`
-	RelatedAssets  []RelatedAsset   `json:"assets"`
 }
 
 type Alert struct {
 	AlertParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
-func (m *Alert) GetID() string {
-	return m.ID
+func (m *Alert) GetId() string {
+	return m.Id
 }
 
 func (m *Alert) GetParams() Params {
@@ -102,9 +68,6 @@ func (m *Alert) FromSchema(d *schema.ResourceData) error {
 	// Convert alert thresholds
 	alertThresholds := convertAlertThresholds(d.Get("thresholds").([]interface{}))
 
-	// Convert related assets
-	alertRelatedAssets := convertRelatedAssets(d.Get("related_assets").(*schema.Set).List())
-
 	// Create the AlertParams object
 	m.AlertParams = AlertParams{
 		Name:           d.Get("name").(string),
@@ -119,7 +82,6 @@ func (m *Alert) FromSchema(d *schema.ResourceData) error {
 		Thresholds:     alertThresholds,
 		TargetVariable: d.Get("target_variable").(string),
 		AlertItems:     alertItems,
-		RelatedAssets:  alertRelatedAssets,
 	}
 
 	return nil
@@ -129,26 +91,20 @@ func convertAlertItems(alertItemsInterface []interface{}) []AlertItem {
 	alertItems := make([]AlertItem, len(alertItemsInterface))
 	for i, item := range alertItemsInterface {
 		alertItem := item.(map[string]interface{})
-		queryFilterAsset := alertItem["query_filter_asset"].(*schema.Set).List()[0].(map[string]interface{})
-		queryFilterAttribute := alertItem["query_filter_attribute"].(*schema.Set).List()[0].(map[string]interface{})
+		queryFilterAsset := convertSingleQueryFilter(alertItem["query_filter_asset"].(*schema.Set).List())
+		queryFilterAttribute := convertSingleQueryFilter(alertItem["query_filter_attribute"].(*schema.Set).List())
 		queryGroupFunction := alertItem["query_group_function"].(string)
 		queryGroupUnit := alertItem["query_group_unit"].(string)
 		alertItems[i] = AlertItem{
-			RefID:           alertItem["ref_id"].(string),
-			Type:            alertItem["type"].(string),
-			Expression:      alertItem["expression"].(string),
-			ExpressionPlain: alertItem["expression_plain"].(string),
-			QueryPlain:      alertItem["query_plain"].(string),
-			QueryFilterAsset: AlertTargetItem{
-				Name: queryFilterAsset["name"].(string),
-				ID:   queryFilterAsset["id"].(string),
-			},
-			QueryFilterAttribute: AlertTargetItem{
-				Name: queryFilterAttribute["name"].(string),
-				ID:   queryFilterAttribute["id"].(string),
-			},
-			QueryGroupFunction: queryGroupFunction,
-			QueryGroupUnit:     queryGroupUnit,
+			RefId:                alertItem["ref_id"].(string),
+			Type:                 alertItem["type"].(string),
+			Expression:           alertItem["expression"].(string),
+			ExpressionPlain:      alertItem["expression_plain"].(string),
+			QueryPlain:           alertItem["query_plain"].(string),
+			QueryFilterAsset:     queryFilterAsset,
+			QueryFilterAttribute: queryFilterAttribute,
+			QueryGroupFunction:   queryGroupFunction,
+			QueryGroupUnit:       queryGroupUnit,
 		}
 	}
 	return alertItems
@@ -167,18 +123,8 @@ func convertAlertThresholds(thresholdsInterface []interface{}) []AlertThreshold 
 	return alertThresholds
 }
 
-func convertRelatedAssets(relatedAssetsInterface []interface{}) []RelatedAsset {
-	alertRelatedAssets := make([]RelatedAsset, len(relatedAssetsInterface))
-	for i, item := range relatedAssetsInterface {
-		alertRelatedAssets[i] = RelatedAsset{
-			Id: item.(string),
-		}
-	}
-	return alertRelatedAssets
-}
-
 func (m *Alert) ToSchema(d *schema.ResourceData) error {
-	d.SetId(m.ID)
+	d.SetId(m.Id)
 
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
@@ -195,7 +141,6 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 	d.Set("cron_dow", m.CronDOW)
 	d.Set("cron_year", m.CronYear)
 	d.Set("severity", m.Severity)
-	d.Set("related_assets", m.RelatedAssets)
 
 	thresholds := make([]map[string]interface{}, len(m.Thresholds))
 	for i, m := range m.Thresholds {
@@ -207,24 +152,25 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("thresholds", thresholds)
 
+	// Query filters are always set
 	alertItems := make([]map[string]interface{}, len(m.AlertItems))
 	for i, alert := range m.AlertItems {
 		alertItems[i] = map[string]interface{}{
-			"id":               alert.ID,
-			"ref_id":           alert.RefID,
+			"id":               alert.Id,
+			"ref_id":           alert.RefId,
 			"type":             alert.Type,
 			"expression":       alert.Expression,
 			"expression_plain": alert.ExpressionPlain,
 			"query_plain":      alert.QueryPlain,
 			"query_filter_asset": []map[string]interface{}{
 				{
-					"id":   alert.QueryFilterAsset.ID,
+					"id":   alert.QueryFilterAsset.Id,
 					"name": alert.QueryFilterAsset.Name,
 				},
 			},
 			"query_filter_attribute": []map[string]interface{}{
 				{
-					"id":   alert.QueryFilterAttribute.ID,
+					"id":   alert.QueryFilterAttribute.Id,
 					"name": alert.QueryFilterAttribute.Name,
 				},
 			},

@@ -45,7 +45,7 @@ func SchemaCommand() map[string]*schema.Schema {
 					"id": {
 						Type:        schema.TypeString,
 						Required:    true,
-						Description: "action ID",
+						Description: "action Id",
 					},
 					"name": {
 						Type:        schema.TypeString,

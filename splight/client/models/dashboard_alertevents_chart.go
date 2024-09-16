@@ -10,5 +10,5 @@ type DashboardAlertEventsChartParams struct {
 
 type DashboardAlertEventsChart struct {
 	DashboardAlertEventsChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

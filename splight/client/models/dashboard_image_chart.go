@@ -9,5 +9,5 @@ type DashboardImageChartParams struct {
 
 type DashboardImageChart struct {
 	DashboardImageChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

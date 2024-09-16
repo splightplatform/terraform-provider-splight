@@ -10,5 +10,5 @@ type DashboardAssetListChartParams struct {
 
 type DashboardAssetListChart struct {
 	DashboardAssetListChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

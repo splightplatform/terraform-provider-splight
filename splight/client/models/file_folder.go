@@ -7,5 +7,5 @@ type FileFolderParams struct {
 
 type FileFolder struct {
 	FileFolderParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

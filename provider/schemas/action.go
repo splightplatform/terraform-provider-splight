@@ -40,7 +40,7 @@ func SchemaAction() map[string]*schema.Schema {
 					"id": {
 						Type:        schema.TypeString,
 						Computed:    true,
-						Description: "setpoint ID",
+						Description: "setpoint Id",
 					},
 					"name": {
 						Type:        schema.TypeString,

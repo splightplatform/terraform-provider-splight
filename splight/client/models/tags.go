@@ -15,7 +15,7 @@ func (m *Tags) ToSchema(d *schema.ResourceData) error {
 
 	for _, tag := range m.Tags {
 		tagMap := map[string]string{
-			"id":   tag.ID,
+			"id":   tag.Id,
 			"name": tag.Name,
 		}
 		tagsMap = append(tagsMap, tagMap)

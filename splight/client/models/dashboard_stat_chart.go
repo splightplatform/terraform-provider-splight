@@ -10,5 +10,5 @@ type DashboardStatChartParams struct {
 
 type DashboardStatChart struct {
 	DashboardStatChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

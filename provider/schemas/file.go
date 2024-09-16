@@ -22,7 +22,7 @@ func SchemaFile() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "the id reference for a folder to be placed in",
 		},
-		"related_assets": {
+		"assets": {
 			Type:        schema.TypeSet,
 			Description: "assets to be linked",
 			Optional:    true,

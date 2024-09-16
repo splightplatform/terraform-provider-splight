@@ -12,11 +12,11 @@ type AssetMetadataParams struct {
 
 type AssetMetadata struct {
 	AssetMetadataParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
-func (m *AssetMetadata) GetID() string {
-	return m.ID
+func (m *AssetMetadata) GetId() string {
+	return m.Id
 }
 
 func (m *AssetMetadata) GetParams() Params {
@@ -40,7 +40,7 @@ func (m *AssetMetadata) FromSchema(d *schema.ResourceData) error {
 }
 
 func (m *AssetMetadata) ToSchema(d *schema.ResourceData) error {
-	d.SetId(m.ID)
+	d.SetId(m.Id)
 
 	d.Set("asset", m.Asset)
 	d.Set("name", m.Name)

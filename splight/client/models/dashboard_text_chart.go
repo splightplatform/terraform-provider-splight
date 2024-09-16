@@ -8,5 +8,5 @@ type DashboardTextChartParams struct {
 
 type DashboardTextChart struct {
 	DashboardTextChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

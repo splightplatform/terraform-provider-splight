@@ -19,9 +19,9 @@ func Save[T models.SplightModel](c *Client, m T) error {
 	}
 
 	method := http.MethodPost
-	if m.GetID() != "" {
+	if m.GetId() != "" {
 		method = http.MethodPatch
-		url = fmt.Sprintf("%s%s/", url, m.GetID())
+		url = fmt.Sprintf("%s%s/", url, m.GetId())
 	}
 
 	body, err := c.HttpRequest(url, method, buf)

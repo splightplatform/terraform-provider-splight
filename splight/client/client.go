@@ -17,7 +17,7 @@ import (
 type Client struct {
 	hostname   string       // Server hostname or IP address
 	authToken  string       // Authorization token for HTTP requests
-	orgID      string       // Splight organization ID
+	orgId      string       // Splight organization ID
 	httpClient *http.Client // Underlying HTTP client for making requests
 	userAgent  string       // User-Agent header value for HTTP requests
 	context    context.Context

@@ -1,6 +1,14 @@
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
+  }
+}
+
 resource "splight_dashboard" "DashboardTest" {
   name = "DashboardTest"
-  related_assets = [
-    "1234-1234-1234-1234"
-  ]
+  // TODO: fill these
+  assets = []
+  tags   = []
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type Workspace struct {
-	AccessID  string `yaml:"SPLIGHT_ACCESS_ID"`
+	AccessId  string `yaml:"SPLIGHT_ACCESS_ID"`
 	SecretKey string `yaml:"SPLIGHT_SECRET_KEY"`
 	Hostname  string `yaml:"SPLIGHT_PLATFORM_API_HOST"`
 }
@@ -73,7 +73,7 @@ func LoadSplightConfig(options *SplightConfigOverrides) (*SplightConfig, error) 
 		// Build the SplightConfig struct with the token format "Splight <access_id> <secret_key>"
 		config = &SplightConfig{
 			Hostname: workspace.Hostname,
-			Token:    fmt.Sprintf("Splight %s %s", workspace.AccessID, workspace.SecretKey),
+			Token:    fmt.Sprintf("Splight %s %s", workspace.AccessId, workspace.SecretKey),
 		}
 	})
 

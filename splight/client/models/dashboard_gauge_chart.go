@@ -9,5 +9,5 @@ type DashboardGaugeChartParams struct {
 
 type DashboardGaugeChart struct {
 	DashboardGaugeChartParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

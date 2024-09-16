@@ -22,7 +22,7 @@ func SchemaTags() map[string]*schema.Schema {
 					"id": {
 						Type:        schema.TypeString,
 						Computed:    true,
-						Description: "ID of the resource",
+						Description: "Id of the resource",
 					},
 					"name": {
 						Type:        schema.TypeString,

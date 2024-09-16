@@ -10,11 +10,11 @@ type TagParams struct {
 
 type Tag struct {
 	TagParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
-func (m *Tag) GetID() string {
-	return m.ID
+func (m *Tag) GetId() string {
+	return m.Id
 }
 
 func (m *Tag) GetParams() Params {
@@ -29,13 +29,13 @@ func (m *Tag) FromSchema(d *schema.ResourceData) error {
 	m.TagParams = TagParams{
 		Name: d.Get("name").(string),
 	}
-	m.ID = d.Id()
+	m.Id = d.Id()
 
 	return nil
 }
 
 func (m *Tag) ToSchema(d *schema.ResourceData) error {
-	d.SetId(m.ID)
+	d.SetId(m.Id)
 	d.Set("name", m.Name)
 
 	return nil

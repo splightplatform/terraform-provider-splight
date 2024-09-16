@@ -8,5 +8,5 @@ type DashboardTabParams struct {
 
 type DashboardTab struct {
 	DashboardTabParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

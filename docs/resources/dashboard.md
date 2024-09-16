@@ -13,11 +13,19 @@ description: |-
 ## Example Usage
 
 ```terraform
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
+  }
+}
+
 resource "splight_dashboard" "DashboardTest" {
   name = "DashboardTest"
-  related_assets = [
-    "1234-1234-1234-1234"
-  ]
+  // TODO: fill these
+  assets = []
+  tags   = []
 }
 ```
 
@@ -30,12 +38,30 @@ resource "splight_dashboard" "DashboardTest" {
 
 ### Optional
 
-- `description` (String) complementary information for the dashboard
-- `related_assets` (Set of String) assets linked
+- `assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--assets))
+- `description` (String) dashboard description
+- `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--assets"></a>
+### Nested Schema for `assets`
+
+Required:
+
+- `id` (String) asset id
+- `name` (String) asset name
+
+
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `id` (String) tag id
+- `name` (String) tag name
 
 ## Import
 

@@ -9,5 +9,5 @@ type NodeParams struct {
 
 type Node struct {
 	NodeParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }

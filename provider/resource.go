@@ -66,10 +66,10 @@ func RetrieveResource[T models.SplightModel](ctx context.Context, d *schema.Reso
 	err := client.Retrieve(apiClient, model, d.Id())
 	if err != nil {
 		if httpErr, ok := err.(*client.HttpError); ok && httpErr.StatusCode == http.StatusNotFound {
-			d.SetId("") // Resource not found, clear the ID to remove it from the state
+			d.SetId("") // Resource not found, clear the Id to remove it from the state
 			return nil
 		}
-		return diag.Errorf("error reading resource with ID '%s': %s", model.GetID(), err.Error())
+		return diag.Errorf("error reading resource with Id '%s': %s", model.GetId(), err.Error())
 	}
 
 	model.ToSchema(d)
@@ -97,9 +97,9 @@ func DeleteResource[T models.SplightModel](ctx context.Context, d *schema.Resour
 
 	err := client.Delete(apiClient, model, d.Id())
 	if err != nil {
-		return diag.Errorf("error deleting resource with ID '%s': %s", d.Id(), err.Error())
+		return diag.Errorf("error deleting resource with Id '%s': %s", d.Id(), err.Error())
 	}
 
-	d.SetId("") // Clear the resource ID to remove it from the state
+	d.SetId("") // Clear the resource Id to remove it from the state
 	return nil
 }

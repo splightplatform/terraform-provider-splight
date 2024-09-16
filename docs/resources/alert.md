@@ -119,7 +119,6 @@ resource "splight_alert" "my_alert" {
 - `cron_year` (Number) schedule value for cron
 - `rate_unit` (String) [day|hour|minute] schedule unit
 - `rate_value` (Number) schedule value
-- `related_assets` (Set of String) related assets to be linked. In case one of these alerts triggers it will be reflected on each of these assets.
 
 ### Read-Only
 
@@ -142,14 +141,14 @@ Required:
 
 Read-Only:
 
-- `id` (String) ID of the function item
+- `id` (String) Id of the function item
 
 <a id="nestedblock--alert_items--query_filter_asset"></a>
 ### Nested Schema for `alert_items.query_filter_asset`
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 
@@ -158,7 +157,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 

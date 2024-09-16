@@ -13,11 +13,11 @@ type AssetAttributeParams struct {
 
 type AssetAttribute struct {
 	AssetAttributeParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
-func (m *AssetAttribute) GetID() string {
-	return m.ID
+func (m *AssetAttribute) GetId() string {
+	return m.Id
 }
 
 func (m *AssetAttribute) GetParams() Params {
@@ -39,7 +39,7 @@ func (m *AssetAttribute) FromSchema(d *schema.ResourceData) error {
 }
 
 func (m *AssetAttribute) ToSchema(d *schema.ResourceData) error {
-	d.SetId(m.ID)
+	d.SetId(m.Id)
 
 	d.Set("name", m.Name)
 	d.Set("type", m.Type)

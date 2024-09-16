@@ -6,7 +6,7 @@ import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 type Params interface{}
 
 type Identifiable interface {
-	GetID() string
+	GetId() string
 }
 
 type Pathable interface {

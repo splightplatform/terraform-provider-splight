@@ -82,7 +82,6 @@ resource "splight_asset" "my_asset" {
 
 - `description` (String) description of the resource
 - `kind` (Block Set, Max: 1) kind of the resource (see [below for nested schema](#nestedblock--kind))
-- `related_assets` (Set of String) linked assets
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only

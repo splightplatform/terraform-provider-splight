@@ -7,8 +7,8 @@ import (
 )
 
 type FunctionItem struct {
-	ID                   string                  `json:"id,omitempty"`
-	RefID                string                  `json:"ref_id"`
+	Id                   string                  `json:"id,omitempty"`
+	RefId                string                  `json:"ref_id"`
 	Type                 string                  `json:"type"`
 	Expression           string                  `json:"expression"`
 	ExpressionPlain      string                  `json:"expression_plain"`
@@ -20,19 +20,19 @@ type FunctionItem struct {
 }
 
 type TypedFunctionTargetItem struct {
-	ID   string `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
 
 type FunctionTargetItem struct {
-	ID   string `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
 // Implement custom JSON marshalling to omit the struct if both fields are empty
 func (fti TypedFunctionTargetItem) MarshalJSON() ([]byte, error) {
-	if fti.ID == "" && fti.Name == "" && fti.Type == "" {
+	if fti.Id == "" && fti.Name == "" && fti.Type == "" {
 		return []byte("null"), nil
 	}
 	type Alias TypedFunctionTargetItem
@@ -58,7 +58,7 @@ func (fti *TypedFunctionTargetItem) UnmarshalJSON(data []byte) error {
 
 // Implement custom JSON marshalling to omit the struct if both fields are empty
 func (fti FunctionTargetItem) MarshalJSON() ([]byte, error) {
-	if fti.ID == "" && fti.Name == "" {
+	if fti.Id == "" && fti.Name == "" {
 		return []byte("null"), nil
 	}
 	type Alias FunctionTargetItem
@@ -103,11 +103,11 @@ type FunctionParams struct {
 
 type Function struct {
 	FunctionParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
 
-func (m *Function) GetID() string {
-	return m.ID
+func (m *Function) GetId() string {
+	return m.Id
 }
 
 func (m *Function) GetParams() Params {
@@ -164,14 +164,14 @@ func convertFunctionTargetItem(targetItemList []interface{}, typed bool) interfa
 	if typed {
 		return TypedFunctionTargetItem{
 			Name: valueData["name"].(string),
-			ID:   valueData["id"].(string),
+			Id:   valueData["id"].(string),
 			Type: valueData["type"].(string),
 		}
 	}
 
 	return FunctionTargetItem{
 		Name: valueData["name"].(string),
-		ID:   valueData["id"].(string),
+		Id:   valueData["id"].(string),
 	}
 }
 
@@ -184,18 +184,18 @@ func convertFunctionItems(functionItemsInterface []interface{}) []FunctionItem {
 		queryGroupFunction := functionItem["query_group_function"].(string)
 		queryGroupUnit := functionItem["query_group_unit"].(string)
 		functionItems[i] = FunctionItem{
-			RefID:           functionItem["ref_id"].(string),
+			RefId:           functionItem["ref_id"].(string),
 			Type:            functionItem["type"].(string),
 			Expression:      functionItem["expression"].(string),
 			ExpressionPlain: functionItem["expression_plain"].(string),
 			QueryPlain:      functionItem["query_plain"].(string),
 			QueryFilterAsset: FunctionTargetItem{
 				Name: queryFilterAsset["name"].(string),
-				ID:   queryFilterAsset["id"].(string),
+				Id:   queryFilterAsset["id"].(string),
 			},
 			QueryFilterAttribute: TypedFunctionTargetItem{
 				Name: queryFilterAttribute["name"].(string),
-				ID:   queryFilterAttribute["id"].(string),
+				Id:   queryFilterAttribute["id"].(string),
 				Type: queryFilterAttribute["type"].(string),
 			},
 			QueryGroupFunction: queryGroupFunction,
@@ -206,7 +206,7 @@ func convertFunctionItems(functionItemsInterface []interface{}) []FunctionItem {
 }
 
 func (m *Function) ToSchema(d *schema.ResourceData) error {
-	d.SetId(m.ID)
+	d.SetId(m.Id)
 
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
@@ -218,13 +218,13 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	// Otherwise the SDK will raise a type error.
 	d.Set("target_asset", []map[string]interface{}{
 		{
-			"id":   m.TargetAsset.ID,
+			"id":   m.TargetAsset.Id,
 			"name": m.TargetAsset.Name,
 		},
 	})
 	d.Set("target_attribute", []map[string]interface{}{
 		{
-			"id":   m.TargetAttribute.ID,
+			"id":   m.TargetAttribute.Id,
 			"name": m.TargetAttribute.Name,
 			"type": m.TargetAttribute.Type,
 		},
@@ -242,21 +242,21 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	functionItems := make([]map[string]interface{}, len(m.FunctionItems))
 	for i, function := range m.FunctionItems {
 		functionItems[i] = map[string]interface{}{
-			"id":               function.ID,
-			"ref_id":           function.RefID,
+			"id":               function.Id,
+			"ref_id":           function.RefId,
 			"type":             function.Type,
 			"expression":       function.Expression,
 			"expression_plain": function.ExpressionPlain,
 			"query_plain":      function.QueryPlain,
 			"query_filter_asset": []map[string]interface{}{
 				{
-					"id":   function.QueryFilterAsset.ID,
+					"id":   function.QueryFilterAsset.Id,
 					"name": function.QueryFilterAsset.Name,
 				},
 			},
 			"query_filter_attribute": []map[string]interface{}{
 				{
-					"id":   function.QueryFilterAttribute.ID,
+					"id":   function.QueryFilterAttribute.Id,
 					"name": function.QueryFilterAttribute.Name,
 					"type": function.QueryFilterAttribute.Type,
 				},

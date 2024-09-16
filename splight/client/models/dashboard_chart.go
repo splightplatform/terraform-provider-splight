@@ -1,12 +1,5 @@
 package models
 
-import "encoding/json"
-
-type QueryFilter struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
 type DashboardValueMapping struct {
 	Type        string `json:"type"`
 	Order       int    `json:"order"`
@@ -22,7 +15,7 @@ type DashboardThreshold struct {
 
 type DashboardChartItem struct {
 	Color                string      `json:"color"`
-	RefID                string      `json:"ref_id"`
+	RefId                string      `json:"ref_id"`
 	Type                 string      `json:"type"`
 	Label                string      `json:"label"`
 	Hidden               bool        `json:"hidden"`
@@ -64,31 +57,5 @@ type DashboardChartParams struct {
 
 type DashboardChart struct {
 	DashboardChartParams
-	ID string `json:"id"`
-}
-
-// Implement custom JSON marshalling to omit the struct if both fields are empty
-func (fti QueryFilter) MarshalJSON() ([]byte, error) {
-	if fti.Id == "" && fti.Name == "" {
-		return []byte("null"), nil
-	}
-	type Alias QueryFilter
-	return json.Marshal((Alias)(fti))
-}
-
-// Implement custom JSON unmarshalling to initialize the struct if the field is null
-func (fti *QueryFilter) UnmarshalJSON(data []byte) error {
-	type Alias QueryFilter
-	aux := &struct {
-		*Alias
-	}{
-		Alias: (*Alias)(fti),
-	}
-
-	if string(data) == "null" {
-		*fti = QueryFilter{}
-		return nil
-	}
-
-	return json.Unmarshal(data, &aux)
+	Id string `json:"id"`
 }

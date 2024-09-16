@@ -7,5 +7,5 @@ type SecretParams struct {
 
 type Secret struct {
 	SecretParams
-	ID string `json:"id"`
+	Id string `json:"id"`
 }
