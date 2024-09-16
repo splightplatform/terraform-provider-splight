@@ -5,16 +5,16 @@ import (
 )
 
 type AlertItem struct {
-	Id                   string      `json:"id,omitempty"`
-	RefId                string      `json:"ref_id"`
-	Type                 string      `json:"type"`
-	Expression           string      `json:"expression"`
-	ExpressionPlain      string      `json:"expression_plain"`
-	QueryPlain           string      `json:"query_plain"`
-	QueryFilterAsset     QueryFilter `json:"query_filter_asset"`
-	QueryFilterAttribute QueryFilter `json:"query_filter_attribute"`
-	QueryGroupFunction   string      `json:"query_group_function"`
-	QueryGroupUnit       string      `json:"query_group_unit"`
+	Id                   string       `json:"id,omitempty"`
+	RefId                string       `json:"ref_id"`
+	Type                 string       `json:"type"`
+	Expression           string       `json:"expression"`
+	ExpressionPlain      string       `json:"expression_plain"`
+	QueryPlain           string       `json:"query_plain"`
+	QueryFilterAsset     *QueryFilter `json:"query_filter_asset"`
+	QueryFilterAttribute *QueryFilter `json:"query_filter_attribute"`
+	QueryGroupFunction   string       `json:"query_group_function"`
+	QueryGroupUnit       string       `json:"query_group_unit"`
 }
 
 type AlertThreshold struct {
@@ -162,6 +162,7 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 			"expression":       alert.Expression,
 			"expression_plain": alert.ExpressionPlain,
 			"query_plain":      alert.QueryPlain,
+			// TODO: y si es nil?
 			"query_filter_asset": []map[string]interface{}{
 				{
 					"id":   alert.QueryFilterAsset.Id,

@@ -5,16 +5,16 @@ import (
 )
 
 type FunctionItem struct {
-	Id                   string           `json:"id,omitempty"`
-	RefId                string           `json:"ref_id"`
-	Type                 string           `json:"type"`
-	Expression           string           `json:"expression"`
-	ExpressionPlain      string           `json:"expression_plain"`
-	QueryPlain           string           `json:"query_plain"`
-	QueryFilterAsset     QueryFilter      `json:"query_filter_asset"`
-	QueryFilterAttribute TypedQueryFilter `json:"query_filter_attribute"`
-	QueryGroupFunction   string           `json:"query_group_function"`
-	QueryGroupUnit       string           `json:"query_group_unit"`
+	Id                   string            `json:"id,omitempty"`
+	RefId                string            `json:"ref_id"`
+	Type                 string            `json:"type"`
+	Expression           string            `json:"expression"`
+	ExpressionPlain      string            `json:"expression_plain"`
+	QueryPlain           string            `json:"query_plain"`
+	QueryFilterAsset     *QueryFilter      `json:"query_filter_asset"`
+	QueryFilterAttribute *TypedQueryFilter `json:"query_filter_attribute"`
+	QueryGroupFunction   string            `json:"query_group_function"`
+	QueryGroupUnit       string            `json:"query_group_unit"`
 }
 
 type FunctionParams struct {
@@ -69,8 +69,8 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 		RateUnit:        d.Get("rate_unit").(string),
 		RateValue:       d.Get("rate_value").(int),
 		TargetVariable:  d.Get("target_variable").(string),
-		TargetAsset:     targetAsset,
-		TargetAttribute: targetAttribute,
+		TargetAsset:     *targetAsset,
+		TargetAttribute: *targetAttribute,
 		FunctionItems:   functionItems,
 	}
 
@@ -145,6 +145,7 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 			"expression":       function.Expression,
 			"expression_plain": function.ExpressionPlain,
 			"query_plain":      function.QueryPlain,
+			// TODO: si es nil?
 			"query_filter_asset": []map[string]interface{}{
 				{
 					"id":   function.QueryFilterAsset.Id,

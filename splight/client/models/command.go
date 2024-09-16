@@ -47,7 +47,7 @@ func convertActions(actionInterface []interface{}) []Action {
 			Id: action["id"].(string),
 			ActionParams: ActionParams{
 				Name:  "setpoint",
-				Asset: asset,
+				Asset: *asset,
 			},
 		}
 	}

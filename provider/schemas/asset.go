@@ -1,9 +1,39 @@
 package schemas
 
 import (
+	"encoding/json"
+	"reflect"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/splightplatform/terraform-provider-splight/utils"
 )
+
+// JSONStringEqualSupressFunc is a function for comparing JSON strings.
+func JSONStringEqualSupressFunc(k, old, new string, d *schema.ResourceData) bool {
+	return JSONStringEqual(old, new)
+}
+
+// JSONStringEqual compares two JSON strings for equality,
+// ignoring differences in whitespace and order.
+func JSONStringEqual(s1, s2 string) bool {
+	return JSONBytesEqual([]byte(s1), []byte(s2))
+}
+
+// JSONBytesEqual compares two JSON byte slices for equality,
+// ignoring differences in whitespace and order.
+func JSONBytesEqual(b1, b2 []byte) bool {
+	var o1, o2 interface{}
+
+	// Unmarshal JSON bytes into empty interfaces
+	if err := json.Unmarshal(b1, &o1); err != nil {
+		return false
+	}
+	if err := json.Unmarshal(b2, &o2); err != nil {
+		return false
+	}
+
+	// Compare the unmarshaled objects
+	return reflect.DeepEqual(o1, o2)
+}
 
 func SchemaAsset() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
@@ -21,7 +51,7 @@ func SchemaAsset() map[string]*schema.Schema {
 			Type:             schema.TypeString,
 			Required:         true,
 			Description:      "GeoJSON GeomtryCollection",
-			DiffSuppressFunc: utils.JSONStringEqualSupressFunc,
+			DiffSuppressFunc: JSONStringEqualSupressFunc,
 		},
 		"tags": {
 			Type:        schema.TypeSet,

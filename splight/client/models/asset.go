@@ -11,7 +11,7 @@ type AssetParams struct {
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
 	Tags        []QueryFilter   `json:"tags"`
-	Kind        QueryFilter     `json:"kind"`
+	Kind        *QueryFilter    `json:"kind"`
 }
 
 type Asset struct {
@@ -54,7 +54,7 @@ func (m *Asset) ToSchema(d *schema.ResourceData) error {
 	d.Set("geometry", string(m.Geometry))
 	d.Set("tags", m.Tags)
 
-	if m.Kind.Id != "" && m.Kind.Name != "" {
+	if m.Kind != nil {
 		d.Set("kind", []map[string]interface{}{
 			{
 				"id":   m.Kind.Id,

@@ -44,8 +44,6 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 		context:    context,
 	}
 
-	// TODO: cache email
-	// TODO: or do once the NewClient?
 	email, err := client.RetrieveEmail()
 	if err != nil {
 		return nil, err

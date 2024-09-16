@@ -5,7 +5,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-// TODO: try to modularize stuff from this schema and funtions
 func SchemaAlert() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {

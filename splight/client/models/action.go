@@ -42,7 +42,7 @@ func (m *Action) FromSchema(d *schema.ResourceData) error {
 
 	m.ActionParams = ActionParams{
 		Name:      d.Get("name").(string),
-		Asset:     asset,
+		Asset:     *asset,
 		Setpoints: setpoints,
 	}
 
@@ -59,7 +59,7 @@ func convertSetpoints(setpointsInterface []interface{}) []Setpoint {
 			Id:        setpoint["id"].(string),
 			Name:      "setpoint",
 			Value:     json.RawMessage(setpoint["value"].(string)),
-			Attribute: attribute,
+			Attribute: *attribute,
 		}
 
 	}
