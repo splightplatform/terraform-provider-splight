@@ -1,6 +1,16 @@
 package models
 
-import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+type DataAddress struct {
+	Asset     string `json:"asset"`
+	Attribute string `json:"attribute"`
+}
 
 type InputDataAddress struct {
 	Name        string                        `json:"name"`
@@ -11,9 +21,26 @@ type InputDataAddress struct {
 	Required    bool                          `json:"required"`
 	Value       ComponentRoutineDataAddresses `json:"value"`
 }
-type DataAddress struct {
-	Asset     string `json:"asset"`
-	Attribute string `json:"attribute"`
+
+type ComponentRoutineDataAddresses []DataAddress
+
+// We do this since API might return a list or a single data address
+func (c *ComponentRoutineDataAddresses) UnmarshalJSON(data []byte) error {
+	// Attempt to unmarshal data into a single ComponentRoutineDataAddress
+	var single DataAddress
+	if err := json.Unmarshal(data, &single); err == nil {
+		*c = ComponentRoutineDataAddresses{single}
+		return nil
+	}
+
+	// Attempt to unmarshal data into a slice of ComponentRoutineDataAddress
+	var slice []DataAddress
+	if err := json.Unmarshal(data, &slice); err == nil {
+		*c = slice
+		return nil
+	}
+
+	return fmt.Errorf("failed to unmarshal ComponentRoutineDataAddresses")
 }
 
 func convertInputDataAddresses(data []any) []InputDataAddress {
