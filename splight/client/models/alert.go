@@ -1,8 +1,6 @@
 package models
 
 import (
-	"runtime"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -115,7 +113,6 @@ func convertAlertItems(alertItemsInterface []interface{}) []AlertItem {
 			QueryGroupFunction:   queryGroupFunction,
 			QueryGroupUnit:       queryGroupUnit,
 		}
-		runtime.Breakpoint()
 	}
 	return alertItems
 }
