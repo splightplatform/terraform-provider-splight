@@ -5,9 +5,36 @@ type QueryFilter struct {
 	Name string `json:"name"`
 }
 
+func (m *QueryFilter) isEmpty() bool {
+	return m.Id == "" && m.Name == ""
+}
+
+func (m *QueryFilter) toMap() []map[string]string {
+	return []map[string]string{
+		{
+			"id":   m.Id,
+			"name": m.Name,
+		},
+	}
+}
+
 type TypedQueryFilter struct {
 	QueryFilter
 	Type string `json:"type"`
+}
+
+func (m *TypedQueryFilter) isEmpty() bool {
+	return m.Type == "" && m.Id == "" && m.Name == ""
+}
+
+func (m *TypedQueryFilter) toMap() []map[string]string {
+	return []map[string]string{
+		{
+			"id":   m.Id,
+			"name": m.Name,
+			"type": m.Type,
+		},
+	}
 }
 
 // Generic converter for any QueryFilter type

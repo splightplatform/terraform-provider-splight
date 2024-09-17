@@ -1,6 +1,8 @@
 package models
 
 import (
+	"runtime"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -93,6 +95,13 @@ func convertAlertItems(alertItemsInterface []interface{}) []AlertItem {
 		alertItem := item.(map[string]interface{})
 		queryFilterAsset := convertSingleQueryFilter(alertItem["query_filter_asset"].(*schema.Set).List())
 		queryFilterAttribute := convertSingleQueryFilter(alertItem["query_filter_attribute"].(*schema.Set).List())
+
+		if queryFilterAttribute.isEmpty() {
+			queryFilterAsset = nil
+		}
+		if queryFilterAttribute.isEmpty() {
+			queryFilterAttribute = nil
+		}
 		queryGroupFunction := alertItem["query_group_function"].(string)
 		queryGroupUnit := alertItem["query_group_unit"].(string)
 		alertItems[i] = AlertItem{
@@ -106,6 +115,7 @@ func convertAlertItems(alertItemsInterface []interface{}) []AlertItem {
 			QueryGroupFunction:   queryGroupFunction,
 			QueryGroupUnit:       queryGroupUnit,
 		}
+		runtime.Breakpoint()
 	}
 	return alertItems
 }
@@ -155,28 +165,33 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 	// Query filters are always set
 	alertItems := make([]map[string]interface{}, len(m.AlertItems))
 	for i, alert := range m.AlertItems {
+		var queryFilterAsset []map[string]string
+		var queryFilterAttribute []map[string]string
+
+		// Set to empty map in case of nil, since thats how
+		// we allow it in the schema
+		if alert.QueryFilterAsset != nil {
+			queryFilterAsset = alert.QueryFilterAsset.toMap()
+		} else {
+			queryFilterAsset = (&QueryFilter{}).toMap()
+		}
+
+		if alert.QueryFilterAttribute != nil {
+			queryFilterAttribute = alert.QueryFilterAttribute.toMap()
+		} else {
+			queryFilterAttribute = (&QueryFilter{}).toMap()
+		}
 		alertItems[i] = map[string]interface{}{
-			"id":               alert.Id,
-			"ref_id":           alert.RefId,
-			"type":             alert.Type,
-			"expression":       alert.Expression,
-			"expression_plain": alert.ExpressionPlain,
-			"query_plain":      alert.QueryPlain,
-			// TODO: y si es nil?
-			"query_filter_asset": []map[string]interface{}{
-				{
-					"id":   alert.QueryFilterAsset.Id,
-					"name": alert.QueryFilterAsset.Name,
-				},
-			},
-			"query_filter_attribute": []map[string]interface{}{
-				{
-					"id":   alert.QueryFilterAttribute.Id,
-					"name": alert.QueryFilterAttribute.Name,
-				},
-			},
-			"query_group_function": alert.QueryGroupFunction,
-			"query_group_unit":     alert.QueryGroupUnit,
+			"id":                     alert.Id,
+			"ref_id":                 alert.RefId,
+			"type":                   alert.Type,
+			"expression":             alert.Expression,
+			"expression_plain":       alert.ExpressionPlain,
+			"query_plain":            alert.QueryPlain,
+			"query_filter_asset":     queryFilterAsset,
+			"query_filter_attribute": queryFilterAttribute,
+			"query_group_function":   alert.QueryGroupFunction,
+			"query_group_unit":       alert.QueryGroupUnit,
 		}
 	}
 	d.Set("alert_items", alertItems)

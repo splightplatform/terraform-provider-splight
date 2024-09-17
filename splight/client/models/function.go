@@ -58,7 +58,7 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 	targetAttribute := convertSingleTypedQueryFilter(d.Get("target_attribute").(*schema.Set).List())
 
 	// Convert function items
-	functionItems := convertFunctionItems(d.Get("function_items").([]interface{}))
+	functionItems := convertFunctionItems(d.Get("function_items").([]any))
 
 	// Create the FunctionParams object
 	m.FunctionParams = FunctionParams{
@@ -77,14 +77,21 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 	return nil
 }
 
-func convertFunctionItems(functionItemsInterface []interface{}) []FunctionItem {
+func convertFunctionItems(functionItemsInterface []any) []FunctionItem {
 	functionItems := make([]FunctionItem, len(functionItemsInterface))
 	for i, item := range functionItemsInterface {
-		functionItem := item.(map[string]interface{})
-		queryFilterAssetSchema := functionItem["query_filter_asset"].(*schema.Set).List()
-		queryFilterAttributeSchema := functionItem["query_filter_attribute"].(*schema.Set).List()
-		queryFilterAsset := convertSingleQueryFilter(queryFilterAssetSchema)
-		queryFilterAttribute := convertSingleTypedQueryFilter(queryFilterAttributeSchema)
+		functionItem := item.(map[string]any)
+
+		queryFilterAsset := convertSingleQueryFilter(functionItem["query_filter_asset"].(*schema.Set).List())
+		queryFilterAttribute := convertSingleTypedQueryFilter(functionItem["query_filter_attribute"].(*schema.Set).List())
+
+		if queryFilterAsset.isEmpty() {
+			queryFilterAsset = nil
+		}
+		if queryFilterAttribute.isEmpty() {
+			queryFilterAttribute = nil
+		}
+
 		queryGroupFunction := functionItem["query_group_function"].(string)
 		queryGroupUnit := functionItem["query_group_unit"].(string)
 		functionItems[i] = FunctionItem{
@@ -113,13 +120,13 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	// Since the schemas for these params are 'TypeSet' we must convert
 	// our structs to a slice of 'FunctionTargetItem'.
 	// Otherwise the SDK will raise a type error.
-	d.Set("target_asset", []map[string]interface{}{
+	d.Set("target_asset", []map[string]any{
 		{
 			"id":   m.TargetAsset.Id,
 			"name": m.TargetAsset.Name,
 		},
 	})
-	d.Set("target_attribute", []map[string]interface{}{
+	d.Set("target_attribute", []map[string]any{
 		{
 			"id":   m.TargetAttribute.Id,
 			"name": m.TargetAttribute.Name,
@@ -136,31 +143,36 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	d.Set("cron_dow", m.CronDOW)
 	d.Set("cron_year", m.CronYear)
 
-	functionItems := make([]map[string]interface{}, len(m.FunctionItems))
+	functionItems := make([]map[string]any, len(m.FunctionItems))
 	for i, function := range m.FunctionItems {
-		functionItems[i] = map[string]interface{}{
-			"id":               function.Id,
-			"ref_id":           function.RefId,
-			"type":             function.Type,
-			"expression":       function.Expression,
-			"expression_plain": function.ExpressionPlain,
-			"query_plain":      function.QueryPlain,
-			// TODO: si es nil?
-			"query_filter_asset": []map[string]interface{}{
-				{
-					"id":   function.QueryFilterAsset.Id,
-					"name": function.QueryFilterAsset.Name,
-				},
-			},
-			"query_filter_attribute": []map[string]interface{}{
-				{
-					"id":   function.QueryFilterAttribute.Id,
-					"name": function.QueryFilterAttribute.Name,
-					"type": function.QueryFilterAttribute.Type,
-				},
-			},
-			"query_group_function": function.QueryGroupFunction,
-			"query_group_unit":     function.QueryGroupUnit,
+		var queryFilterAsset []map[string]string
+		var queryFilterAttribute []map[string]string
+
+		// Set to empty map in case of nil, since thats how
+		// we allow it in the schema
+		if function.QueryFilterAsset != nil {
+			queryFilterAsset = function.QueryFilterAsset.toMap()
+		} else {
+			queryFilterAsset = (&QueryFilter{}).toMap()
+		}
+
+		if function.QueryFilterAttribute != nil {
+			queryFilterAttribute = function.QueryFilterAttribute.toMap()
+		} else {
+			queryFilterAttribute = (&QueryFilter{}).toMap()
+		}
+
+		functionItems[i] = map[string]any{
+			"id":                     function.Id,
+			"ref_id":                 function.RefId,
+			"type":                   function.Type,
+			"expression":             function.Expression,
+			"expression_plain":       function.ExpressionPlain,
+			"query_plain":            function.QueryPlain,
+			"query_filter_asset":     queryFilterAsset,
+			"query_filter_attribute": queryFilterAttribute,
+			"query_group_function":   function.QueryGroupFunction,
+			"query_group_unit":       function.QueryGroupUnit,
 		}
 	}
 
