@@ -37,6 +37,8 @@ func (m *Action) ResourcePath() string {
 }
 
 func (m *Action) FromSchema(d *schema.ResourceData) error {
+	m.Id = d.Id()
+
 	setpoints := convertSetpoints(d.Get("setpoints").(*schema.Set).List())
 	asset := convertSingleQueryFilter(d.Get("asset").(*schema.Set).List())
 

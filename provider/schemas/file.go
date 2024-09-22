@@ -22,15 +22,49 @@ func SchemaFile() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "the id reference for a folder to be placed in",
 		},
-		"assets": {
+		"related_assets": {
 			Type:        schema.TypeSet,
-			Description: "assets to be linked",
 			Optional:    true,
-			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "related assets of the resource",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "asset id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "asset name",
+					},
+				},
+			},
 		},
+		"tags": {
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Description: "tags of the resource",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag name",
+					},
+				},
+			},
+		},
+
 		"checksum": {
 			Type:     schema.TypeString,
 			Computed: true,
+			ForceNew: true,
 		},
 	}
 }

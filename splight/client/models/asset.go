@@ -7,9 +7,9 @@ import (
 )
 
 type AssetParams struct {
-	Geometry    json.RawMessage `json:"geometry"`
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
+	Geometry    json.RawMessage `json:"geometry"`
 	Tags        []QueryFilter   `json:"tags"`
 	Kind        *QueryFilter    `json:"kind"`
 }
@@ -32,6 +32,8 @@ func (m *Asset) ResourcePath() string {
 }
 
 func (m *Asset) FromSchema(d *schema.ResourceData) error {
+	m.Id = d.Id()
+
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
@@ -42,13 +44,13 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 		Tags:        tags,
 		Kind:        kind,
 	}
-	m.Id = d.Id()
 
 	return nil
 }
 
 func (m *Asset) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
+
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
 	d.Set("geometry", string(m.Geometry))

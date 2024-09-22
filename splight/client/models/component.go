@@ -30,6 +30,8 @@ func (m *Component) ResourcePath() string {
 }
 
 func (m *Component) FromSchema(d *schema.ResourceData) error {
+	m.Id = d.Id()
+
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 	input := convertInputParameters(d.Get("input").(*schema.Set).List())
 
@@ -46,6 +48,7 @@ func (m *Component) FromSchema(d *schema.ResourceData) error {
 
 func (m *Component) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
+
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
 	d.Set("version", m.Version)

@@ -35,7 +35,7 @@ func SchemaDashboard() map[string]*schema.Schema {
 				},
 			},
 		},
-		"assets": {
+		"related_assets": {
 			Type:        schema.TypeSet,
 			Optional:    true,
 			Description: "related assets of the resource",

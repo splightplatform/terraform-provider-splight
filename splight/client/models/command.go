@@ -26,6 +26,8 @@ func (m *Command) ResourcePath() string {
 }
 
 func (m *Command) FromSchema(d *schema.ResourceData) error {
+	m.Id = d.Id()
+
 	actions := convertActions(d.Get("actions").(*schema.Set).List())
 
 	m.CommandParams = CommandParams{

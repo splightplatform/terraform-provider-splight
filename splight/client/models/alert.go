@@ -62,6 +62,8 @@ func (m *Alert) ResourcePath() string {
 }
 
 func (m *Alert) FromSchema(d *schema.ResourceData) error {
+	m.Id = d.Id()
+
 	// Convert alert items
 	alertItems := convertAlertItems(d.Get("alert_items").([]interface{}))
 

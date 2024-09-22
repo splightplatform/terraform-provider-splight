@@ -32,6 +32,8 @@ func (m *ComponentRoutine) ResourcePath() string {
 }
 
 func (m *ComponentRoutine) FromSchema(d *schema.ResourceData) error {
+	m.Id = d.Id()
+
 	config := convertInputParameters(d.Get("config").(*schema.Set).List())
 	outputs := convertInputDataAddresses(d.Get("output").(*schema.Set).List())
 	inputs := convertInputDataAddresses(d.Get("input").(*schema.Set).List())
@@ -51,6 +53,7 @@ func (m *ComponentRoutine) FromSchema(d *schema.ResourceData) error {
 
 func (m *ComponentRoutine) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
+
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
 	d.Set("type", m.Type)
