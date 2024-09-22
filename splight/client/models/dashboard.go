@@ -46,6 +46,7 @@ func (m *Dashboard) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
 
 	d.Set("name", m.Name)
+	d.Set("description", m.Description)
 	d.Set("related_assets", m.RelatedAssets)
 	d.Set("description", m.Description)
 
