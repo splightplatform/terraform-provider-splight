@@ -90,7 +90,6 @@ func Provider() *schema.Provider {
 			// "splight_file":                        resourceForType[*models.File](schemas.SchemaFile),
 			// "splight_file_folder":                 resourceForType[*models.FileFolder](schemas.SchemaFileFolder),
 			"splight_secret": resourceForType[*models.Secret](schemas.SchemaSecret),
-			"splight_node":   resourceForType[*models.Node](schemas.SchemaNode),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"splight_asset_kinds": dataSourceForType[*models.AssetKinds](schemas.SchemaAssetKinds),
