@@ -30,7 +30,7 @@ resource "splight_asset" "my_asset" {
 }
 
 resource "splight_dashboard" "my_dashboard" {
-  name = "My Dashboard"
+  name        = "My Dashboard"
   description = "My Dashboard Description"
 
   # Set related assets

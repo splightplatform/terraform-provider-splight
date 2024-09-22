@@ -111,7 +111,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--azimuth"></a>
@@ -127,7 +127,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--cumulative_distance"></a>
@@ -143,7 +143,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--related_assets"></a>

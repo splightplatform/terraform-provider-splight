@@ -201,7 +201,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--atmosphere"></a>
@@ -217,7 +217,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--capacitance"></a>
@@ -233,7 +233,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--conductance"></a>
@@ -249,7 +249,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--diameter"></a>
@@ -265,7 +265,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--emissivity"></a>
@@ -281,7 +281,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--length"></a>
@@ -297,7 +297,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--maximum_allowed_current"></a>
@@ -313,7 +313,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--maximum_allowed_power"></a>
@@ -329,7 +329,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--maximum_allowed_temperature"></a>
@@ -345,7 +345,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--maximum_allowed_temperature_lte"></a>
@@ -361,7 +361,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--maximum_allowed_temperature_ste"></a>
@@ -377,7 +377,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--number_of_conductors"></a>
@@ -393,7 +393,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--reactance"></a>
@@ -409,7 +409,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--reference_resistance"></a>
@@ -425,7 +425,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--resistance"></a>
@@ -441,7 +441,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--safety_margin_for_power"></a>
@@ -457,7 +457,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--susceptance"></a>
@@ -473,7 +473,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--temperature_coeff_resistance"></a>
@@ -489,7 +489,7 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) optional reference to the unit of the measure
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--related_assets"></a>
