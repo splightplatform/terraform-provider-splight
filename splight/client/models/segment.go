@@ -1,7 +1,5 @@
 package models
 
-// TODO: missing units in state
-
 import (
 	"encoding/json"
 

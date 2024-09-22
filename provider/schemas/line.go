@@ -24,7 +24,7 @@ func schemaConstrainedAttribute(isMetadata bool) map[string]*schema.Schema {
 		"unit": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "optional reference to the unit of the measure",
+			Description: "unit of measure",
 		},
 		"asset": {
 			Type:        schema.TypeString,

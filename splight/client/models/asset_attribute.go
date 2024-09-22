@@ -8,7 +8,7 @@ type AssetAttributeParams struct {
 	Asset string `json:"asset"`
 	Name  string `json:"name"`
 	Type  string `json:"type"`
-	Unit  string `json:"unit,omitempty"`
+	Unit  string `json:"unit,omitempty"` // API complains when unit is empty
 }
 
 type AssetAttribute struct {
@@ -30,12 +30,7 @@ func (m *AssetAttribute) ToMap() map[string]any {
 		"asset": m.Asset,
 		"name":  m.Name,
 		"type":  m.Type,
-	}
-
-	// TODO: validate
-	// Only include "unit" if it's not empty (omitempty behavior)
-	if m.Unit != "" {
-		result["unit"] = m.Unit
+		"unit":  m.Unit,
 	}
 
 	return result

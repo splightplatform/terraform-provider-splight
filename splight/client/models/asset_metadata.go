@@ -11,7 +11,7 @@ type AssetMetadataParams struct {
 	Name  string          `json:"name"`
 	Type  string          `json:"type"`
 	Value json.RawMessage `json:"value"`
-	Unit  string          `json:"unit,omitempty"`
+	Unit  string          `json:"unit,omitempty"` // API complains when unit is empty
 }
 
 type AssetMetadata struct {
@@ -34,12 +34,7 @@ func (m *AssetMetadata) ToMap() map[string]any {
 		"name":  m.Name,
 		"type":  m.Type,
 		"value": string(m.Value),
-	}
-
-	// TODO: validate
-	// Only include "unit" if it's not empty (omitempty behavior)
-	if m.Unit != "" {
-		result["unit"] = m.Unit
+		"unit":  m.Unit,
 	}
 
 	return result
