@@ -3,19 +3,27 @@
 page_title: "splight_secret Resource - terraform-provider-splight"
 subcategory: ""
 description: |-
-  Provides a Cloudflare Observatory Scheduled Test resource.
+  
 ---
 
 # splight_secret (Resource)
 
-Provides a Cloudflare Observatory Scheduled Test resource.
+
 
 ## Example Usage
 
 ```terraform
-resource "splight_secret" "SecretTest" {
-  name      = "SecretTest"
-  raw_value = "ASUPERSECR3T"
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
+  }
+}
+
+resource "splight_secret" "my_secret" {
+  name      = "My Secret"
+  raw_value = "My Secret Value"
 }
 ```
 

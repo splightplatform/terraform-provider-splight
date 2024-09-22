@@ -107,18 +107,18 @@ resource "splight_dashboard_bargauge_chart" "DashboardChartTest" {
   }
 
   chart_items {
-    ref_id           = "B"
-    color            = "blue"
-    type             = "EXPRESSION"
+    ref_id      = "B"
+    color       = "blue"
+    type        = "EXPRESSION"
     query_plain = ""
     expression_plain = jsonencode(
-        {
-            "$function": {
-                "body": "function ($A) { return $A/50 }",
-                "args": ["$A"],
-                "lang": "js",
-            }
+      {
+        "$function" : {
+          "body" : "function ($A) { return $A/50 }",
+          "args" : ["$A"],
+          "lang" : "js",
         }
+      }
     )
     query_filter_asset {}
     query_filter_attribute {}

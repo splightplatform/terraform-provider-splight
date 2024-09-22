@@ -264,7 +264,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 
@@ -273,7 +273,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 

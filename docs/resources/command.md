@@ -97,7 +97,7 @@ resource "splight_command" "my_command" {
 Required:
 
 - `asset` (Block Set, Min: 1, Max: 1) asset associated with the action (to be deprecated) (see [below for nested schema](#nestedblock--actions--asset))
-- `id` (String) action ID
+- `id` (String) action Id
 - `name` (String) setpoint name
 
 <a id="nestedblock--actions--asset"></a>

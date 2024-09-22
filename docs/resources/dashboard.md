@@ -13,11 +13,63 @@ description: |-
 ## Example Usage
 
 ```terraform
-resource "splight_dashboard" "DashboardTest" {
-  name = "DashboardTest"
-  related_assets = [
-    "1234-1234-1234-1234"
-  ]
+terraform {
+  required_providers {
+    splight = {
+      source = "splightplatform/splight"
+    }
+  }
+}
+
+# Create a tag
+resource "splight_tag" "my_tag" {
+  name = "My Tag"
+}
+
+# Fetch tags
+data "splight_tags" "my_tags" {}
+
+resource "splight_asset" "my_asset" {
+  name        = "My Asset"
+  description = "My Asset Description"
+
+  geometry = jsonencode({
+    type = "GeometryCollection"
+    geometries = [
+      {
+        type        = "Point"
+        coordinates = [0, 0]
+      }
+    ]
+  })
+}
+
+resource "splight_dashboard" "my_dashboard" {
+  name        = "My Dashboard"
+  description = "My Dashboard Description"
+
+  # Set related assets
+  related_assets {
+    id   = splight_asset.my_asset.id
+    name = splight_asset.my_asset.name
+  }
+
+  # Use an existing tag if it exists in the platform by name
+  dynamic "tags" {
+    for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
+
+    content {
+      name = tags.value.name
+      id   = tags.value.id
+    }
+  }
+
+  # Or use the one created
+  tags {
+    name = splight_tag.my_tag.name
+    id   = splight_tag.my_tag.id
+  }
+
 }
 ```
 
@@ -30,12 +82,30 @@ resource "splight_dashboard" "DashboardTest" {
 
 ### Optional
 
-- `description` (String) complementary information for the dashboard
-- `related_assets` (Set of String) assets linked
+- `description` (String) dashboard description
+- `related_assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--related_assets))
+- `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--related_assets"></a>
+### Nested Schema for `related_assets`
+
+Required:
+
+- `id` (String) asset id
+- `name` (String) asset name
+
+
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `id` (String) tag id
+- `name` (String) tag name
 
 ## Import
 

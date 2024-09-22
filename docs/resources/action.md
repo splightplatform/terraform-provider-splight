@@ -93,7 +93,7 @@ Required:
 
 Read-Only:
 
-- `id` (String) setpoint ID
+- `id` (String) setpoint Id
 - `name` (String) setpoint name
 
 <a id="nestedblock--setpoints--attribute"></a>

@@ -122,48 +122,21 @@ resource "splight_dashboard_bargauge_chart" "DashboardChartTest" {
   }
 
   chart_items {
-    ref_id           = "B"
-    color            = "blue"
-    type             = "QUERY"
-    expression_plain = ""
-    query_filter_asset {
-      id   = splight_asset.AssetTest.id
-      name = splight_asset.AssetTest.name
-    }
-    query_filter_attribute {
-      id   = splight_asset_attribute.AttributeTest2.id
-      name = splight_asset_attribute.AttributeTest2.name
-    }
-    query_plain = jsonencode([
+    ref_id      = "B"
+    color       = "blue"
+    type        = "EXPRESSION"
+    query_plain = ""
+    expression_plain = jsonencode(
       {
-        "$match" = {
-          asset     = splight_asset.AssetTest.id
-          attribute = splight_asset_attribute.AttributeTest2.id
-        }
-      },
-      {
-        "$addFields" : {
-          "timestamp" : {
-            "$dateTrunc" : {
-              "date" : "$timestamp",
-              "unit" : "hour",
-              "binSize" : 1
-            }
-          }
-        }
-      },
-      {
-        "$group" : {
-          "_id" : "$timestamp",
-          "value" : {
-            "$last" : "$value"
-          },
-          "timestamp" : {
-            "$last" : "$timestamp"
-          }
+        "$function" : {
+          "body" : "function ($A) { return $A/50 }",
+          "args" : ["$A"],
+          "lang" : "js",
         }
       }
-    ])
+    )
+    query_filter_asset {}
+    query_filter_attribute {}
   }
 
   thresholds {
@@ -247,7 +220,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 
@@ -256,7 +229,7 @@ Optional:
 
 Optional:
 
-- `id` (String) ID of the resource
+- `id` (String) Id of the resource
 - `name` (String) name of the resource
 
 

@@ -3,12 +3,12 @@
 page_title: "splight_tags Data Source - terraform-provider-splight"
 subcategory: ""
 description: |-
-  Data source to fetch all tags defined in the organization account
+  
 ---
 
 # splight_tags (Data Source)
 
-Data source to fetch all tags defined in the organization account
+
 
 ## Example Usage
 

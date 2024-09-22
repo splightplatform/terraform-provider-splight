@@ -14,7 +14,7 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
-resource "splight_component" "MQTTConnector" {
+resource "splight_component" "my_component" {
   name        = "My Component"
   description = "My Component Description"
   version     = "MQTT-6.5.5"
