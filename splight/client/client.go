@@ -17,7 +17,6 @@ import (
 type Client struct {
 	hostname   string       // Server hostname or IP address
 	authToken  string       // Authorization token for HTTP requests
-	orgId      string       // Splight organization ID
 	httpClient *http.Client // Underlying HTTP client for making requests
 	userAgent  string       // User-Agent header value for HTTP requests
 	context    context.Context
@@ -44,11 +43,13 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 		context:    context,
 	}
 
+	// Retrieve the email to configure the User-Agent
 	email, err := client.RetrieveEmail()
 	if err != nil {
 		return nil, err
 	}
 
+	// Get system details and default values
 	defaultInfo := map[string]string{
 		"email": email,
 		"OS":    runtime.GOOS,
@@ -56,10 +57,12 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 		"Go":    runtime.Version(),
 	}
 
+	// Merge default values with provided options
 	for key, value := range opts.ExtraInfo {
 		defaultInfo[key] = value
 	}
 
+	// Construct the User-Agent string
 	userAgent := fmt.Sprintf("%s/%s", opts.ProductName, opts.ProductVersion)
 	for key, value := range defaultInfo {
 		userAgent += fmt.Sprintf(";%s=%s", key, value)
@@ -138,6 +141,7 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer, attempt int) 
 		"attempt":   attempt,
 	})
 
+	// Log the request details
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, &HttpError{
@@ -147,6 +151,7 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer, attempt int) 
 	}
 	defer resp.Body.Close()
 
+	// Read the response body into a buffer
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, &HttpError{
@@ -155,6 +160,7 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer, attempt int) 
 		}
 	}
 
+	// Log the response details
 	tflog.Trace(c.context, "received HTTP response", map[string]interface{}{
 		"path":       path,
 		"method":     method,
@@ -174,14 +180,15 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer, attempt int) 
 	return io.NopCloser(bytes.NewBuffer(respBody)), nil
 }
 
-// requestPath constructs the full request URL
+// requestPath constructs the full request URL by appending the path to the hostname
+// path: API endpoint path
 func (c *Client) requestPath(path string) string {
 	return fmt.Sprintf("%s/%s", c.hostname, path)
 }
 
 // HttpError represents an HTTP error with details
 type HttpError struct {
-	StatusCode int
+	StatusCode int // HTTP status code of the error response
 	Body       string
 	Message    string
 }
