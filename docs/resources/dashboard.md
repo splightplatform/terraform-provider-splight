@@ -38,16 +38,16 @@ resource "splight_dashboard" "DashboardTest" {
 
 ### Optional
 
-- `assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--assets))
 - `description` (String) dashboard description
+- `related_assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--related_assets))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--assets"></a>
-### Nested Schema for `assets`
+<a id="nestedblock--related_assets"></a>
+### Nested Schema for `related_assets`
 
 Required:
 

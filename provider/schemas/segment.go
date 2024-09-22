@@ -46,8 +46,25 @@ func SchemaSegment() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		// TODO: terminar metadatos
-		"diameter": {
+		"altitude": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"azimuth": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"cumulative_distance": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
