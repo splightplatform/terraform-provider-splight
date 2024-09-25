@@ -399,6 +399,9 @@ func (m *Line) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
 	d.Set("geometry", string(m.AssetParams.Geometry))
+
+	// TODO: validate related assets
+	// Maybe use convert query filters in these? see qflist
 	// TODO: fix this: 2024/09/20 18:22:50 [ERROR] setting state: Invalid address to set: []string{"tags", "0", "Id"}
 	d.Set("tags", m.AssetParams.Tags)
 
@@ -409,7 +412,7 @@ func (m *Line) ToSchema(d *schema.ResourceData) error {
 		},
 	})
 
-	// TODO: fix 2024/09/20 18:22:50 [ERROR] setting state: resistance.0.value: '' expected type 'string', got unconvertible type 'json.RawMessage', value: '[49 46 48]'
+	// TODO: fix
 	d.Set("active_power", []map[string]any{m.ActivePower.ToMap()})
 	d.Set("active_power", []map[string]any{m.ActivePower.ToMap()})
 	d.Set("active_power_end", []map[string]any{m.ActivePowerEnd.ToMap()})
