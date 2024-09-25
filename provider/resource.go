@@ -11,7 +11,6 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 )
 
-// TODO: catch errors from Toschema and fromschema
 // InstantiateType creates a new instance of type T, ensuring that T is a pointer type
 // We could just use a switch too
 func InstantiateType[T models.SplightObject]() T {
@@ -44,17 +43,17 @@ func SaveResource[T models.SplightModel](ctx context.Context, d *schema.Resource
 	model := InstantiateType[T]()
 	apiClient := meta.(*client.Client)
 
-	err := model.FromSchema(d)
-	if err != nil {
+	if err := model.FromSchema(d); err != nil {
 		return diag.Errorf("error mapping schema to model: %s", err.Error())
 	}
 
-	err = client.Save(apiClient, model)
-	if err != nil {
+	if err := client.Save(apiClient, model); err != nil {
 		return diag.Errorf("error creating resource: %s", err.Error())
 	}
 
-	model.ToSchema(d)
+	if err := model.ToSchema(d); err != nil {
+		return diag.Errorf("error mapping model to schema: %s", err.Error())
+	}
 
 	return nil
 }
@@ -63,8 +62,7 @@ func RetrieveResource[T models.SplightModel](ctx context.Context, d *schema.Reso
 	model := InstantiateType[T]()
 	apiClient := meta.(*client.Client)
 
-	err := client.Retrieve(apiClient, model, d.Id())
-	if err != nil {
+	if err := client.Retrieve(apiClient, model, d.Id()); err != nil {
 		if httpErr, ok := err.(*client.HttpError); ok && httpErr.StatusCode == http.StatusNotFound {
 			d.SetId("") // Resource not found, clear the Id to remove it from the state
 			return nil
@@ -72,7 +70,9 @@ func RetrieveResource[T models.SplightModel](ctx context.Context, d *schema.Reso
 		return diag.Errorf("error reading resource with Id '%s': %s", model.GetId(), err.Error())
 	}
 
-	model.ToSchema(d)
+	if err := model.ToSchema(d); err != nil {
+		return diag.Errorf("error mapping model to schema: %s", err.Error())
+	}
 
 	return nil
 }
@@ -81,12 +81,13 @@ func ListDataSource[T models.DataSource](ctx context.Context, d *schema.Resource
 	model := InstantiateType[T]()
 	apiClient := meta.(*client.Client)
 
-	err := client.List(apiClient, model)
-	if err != nil {
+	if err := client.List(apiClient, model); err != nil {
 		return diag.Errorf("error listing resource: %s", err.Error())
 	}
 
-	model.ToSchema(d)
+	if err := model.ToSchema(d); err != nil {
+		return diag.Errorf("error mapping model to schema: %s", err.Error())
+	}
 
 	return nil
 }
@@ -95,11 +96,10 @@ func DeleteResource[T models.SplightModel](ctx context.Context, d *schema.Resour
 	model := InstantiateType[T]()
 	apiClient := meta.(*client.Client)
 
-	err := client.Delete(apiClient, model, d.Id())
-	if err != nil {
+	if err := client.Delete(apiClient, model, d.Id()); err != nil {
 		return diag.Errorf("error deleting resource with Id '%s': %s", d.Id(), err.Error())
 	}
 
-	d.SetId("") // Clear the resource Id to remove it from the state
+	d.SetId("")
 	return nil
 }

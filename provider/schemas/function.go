@@ -142,6 +142,25 @@ func SchemaFunction() map[string]*schema.Schema {
 				},
 			},
 		},
+		"tags": {
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Description: "tags of the resource",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"id": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag id",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "tag name",
+					},
+				},
+			},
+		},
 		"function_items": {
 			Type:        schema.TypeList,
 			Required:    true,

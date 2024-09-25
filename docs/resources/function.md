@@ -21,6 +21,14 @@ terraform {
   }
 }
 
+# Create a tag
+resource "splight_tag" "my_tag" {
+  name = "My Tag"
+}
+
+# Fetch tags
+data "splight_tags" "my_tags" {}
+
 resource "splight_asset" "my_asset" {
   name        = "My Asset"
   description = "My Asset Description"
@@ -79,6 +87,22 @@ resource "splight_function" "FunctionTest" {
     id   = splight_asset_attribute.my_target_attribute.id
     name = splight_asset_attribute.my_target_attribute.name
     type = "Number"
+  }
+
+  # Use an existing tag if it exists in the platform by name
+  dynamic "tags" {
+    for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
+
+    content {
+      name = tags.value.name
+      id   = tags.value.id
+    }
+  }
+
+  # Or use the one created
+  tags {
+    name = splight_tag.my_tag.name
+    id   = splight_tag.my_tag.id
   }
 
   function_items {
@@ -161,6 +185,7 @@ resource "splight_function" "FunctionTest" {
 - `cron_year` (Number) schedule value for cron
 - `rate_unit` (String) [day|hour|minute] schedule unit
 - `rate_value` (Number) schedule value
+- `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
 
@@ -222,6 +247,15 @@ Optional:
 - `id` (String) Id of the resource
 - `name` (String) name of the resource
 - `type` (String) type of the resource
+
+
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `id` (String) tag id
+- `name` (String) tag name
 
 ## Import
 

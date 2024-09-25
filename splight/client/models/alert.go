@@ -41,6 +41,7 @@ type AlertParams struct {
 	CronMonth      int              `json:"cron_month"`
 	CronDOW        int              `json:"cron_dow"`
 	CronYear       int              `json:"cron_year"`
+	Tags           []QueryFilter    `json:"tags"`
 	AlertItems     []AlertItem      `json:"alert_items"`
 }
 
@@ -70,6 +71,9 @@ func (m *Alert) FromSchema(d *schema.ResourceData) error {
 	// Convert alert thresholds
 	alertThresholds := convertAlertThresholds(d.Get("thresholds").([]interface{}))
 
+	// Convert tags
+	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
 	// Create the AlertParams object
 	m.AlertParams = AlertParams{
 		Name:           d.Get("name").(string),
@@ -83,6 +87,7 @@ func (m *Alert) FromSchema(d *schema.ResourceData) error {
 		Aggregation:    d.Get("aggregation").(string),
 		Thresholds:     alertThresholds,
 		TargetVariable: d.Get("target_variable").(string),
+		Tags:           tags,
 		AlertItems:     alertItems,
 	}
 
@@ -160,6 +165,7 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 		}
 	}
 	d.Set("thresholds", thresholds)
+	d.Set("tags", m.Tags)
 
 	// Query filters are always set
 	alertItems := make([]map[string]interface{}, len(m.AlertItems))

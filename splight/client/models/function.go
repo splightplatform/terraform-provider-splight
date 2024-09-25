@@ -34,6 +34,7 @@ type FunctionParams struct {
 	CronDOW         int              `json:"cron_dow"`
 	CronYear        int              `json:"cron_year"`
 	FunctionItems   []FunctionItem   `json:"function_items"`
+	Tags            []QueryFilter    `json:"tags"`
 }
 
 type Function struct {
@@ -60,6 +61,8 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 	// Convert function items
 	functionItems := convertFunctionItems(d.Get("function_items").([]any))
 
+	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
 	// Create the FunctionParams object
 	m.FunctionParams = FunctionParams{
 		Name:            d.Get("name").(string),
@@ -71,6 +74,7 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 		TargetVariable:  d.Get("target_variable").(string),
 		TargetAsset:     *targetAsset,
 		TargetAttribute: *targetAttribute,
+		Tags:            tags,
 		FunctionItems:   functionItems,
 	}
 
