@@ -57,7 +57,7 @@ func (m *Asset) ToSchema(d *schema.ResourceData) error {
 	d.Set("tags", m.Tags)
 
 	if m.Kind != nil {
-		d.Set("kind", []map[string]interface{}{
+		d.Set("kind", []map[string]any{
 			{
 				"id":   m.Kind.Id,
 				"name": m.Kind.Name,
