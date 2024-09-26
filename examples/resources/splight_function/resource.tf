@@ -74,7 +74,7 @@ resource "splight_function" "FunctionTest" {
     type = "Number"
   }
 
-  # Use an existing tag if it exists in the platform by name
+  # Use an existing tag in the platform
   dynamic "tags" {
     for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
 
@@ -141,6 +141,10 @@ resource "splight_function" "FunctionTest" {
     query_group_unit     = ""
 
     query_plain = ""
+  }
 
+  related_assets {
+    id   = splight_asset.my_asset.id
+    name = splight_asset.my_asset.name
   }
 }

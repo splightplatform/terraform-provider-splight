@@ -68,7 +68,7 @@ resource "splight_alert" "my_alert" {
   aggregation     = "max"
   target_variable = "A"
 
-  # Use an existing tag if it exists in the platform by name
+  # Use an existing tag in the platform
   dynamic "tags" {
     for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
 
@@ -114,6 +114,11 @@ resource "splight_alert" "my_alert" {
       ]
     )
   }
+
+  related_assets {
+    id   = splight_asset.my_asset.id
+    name = splight_asset.my_asset.name
+  }
 }
 ```
 
@@ -143,6 +148,7 @@ resource "splight_alert" "my_alert" {
 - `cron_year` (Number) schedule value for cron
 - `rate_unit` (String) [day|hour|minute] schedule unit
 - `rate_value` (Number) schedule value
+- `related_assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--related_assets))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
@@ -198,6 +204,15 @@ Required:
 Optional:
 
 - `status_text` (String) optional custom value to be displayed in the platform.
+
+
+<a id="nestedblock--related_assets"></a>
+### Nested Schema for `related_assets`
+
+Required:
+
+- `id` (String) asset id
+- `name` (String) asset name
 
 
 <a id="nestedblock--tags"></a>

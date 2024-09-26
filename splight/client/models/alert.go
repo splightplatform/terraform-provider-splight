@@ -43,6 +43,7 @@ type AlertParams struct {
 	CronYear       int              `json:"cron_year"`
 	Tags           []QueryFilter    `json:"tags"`
 	AlertItems     []AlertItem      `json:"alert_items"`
+	RelatedAssets  []QueryFilter    `json:"assets"`
 }
 
 type Alert struct {
@@ -74,6 +75,9 @@ func (m *Alert) FromSchema(d *schema.ResourceData) error {
 	// Convert tags
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
+	// Convert related assets
+	assets := convertQueryFilters(d.Get("related_assets").(*schema.Set).List())
+
 	// Create the AlertParams object
 	m.AlertParams = AlertParams{
 		Name:           d.Get("name").(string),
@@ -89,6 +93,7 @@ func (m *Alert) FromSchema(d *schema.ResourceData) error {
 		TargetVariable: d.Get("target_variable").(string),
 		Tags:           tags,
 		AlertItems:     alertItems,
+		RelatedAssets:  assets,
 	}
 
 	return nil
@@ -200,6 +205,7 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 		}
 	}
 	d.Set("alert_items", alertItems)
+	d.Set("related_assets", m.RelatedAssets)
 
 	return nil
 }

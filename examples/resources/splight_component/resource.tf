@@ -19,7 +19,7 @@ resource "splight_component" "my_component" {
   description = "My Component Description"
   version     = "MQTT-6.5.5"
 
-  # Use an existing tag if it exists in the platform by name
+  # Use an existing tag in the platform
   dynamic "tags" {
     for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
 

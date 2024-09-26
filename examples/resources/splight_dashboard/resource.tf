@@ -39,7 +39,7 @@ resource "splight_dashboard" "my_dashboard" {
     name = splight_asset.my_asset.name
   }
 
-  # Use an existing tag if it exists in the platform by name
+  # Use an existing tag in the platform
   dynamic "tags" {
     for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
 
