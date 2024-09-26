@@ -24,7 +24,6 @@ func SchemaAssetRelation() map[string]*schema.Schema {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
-			ForceNew:    true,
 			Description: "kind of the target relation asset",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
@@ -70,7 +69,6 @@ func SchemaAssetRelation() map[string]*schema.Schema {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
-			ForceNew:    true,
 			Description: "target asset of the relation",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
