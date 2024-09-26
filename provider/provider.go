@@ -59,7 +59,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"splight_asset":                       resourceForType[*models.Asset](schemas.SchemaAsset),
-			"splight_asset_relation":              resourceForType[*models.AssetRelation](schemas.SchemaAssetRelationship),
+			"splight_asset_relation":              resourceForType[*models.AssetRelation](schemas.SchemaAssetRelation),
 			"splight_line":                        resourceForType[*models.Line](schemas.SchemaLine),
 			"splight_segment":                     resourceForType[*models.Segment](schemas.SchemaSegment),
 			"splight_asset_attribute":             resourceForType[*models.AssetAttribute](schemas.SchemaAssetAttribute),
