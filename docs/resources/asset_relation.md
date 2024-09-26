@@ -8,6 +8,8 @@ description: |-
 
 # splight_asset_relation (Resource)
 
+
+
 ## Example Usage
 
 ```terraform
@@ -127,7 +129,6 @@ Required:
 
 - `id` (String) kind id
 - `name` (String) kind name
-<<<<<<< HEAD
 
 ## Import
 
@@ -136,5 +137,3 @@ Import is supported using the following syntax:
 ```shell
 terraform import [options] splight_relation.<name> <relation_id>
 ```
-=======
->>>>>>> 956cae1 (Add related assets to functions and alerts)
