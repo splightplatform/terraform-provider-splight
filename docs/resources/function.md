@@ -156,7 +156,11 @@ resource "splight_function" "FunctionTest" {
     query_group_unit     = ""
 
     query_plain = ""
+  }
 
+  related_assets {
+    id   = splight_asset.my_asset.id
+    name = splight_asset.my_asset.name
   }
 }
 ```
@@ -185,6 +189,7 @@ resource "splight_function" "FunctionTest" {
 - `cron_year` (Number) schedule value for cron
 - `rate_unit` (String) [day|hour|minute] schedule unit
 - `rate_value` (Number) schedule value
+- `related_assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--related_assets))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
@@ -247,6 +252,15 @@ Optional:
 - `id` (String) Id of the resource
 - `name` (String) name of the resource
 - `type` (String) type of the resource
+
+
+<a id="nestedblock--related_assets"></a>
+### Nested Schema for `related_assets`
+
+Required:
+
+- `id` (String) asset id
+- `name` (String) asset name
 
 
 <a id="nestedblock--tags"></a>

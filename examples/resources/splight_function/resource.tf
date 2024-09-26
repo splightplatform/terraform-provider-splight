@@ -141,6 +141,10 @@ resource "splight_function" "FunctionTest" {
     query_group_unit     = ""
 
     query_plain = ""
+  }
 
+  related_assets {
+    id   = splight_asset.my_asset.id
+    name = splight_asset.my_asset.name
   }
 }

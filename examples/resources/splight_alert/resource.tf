@@ -99,4 +99,9 @@ resource "splight_alert" "my_alert" {
       ]
     )
   }
+
+  related_assets {
+    id   = splight_asset.my_asset.id
+    name = splight_asset.my_asset.name
+  }
 }
