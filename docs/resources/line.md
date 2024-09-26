@@ -33,7 +33,7 @@ resource "splight_line" "my_line" {
   name        = "My Line"
   description = "My Line Description"
 
-  # Use an existing tag if it exists in the platform by name
+  # Use an existing tag in the platform
   dynamic "tags" {
     for_each = { for tag in data.splight_tags.my_tags.tags : tag.name => tag if tag.name == "Existing Tag" }
 
