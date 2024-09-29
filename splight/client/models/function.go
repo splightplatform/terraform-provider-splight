@@ -35,7 +35,6 @@ type FunctionParams struct {
 	CronYear        int              `json:"cron_year"`
 	FunctionItems   []FunctionItem   `json:"function_items"`
 	Tags            []QueryFilter    `json:"tags"`
-	RelatedAssets   []QueryFilter    `json:"assets"`
 }
 
 type Function struct {
@@ -65,9 +64,6 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 	// Convert tags
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Convert related assets
-	assets := convertQueryFilters(d.Get("related_assets").(*schema.Set).List())
-
 	// Create the FunctionParams object
 	m.FunctionParams = FunctionParams{
 		Name:            d.Get("name").(string),
@@ -81,7 +77,6 @@ func (m *Function) FromSchema(d *schema.ResourceData) error {
 		TargetAttribute: *targetAttribute,
 		Tags:            tags,
 		FunctionItems:   functionItems,
-		RelatedAssets:   assets,
 	}
 
 	return nil
@@ -196,15 +191,6 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	}
 
 	d.Set("function_items", functionItems)
-
-	var relatedasets []map[string]any
-	for _, relatedAsset := range m.RelatedAssets {
-		relatedasets = append(relatedasets, map[string]any{
-			"id":   relatedAsset.Id,
-			"name": relatedAsset.Name,
-		})
-	}
-	d.Set("related_assets", relatedasets)
 
 	return nil
 }
