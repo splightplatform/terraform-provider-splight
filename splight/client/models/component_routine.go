@@ -74,7 +74,7 @@ func (m *ComponentRoutine) ToSchema(d *schema.ResourceData) error {
 			"required":    configItem.Required,
 			"sensitive":   configItem.Sensitive,
 			"type":        configItem.Type,
-			"value":       configItem.Value,
+			"value":       string(*configItem.Value),
 		}
 	}
 	d.Set("config", routineConfigInterface)

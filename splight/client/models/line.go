@@ -400,10 +400,14 @@ func (m *Line) ToSchema(d *schema.ResourceData) error {
 	d.Set("description", m.AssetParams.Description)
 	d.Set("geometry", string(m.AssetParams.Geometry))
 
-	// TODO: validate related assets
-	// Maybe use convert query filters in these? see qflist
-	// TODO: fix this: 2024/09/20 18:22:50 [ERROR] setting state: Invalid address to set: []string{"tags", "0", "Id"}
-	d.Set("tags", m.AssetParams.Tags)
+	var tags []map[string]any
+	for _, tag := range m.AssetParams.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
+	}
+	d.Set("tags", tags)
 
 	d.Set("kind", []map[string]any{
 		{

@@ -152,7 +152,15 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	d.Set("cron_month", m.CronMonth)
 	d.Set("cron_dow", m.CronDOW)
 	d.Set("cron_year", m.CronYear)
-	d.Set("tags", m.Tags)
+
+	var tags []map[string]any
+	for _, tag := range m.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
+	}
+	d.Set("tags", tags)
 
 	functionItems := make([]map[string]any, len(m.FunctionItems))
 	for i, function := range m.FunctionItems {

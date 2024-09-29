@@ -170,7 +170,15 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 		}
 	}
 	d.Set("thresholds", thresholds)
-	d.Set("tags", m.Tags)
+
+	var tags []map[string]any
+	for _, tag := range m.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
+	}
+	d.Set("tags", tags)
 
 	// Query filters are always set
 	alertItems := make([]map[string]interface{}, len(m.AlertItems))

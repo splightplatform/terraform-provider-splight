@@ -88,7 +88,7 @@ func (m *Action) ToSchema(d *schema.ResourceData) error {
 		setpointsInterface[i] = map[string]interface{}{
 			"id":    setpoint.Id,
 			"name":  setpoint.Name,
-			"value": setpoint.Value,
+			"value": string(setpoint.Value),
 			"attribute": []map[string]string{
 				{
 					"id":   setpoint.Attribute.Id,

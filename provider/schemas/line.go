@@ -378,24 +378,5 @@ func SchemaLine() map[string]*schema.Schema {
 				},
 			},
 		},
-		"related_assets": {
-			Type:        schema.TypeSet,
-			Optional:    true,
-			Description: "related assets of the resource",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "asset id",
-					},
-					"name": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "asset name",
-					},
-				},
-			},
-		},
 	}
 }
