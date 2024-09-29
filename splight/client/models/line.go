@@ -416,7 +416,6 @@ func (m *Line) ToSchema(d *schema.ResourceData) error {
 		},
 	})
 
-	// TODO: fix
 	d.Set("active_power", []map[string]any{m.ActivePower.ToMap()})
 	d.Set("active_power", []map[string]any{m.ActivePower.ToMap()})
 	d.Set("active_power_end", []map[string]any{m.ActivePowerEnd.ToMap()})

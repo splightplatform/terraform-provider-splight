@@ -213,7 +213,15 @@ func (m *Alert) ToSchema(d *schema.ResourceData) error {
 		}
 	}
 	d.Set("alert_items", alertItems)
-	d.Set("related_assets", m.RelatedAssets)
+
+	var relatedasets []map[string]any
+	for _, relatedAsset := range m.RelatedAssets {
+		relatedasets = append(relatedasets, map[string]any{
+			"id":   relatedAsset.Id,
+			"name": relatedAsset.Name,
+		})
+	}
+	d.Set("related_assets", relatedasets)
 
 	return nil
 }

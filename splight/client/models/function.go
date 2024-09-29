@@ -196,7 +196,15 @@ func (m *Function) ToSchema(d *schema.ResourceData) error {
 	}
 
 	d.Set("function_items", functionItems)
-	d.Set("related_assets", m.RelatedAssets)
+
+	var relatedasets []map[string]any
+	for _, relatedAsset := range m.RelatedAssets {
+		relatedasets = append(relatedasets, map[string]any{
+			"id":   relatedAsset.Id,
+			"name": relatedAsset.Name,
+		})
+	}
+	d.Set("related_assets", relatedasets)
 
 	return nil
 }

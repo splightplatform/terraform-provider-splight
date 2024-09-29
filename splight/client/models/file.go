@@ -78,7 +78,15 @@ func (m *File) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("description", m.Description)
 	d.Set("parent", m.Parent)
-	d.Set("related_assets", m.RelatedAssets)
+
+	var relatedasets []map[string]any
+	for _, relatedAsset := range m.RelatedAssets {
+		relatedasets = append(relatedasets, map[string]any{
+			"id":   relatedAsset.Id,
+			"name": relatedAsset.Name,
+		})
+	}
+	d.Set("related_assets", relatedasets)
 
 	checksum, err := MD5Checksum(m.path)
 	if err != nil {
