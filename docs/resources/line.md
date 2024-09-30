@@ -167,7 +167,6 @@ resource "splight_line" "my_line" {
 
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
-- `related_assets` (Block Set) related assets of the resource (see [below for nested schema](#nestedblock--related_assets))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
@@ -490,15 +489,6 @@ Read-Only:
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
 - `unit` (String) unit of measure
-
-
-<a id="nestedblock--related_assets"></a>
-### Nested Schema for `related_assets`
-
-Required:
-
-- `id` (String) asset id
-- `name` (String) asset name
 
 
 <a id="nestedblock--tags"></a>

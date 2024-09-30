@@ -176,6 +176,7 @@ func SchemaFunction() map[string]*schema.Schema {
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "identifier of the variable (i.e 'A')",
+						ForceNew:    true,
 					},
 					"type": {
 						Type:        schema.TypeString,
@@ -185,16 +186,19 @@ func SchemaFunction() map[string]*schema.Schema {
 							"QUERY",
 							"EXPRESSION",
 						}, false),
+						ForceNew: true,
 					},
 					"expression": {
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "how the expression is shown (i.e 'A * 2')",
+						ForceNew:    true,
 					},
 					"expression_plain": {
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "actual mongo query containing the expression",
+						ForceNew:    true,
 					},
 					"query_filter_asset": {
 						Type:        schema.TypeSet,
@@ -208,11 +212,13 @@ func SchemaFunction() map[string]*schema.Schema {
 									Type:        schema.TypeString,
 									Optional:    true,
 									Description: "Id of the resource",
+									ForceNew:    true,
 								},
 								"name": {
 									Type:        schema.TypeString,
 									Optional:    true,
 									Description: "name of the resource",
+									ForceNew:    true,
 								},
 							},
 						},
@@ -229,11 +235,13 @@ func SchemaFunction() map[string]*schema.Schema {
 									Type:        schema.TypeString,
 									Optional:    true,
 									Description: "Id of the resource",
+									ForceNew:    true,
 								},
 								"name": {
 									Type:        schema.TypeString,
 									Optional:    true,
 									Description: "name of the resource",
+									ForceNew:    true,
 								},
 								"type": {
 									Type:        schema.TypeString,
@@ -244,6 +252,7 @@ func SchemaFunction() map[string]*schema.Schema {
 										"Boolean",
 										"Number",
 									}, false),
+									ForceNew: true,
 								},
 							},
 						},
@@ -260,6 +269,7 @@ func SchemaFunction() map[string]*schema.Schema {
 							"sum",
 							"last",
 						}, false),
+						ForceNew: true,
 					},
 					"query_group_unit": {
 						Type:        schema.TypeString,
@@ -273,30 +283,13 @@ func SchemaFunction() map[string]*schema.Schema {
 							"day",
 							"month",
 						}, false),
+						ForceNew: true,
 					},
 					"query_plain": {
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "actual mongo query",
-					},
-				},
-			},
-		},
-		"related_assets": {
-			Type:        schema.TypeSet,
-			Optional:    true,
-			Description: "related assets of the resource",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"id": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "asset id",
-					},
-					"name": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "asset name",
+						ForceNew:    true,
 					},
 				},
 			},
