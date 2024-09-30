@@ -119,7 +119,15 @@ func (m *Segment) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
 	d.Set("geometry", string(m.AssetParams.Geometry))
-	d.Set("tags", m.AssetParams.Tags)
+
+	var tags []map[string]any
+	for _, tag := range m.AssetParams.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
+	}
+	d.Set("tags", tags)
 
 	d.Set("kind", []map[string]any{
 		{

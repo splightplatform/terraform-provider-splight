@@ -52,7 +52,15 @@ func (m *Component) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
 	d.Set("version", m.Version)
-	d.Set("tags", m.Tags)
+
+	var tags []map[string]any
+	for _, tag := range m.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
+	}
+	d.Set("tags", tags)
 
 	// We need to initialize the memory for nested elements
 	// Needed because d.Set() can not handle properly json.RawMessage
@@ -69,7 +77,7 @@ func (m *Component) ToSchema(d *schema.ResourceData) error {
 			"required":    inputItem.Required,
 			"sensitive":   inputItem.Sensitive,
 			"type":        inputItem.Type,
-			"value":       inputItem.Value,
+			"value":       string(*inputItem.Value),
 		}
 	}
 	d.Set("input", inputInterface)
