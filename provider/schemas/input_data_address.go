@@ -31,11 +31,6 @@ func inputDataAddress() *schema.Schema {
 					Optional: true,
 					Default:  true,
 				},
-				"sensitive": {
-					Type:     schema.TypeBool,
-					Optional: true,
-					Default:  false,
-				},
 				"type": {
 					Type:     schema.TypeString,
 					Optional: true,

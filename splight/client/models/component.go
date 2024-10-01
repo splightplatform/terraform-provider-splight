@@ -68,19 +68,12 @@ func (m *Component) ToSchema(d *schema.ResourceData) error {
 		d.Set("input", []interface{}{})
 	}
 
-	inputInterface := make([]map[string]interface{}, len(m.Input))
-	for i, inputItem := range m.Input {
-		inputInterface[i] = map[string]interface{}{
-			"name":        inputItem.Name,
-			"description": inputItem.Description,
-			"multiple":    inputItem.Multiple,
-			"required":    inputItem.Required,
-			"sensitive":   inputItem.Sensitive,
-			"type":        inputItem.Type,
-			"value":       string(*inputItem.Value),
-		}
+	inputsMap := make([]map[string]any, len(m.Input))
+	for i, input := range m.Input {
+		inputsMap[i] = input.ToMap()
 	}
-	d.Set("input", inputInterface)
+
+	d.Set("input", inputsMap)
 
 	return nil
 }

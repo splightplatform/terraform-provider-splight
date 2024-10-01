@@ -159,7 +159,7 @@ resource "splight_component_routine" "my_routine" {
     multiple    = false
     required    = true
     sensitive   = false
-    type        = "String"
+    type        = "str"
     value       = jsonencode("[*].my.value.key")
   }
 
@@ -169,7 +169,7 @@ resource "splight_component_routine" "my_routine" {
     multiple    = false
     required    = true
     sensitive   = false
-    type        = "String"
+    type        = "str"
     value       = jsonencode("my/topic/path")
   }
 
@@ -178,7 +178,6 @@ resource "splight_component_routine" "my_routine" {
     description = "The received values are saved to this AssetAttribute"
     multiple    = false
     required    = true
-    sensitive   = false
     type        = "DataAddress"
     value_type  = "Number"
 
@@ -240,7 +239,6 @@ Optional:
 - `description` (String)
 - `multiple` (Boolean)
 - `required` (Boolean)
-- `sensitive` (Boolean)
 - `type` (String)
 - `value` (Block Set) (see [below for nested schema](#nestedblock--input--value))
 
@@ -267,7 +265,6 @@ Optional:
 - `description` (String)
 - `multiple` (Boolean)
 - `required` (Boolean)
-- `sensitive` (Boolean)
 - `type` (String)
 - `value` (Block Set) (see [below for nested schema](#nestedblock--output--value))
 
