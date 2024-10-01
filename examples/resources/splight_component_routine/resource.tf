@@ -163,7 +163,6 @@ resource "splight_component_routine" "my_routine" {
     description = "The received values are saved to this AssetAttribute"
     multiple    = false
     required    = true
-    sensitive   = false
     type        = "DataAddress"
     value_type  = "Number"
 
