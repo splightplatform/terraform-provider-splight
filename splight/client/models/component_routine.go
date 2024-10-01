@@ -1,7 +1,6 @@
 package models
 
 import (
-	"runtime"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -80,13 +79,12 @@ func (m *ComponentRoutine) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("input", m.Input)
 
-	// TODO: fix the address error
-	runtime.Breakpoint()
 	outputsMap := make([]map[string]any, len(m.Output))
 	for i, output := range m.Output {
 		outputsMap[i] = output.ToMap()
 	}
 	d.Set("output", m.Output)
 
+	// TODO: fix invalid address to set...
 	return nil
 }

@@ -15,10 +15,10 @@ type DataAddress struct {
 type InputDataAddress struct {
 	Name        string                        `json:"name"`
 	Description string                        `json:"description"`
-	Type        string                        `json:"type"`
-	ValueType   string                        `json:"value_type"`
 	Multiple    bool                          `json:"multiple"`
 	Required    bool                          `json:"required"`
+	Type        string                        `json:"type"`
+	ValueType   string                        `json:"value_type"`
 	Value       ComponentRoutineDataAddresses `json:"value"`
 }
 
@@ -56,10 +56,10 @@ func (m InputDataAddress) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"name":        m.Name,
 		"description": m.Description,
-		"type":        m.Type,
-		"value_type":  m.ValueType,
 		"multiple":    m.Multiple,
 		"required":    m.Required,
+		"type":        m.Type,
+		"value_type":  m.ValueType,
 		"value":       valueList,
 	}
 }
