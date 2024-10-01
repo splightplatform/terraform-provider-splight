@@ -1,6 +1,8 @@
 package models
 
 import (
+	"runtime"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -65,22 +67,25 @@ func (m *ComponentRoutine) ToSchema(d *schema.ResourceData) error {
 		d.Set("config", []interface{}{})
 	}
 
-	routineConfigInterface := make([]map[string]interface{}, len(m.Config))
-	for i, configItem := range m.Config {
-		routineConfigInterface[i] = map[string]interface{}{
-			"name":        configItem.Name,
-			"description": configItem.Description,
-			"multiple":    configItem.Multiple,
-			"required":    configItem.Required,
-			"sensitive":   configItem.Sensitive,
-			"type":        configItem.Type,
-			"value":       string(*configItem.Value),
-		}
+	configsMap := make([]map[string]any, len(m.Config))
+	for i, config := range m.Config {
+		configsMap[i] = config.ToMap()
 	}
-	d.Set("config", routineConfigInterface)
 
-	// TODO: i don't believe this works
+	d.Set("config", configsMap)
+
+	inputsMap := make([]map[string]any, len(m.Input))
+	for i, inputItem := range m.Input {
+		inputsMap[i] = inputItem.ToMap()
+	}
 	d.Set("input", m.Input)
+
+	// TODO: fix the address error
+	runtime.Breakpoint()
+	outputsMap := make([]map[string]any, len(m.Output))
+	for i, output := range m.Output {
+		outputsMap[i] = output.ToMap()
+	}
 	d.Set("output", m.Output)
 
 	return nil

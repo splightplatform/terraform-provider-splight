@@ -35,10 +35,46 @@ var (
 	configErr  error
 )
 
-// LoadSplightConfig reads the Splight configuration from the YAML file once and caches it.
-// It takes optional configuration options to override specific values.
+// LoadSplightConfig reads the Splight configuration based on the priority:
+// overrides -> env vars -> YAML file. The YAML file is only read if not all values are
+// provided by overrides or environment variables.
 func LoadSplightConfig(options *SplightConfigOverrides) (*SplightConfig, error) {
 	configOnce.Do(func() {
+		// Load environment variables
+		envAccessId := os.Getenv("SPLIGHT_ACCESS_ID")
+		envSecretKey := os.Getenv("SPLIGHT_SECRET_KEY")
+		envHostname := os.Getenv("SPLIGHT_PLATFORM_API_HOST")
+
+		// Check if all necessary env vars are present
+		envVarsPresent := envAccessId != "" && envSecretKey != "" && envHostname != ""
+
+		// Apply overrides if provided
+		overrideHostname := ""
+		overrideToken := ""
+		if options != nil {
+			overrideHostname = options.HostnameOverride
+			overrideToken = options.TokenOverride
+		}
+
+		// If both overrides and environment variables are fully set, use them and skip the file
+		if overrideHostname != "" && overrideToken != "" {
+			config = &SplightConfig{
+				Hostname: overrideHostname,
+				Token:    overrideToken,
+			}
+			return
+		}
+
+		if envVarsPresent {
+			// If environment variables are fully set, use them and skip the file
+			config = &SplightConfig{
+				Hostname: envHostname,
+				Token:    fmt.Sprintf("Splight %s %s", envAccessId, envSecretKey),
+			}
+			return
+		}
+
+		// Otherwise, read from the YAML file
 		filename := os.Getenv("HOME") + "/.splight/config"
 		buf, err := os.ReadFile(filename)
 		if err != nil {
@@ -60,14 +96,18 @@ func LoadSplightConfig(options *SplightConfigOverrides) (*SplightConfig, error) 
 			return
 		}
 
-		// Apply overrides if provided
-		if options != nil {
-			if options.HostnameOverride != "" {
-				workspace.Hostname = options.HostnameOverride
-			}
-			if options.TokenOverride != "" {
-				workspace.SecretKey = options.TokenOverride
-			}
+		// Combine the settings from the file, env vars, and overrides in the correct priority
+		if overrideHostname != "" {
+			workspace.Hostname = overrideHostname
+		} else if envHostname != "" {
+			workspace.Hostname = envHostname
+		}
+
+		if overrideToken != "" {
+			workspace.SecretKey = overrideToken
+		} else if envAccessId != "" && envSecretKey != "" {
+			workspace.AccessId = envAccessId
+			workspace.SecretKey = envSecretKey
 		}
 
 		// Build the SplightConfig struct with the token format "Splight <access_id> <secret_key>"

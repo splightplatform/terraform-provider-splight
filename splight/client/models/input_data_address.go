@@ -43,6 +43,27 @@ func (c *ComponentRoutineDataAddresses) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("failed to unmarshal ComponentRoutineDataAddresses")
 }
 
+// Method to convert InputDataAddress to a map format
+func (m InputDataAddress) ToMap() map[string]interface{} {
+	valueList := make([]map[string]interface{}, len(m.Value))
+	for i, dataAddr := range m.Value {
+		valueList[i] = map[string]interface{}{
+			"asset":     dataAddr.Asset,
+			"attribute": dataAddr.Attribute,
+		}
+	}
+
+	return map[string]interface{}{
+		"name":        m.Name,
+		"description": m.Description,
+		"type":        m.Type,
+		"value_type":  m.ValueType,
+		"multiple":    m.Multiple,
+		"required":    m.Required,
+		"value":       valueList,
+	}
+}
+
 func convertInputDataAddresses(data []any) []InputDataAddress {
 	inputs := make([]InputDataAddress, len(data))
 	for i, item := range data {

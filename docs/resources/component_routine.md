@@ -159,7 +159,7 @@ resource "splight_component_routine" "my_routine" {
     multiple    = false
     required    = true
     sensitive   = false
-    type        = "String"
+    type        = "str"
     value       = jsonencode("[*].my.value.key")
   }
 
@@ -169,7 +169,7 @@ resource "splight_component_routine" "my_routine" {
     multiple    = false
     required    = true
     sensitive   = false
-    type        = "String"
+    type        = "str"
     value       = jsonencode("my/topic/path")
   }
 
