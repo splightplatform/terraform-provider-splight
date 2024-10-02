@@ -11,7 +11,7 @@ import (
 )
 
 type FileParams struct {
-	path          string
+	Path          string
 	Name          string        `json:"name"`
 	Description   string        `json:"description"`
 	Parent        string        `json:"parent"`
@@ -62,7 +62,7 @@ func (m *File) FromSchema(d *schema.ResourceData) error {
 	path := d.Get("path").(string)
 
 	m.FileParams = FileParams{
-		path:          path,
+		Path:          path,
 		Name:          filepath.Base(path),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
@@ -88,7 +88,7 @@ func (m *File) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("related_assets", relatedasets)
 
-	checksum, err := MD5Checksum(m.path)
+	checksum, err := MD5Checksum(m.Path)
 	if err != nil {
 		return err
 	}

@@ -5,11 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 )
 
-// TODO: Support files
+type FileURL struct {
+	URL string `json:"url"`
+}
+
+type FileDetails struct {
+	Checksum     string `json:"checksum"`
+	LastModified string `json:"last_modified"`
+	Size         string `json:"size"`
+}
+
 func Save[T models.SplightModel](c *Client, m T) error {
 	url := m.ResourcePath()
 
@@ -24,12 +34,62 @@ func Save[T models.SplightModel](c *Client, m T) error {
 		url = fmt.Sprintf("%s%s/", url, m.GetId())
 	}
 
-	body, err := c.HttpRequest(url, method, buf)
+	body, httpErr := c.HttpRequest(url, method, buf)
+	if httpErr != nil {
+		return httpErr
+	}
+
+	err := json.NewDecoder(body).Decode(m)
 	if err != nil {
 		return err
 	}
 
-	return json.NewDecoder(body).Decode(m)
+	if fileModel, ok := any(m).(models.File); ok {
+		// Request file upload url
+		body, httpErr = c.HttpRequest(fmt.Sprintf("v2/engine/file/files/%s/upload_url/", fileModel.GetId()), "GET", bytes.Buffer{})
+		if httpErr != nil {
+			return httpErr
+		}
+
+		fileURL := &FileURL{}
+		err = json.NewDecoder(body).Decode(fileURL)
+		if err != nil {
+			return err
+		}
+
+		// Upload file content
+		file, err := os.Open(fileModel.Path)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		// Getting size
+		fileStat, err := file.Stat()
+		if err != nil {
+			return err
+		}
+		fileSize := fileStat.Size()
+
+		// Do the request
+		req, err := http.NewRequest("PUT", fileURL.URL, file)
+		if err != nil {
+			return err
+		}
+		req.ContentLength = fileSize
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			return err
+		}
+		statusCode := resp.StatusCode
+		if statusCode != 200 {
+			return fmt.Errorf("wrong status code uploading file %d", statusCode)
+		}
+		defer resp.Body.Close()
+
+	}
+
+	return nil
 }
 
 func Retrieve[T models.SplightModel](c *Client, m T, id string) error {
