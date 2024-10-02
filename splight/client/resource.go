@@ -87,7 +87,7 @@ func Save[T models.SplightModel](c *Client, m T) error {
 			return fmt.Errorf("wrong status code uploading file %d", statusCode)
 		}
 		defer resp.Body.Close()
-		// TODO: set the checksum and delete the db object is this process fails
+		// TODO: set the checksum and delete the db object if any of these processes fails
 
 	}
 
