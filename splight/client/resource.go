@@ -77,6 +77,7 @@ func Save[T models.SplightModel](c *Client, m T) error {
 			return err
 		}
 		req.ContentLength = fileSize
+		// TODO: use the HttpRequest method
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
 			return err
@@ -86,6 +87,7 @@ func Save[T models.SplightModel](c *Client, m T) error {
 			return fmt.Errorf("wrong status code uploading file %d", statusCode)
 		}
 		defer resp.Body.Close()
+		// TODO: set the checksum and delete the db object is this process fails
 
 	}
 
