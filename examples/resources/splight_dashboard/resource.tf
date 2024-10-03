@@ -54,5 +54,4 @@ resource "splight_dashboard" "my_dashboard" {
     name = splight_tag.my_tag.name
     id   = splight_tag.my_tag.id
   }
-
 }
