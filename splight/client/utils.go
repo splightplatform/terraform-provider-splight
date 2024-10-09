@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -36,21 +37,30 @@ type FileDetails struct {
 	Checksum string `json:"checksum"`
 }
 
-// UpdateFileChecksum fetches the checksum of a file
+// UpdateFileChecksum fetches the checksum of a file and unescapes it
 func (c *Client) UpdateFileChecksum(model *models.File) error {
-	body, err := c.HttpRequest(fmt.Sprintf("%s%s/details", model.ResourcePath(), model.GetId()), "GET", bytes.Buffer{})
-	if err != nil {
-		return fmt.Errorf("error making file details request: %w", err)
+	// Make the HTTP request to fetch file details
+	body, httpErr := c.HttpRequest(fmt.Sprintf("%s%s/details", model.ResourcePath(), model.GetId()), "GET", bytes.Buffer{})
+	if httpErr != nil {
+		return fmt.Errorf("error making file details request: %w", httpErr)
 	}
 	defer body.Close()
 
 	var fileDetails FileDetails
+
+	// Decode the JSON response into fileDetails struct
 	if err := json.NewDecoder(body).Decode(&fileDetails); err != nil {
 		return fmt.Errorf("error decoding file details response: %w", err)
 	}
 
-	// Asign the checksum to the model
-	model.Checksum = fileDetails.Checksum
+	// Unescape the checksum string
+	unescapedChecksum, err := strconv.Unquote(fileDetails.Checksum)
+	if err != nil {
+		return fmt.Errorf("error unescaping checksum: %w", httpErr)
+	}
+
+	// Assign the unescaped checksum to the model
+	model.Checksum = unescapedChecksum
 
 	return nil
 }

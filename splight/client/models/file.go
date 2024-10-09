@@ -1,6 +1,10 @@
 package models
 
 import (
+	"crypto/md5"
+	"fmt"
+	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -34,6 +38,24 @@ func (m *File) ResourcePath() string {
 	return "v2/engine/file/files/"
 }
 
+func MD5Checksum(filepath string) (string, error) {
+	file, err := os.Open(filepath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	hash := md5.New()
+
+	// Copy the file content into the hash object
+	if _, err := io.Copy(hash, file); err != nil {
+		return "", err
+	}
+
+	// Get the checksum in bytes and return it as a hexadecimal string
+	return fmt.Sprintf("%x", hash.Sum(nil)), nil
+}
+
 func (m *File) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
@@ -58,8 +80,13 @@ func (m *File) FromSchema(d *schema.ResourceData) error {
 func (m *File) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
 
+	md5, err := MD5Checksum(d.Get("path").(string))
+	if err != nil {
+		return err
+	}
+
 	if d.Get("checksum").(string) != "" {
-		if m.Checksum != d.Get("checksum").(string) {
+		if m.Checksum != md5 {
 			d.Set("path", nil)
 			return nil
 		}
