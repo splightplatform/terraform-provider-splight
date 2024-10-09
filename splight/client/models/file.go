@@ -1,6 +1,3 @@
-// Check if the file exists
-// TODO: que pasa si ya cree el file, lo borro y al hacer refresh ya no existe el viejo?force new en ese caso?
-
 package models
 
 import (

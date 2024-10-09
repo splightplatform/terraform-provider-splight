@@ -37,7 +37,6 @@ type FileDetails struct {
 }
 
 // UpdateFileChecksum fetches the checksum of a file
-// TODO: make this take an id only
 func (c *Client) UpdateFileChecksum(model *models.File) error {
 	body, err := c.HttpRequest(fmt.Sprintf("%s%s/details", model.ResourcePath(), model.GetId()), "GET", bytes.Buffer{})
 	if err != nil {
