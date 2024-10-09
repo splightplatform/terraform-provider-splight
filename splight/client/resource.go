@@ -5,20 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 )
-
-type FileURL struct {
-	URL string `json:"url"`
-}
-
-type FileDetails struct {
-	Checksum     string `json:"checksum"`
-	LastModified string `json:"last_modified"`
-	Size         string `json:"size"`
-}
 
 func Save[T models.SplightModel](c *Client, m T) error {
 	url := m.ResourcePath()
@@ -44,51 +33,22 @@ func Save[T models.SplightModel](c *Client, m T) error {
 		return err
 	}
 
-	if fileModel, ok := any(m).(models.File); ok {
-		// Request file upload url
-		body, httpErr = c.HttpRequest(fmt.Sprintf("v2/engine/file/files/%s/upload_url/", fileModel.GetId()), "GET", bytes.Buffer{})
-		if httpErr != nil {
-			return httpErr
-		}
+	if fileModel, ok := any(m).(*models.File); ok {
+		if !fileModel.Uploaded {
+			// TODO: delete model if this fails
+			err := c.UploadFile(fileModel)
+			if err != nil {
+				return err
+			}
 
-		fileURL := &FileURL{}
-		err = json.NewDecoder(body).Decode(fileURL)
-		if err != nil {
-			return err
-		}
+			// So we do not try to upload the file again
+			fileModel.Uploaded = true
 
-		// Upload file content
-		file, err := os.Open(fileModel.Path)
-		if err != nil {
-			return err
+			err = c.UpdateFileChecksum(fileModel)
+			if err != nil {
+				return fmt.Errorf("error retrieving checksum for file: %w", err)
+			}
 		}
-		defer file.Close()
-
-		// Getting size
-		fileStat, err := file.Stat()
-		if err != nil {
-			return err
-		}
-		fileSize := fileStat.Size()
-
-		// Do the request
-		req, err := http.NewRequest("PUT", fileURL.URL, file)
-		if err != nil {
-			return err
-		}
-		req.ContentLength = fileSize
-		// TODO: use the HttpRequest method
-		resp, err := c.httpClient.Do(req)
-		if err != nil {
-			return err
-		}
-		statusCode := resp.StatusCode
-		if statusCode != 200 {
-			return fmt.Errorf("wrong status code uploading file %d", statusCode)
-		}
-		defer resp.Body.Close()
-		// TODO: set the checksum and delete the db object if any of these processes fails
-
 	}
 
 	return nil
@@ -97,12 +57,24 @@ func Save[T models.SplightModel](c *Client, m T) error {
 func Retrieve[T models.SplightModel](c *Client, m T, id string) error {
 	url := fmt.Sprintf("%s%s/", m.ResourcePath(), id)
 
-	body, err := c.HttpRequest(url, http.MethodGet, bytes.Buffer{})
-	if err != nil {
-		return err
+	body, httpErr := c.HttpRequest(url, http.MethodGet, bytes.Buffer{})
+	if httpErr != nil {
+		return httpErr
 	}
 
-	return json.NewDecoder(body).Decode(m)
+	err := json.NewDecoder(body).Decode(m)
+	if err != nil {
+		return fmt.Errorf("error decoding model: %w", err)
+	}
+
+	if fileModel, ok := any(m).(*models.File); ok {
+		httpErr := c.UpdateFileChecksum(fileModel)
+		if httpErr != nil {
+			return fmt.Errorf("error retrieving checksum for file: %w", err)
+		}
+	}
+
+	return nil
 }
 
 func List[T models.DataSource](c *Client, m T) error {

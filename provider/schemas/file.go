@@ -60,11 +60,13 @@ func SchemaFile() map[string]*schema.Schema {
 				},
 			},
 		},
-
 		"checksum": {
 			Type:     schema.TypeString,
 			Computed: true,
-			ForceNew: true,
+		},
+		"uploaded": {
+			Type:     schema.TypeBool,
+			Computed: true,
 		},
 	}
 }

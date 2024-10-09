@@ -1,10 +1,9 @@
+// Check if the file exists
+// TODO: que pasa si ya cree el file, lo borro y al hacer refresh ya no existe el viejo?force new en ese caso?
+
 package models
 
 import (
-	"crypto/md5"
-	"fmt"
-	"io"
-	"os"
 	"path/filepath"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -12,6 +11,8 @@ import (
 
 type FileParams struct {
 	Path          string
+	Checksum      string
+	Uploaded      bool
 	Name          string        `json:"name"`
 	Description   string        `json:"description"`
 	Parent        string        `json:"parent"`
@@ -36,24 +37,6 @@ func (m *File) ResourcePath() string {
 	return "v2/engine/file/files/"
 }
 
-func MD5Checksum(filepath string) (string, error) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	hash := md5.New()
-
-	// Copy the file content into the hash object
-	if _, err := io.Copy(hash, file); err != nil {
-		return "", err
-	}
-
-	// Get the checksum in bytes and return it as a hexadecimal string
-	return fmt.Sprintf("%x", hash.Sum(nil)), nil
-}
-
 func (m *File) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
@@ -63,6 +46,8 @@ func (m *File) FromSchema(d *schema.ResourceData) error {
 
 	m.FileParams = FileParams{
 		Path:          path,
+		Checksum:      d.Get("checksum").(string),
+		Uploaded:      d.Get("uploaded").(bool),
 		Name:          filepath.Base(path),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
@@ -76,6 +61,15 @@ func (m *File) FromSchema(d *schema.ResourceData) error {
 func (m *File) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
 
+	if d.Get("checksum").(string) != "" {
+		if m.Checksum != d.Get("checksum").(string) {
+			d.Set("path", nil)
+			return nil
+		}
+	}
+
+	d.Set("checksum", m.Checksum)
+	d.Set("uploaded", true)
 	d.Set("description", m.Description)
 	d.Set("parent", m.Parent)
 
@@ -88,12 +82,14 @@ func (m *File) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("related_assets", relatedasets)
 
-	checksum, err := MD5Checksum(m.Path)
-	if err != nil {
-		return err
+	var tags []map[string]any
+	for _, tag := range m.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
 	}
-
-	d.Set("checksum", checksum)
+	d.Set("tags", tags)
 
 	return nil
 }
