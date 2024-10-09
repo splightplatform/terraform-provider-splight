@@ -42,4 +42,4 @@ provider "splight" {
 ### Optional
 
 - `hostname` (String)
-- `token` (String)
+- `token` (String, Sensitive)
