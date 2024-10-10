@@ -13,7 +13,7 @@ type AssetAttributeParams struct {
 
 type AssetAttribute struct {
 	AssetAttributeParams
-	Id string `json:"id"`
+	Id string `json:"id,omitempty"` // NOTE: needed for Line, Segment, etc
 }
 
 func (m *AssetAttribute) GetId() string {

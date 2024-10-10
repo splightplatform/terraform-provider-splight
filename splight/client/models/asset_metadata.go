@@ -16,7 +16,7 @@ type AssetMetadataParams struct {
 
 type AssetMetadata struct {
 	AssetMetadataParams
-	Id string `json:"id"`
+	Id string `json:"id,omitempty"` // NOTE: needed for Line, Segment, etc
 }
 
 func (m *AssetMetadata) GetId() string {
