@@ -11,7 +11,9 @@ import (
 )
 
 type FileParams struct {
-	path          string
+	Path          string
+	Checksum      string
+	Uploaded      bool
 	Name          string        `json:"name"`
 	Description   string        `json:"description"`
 	Parent        string        `json:"parent"`
@@ -62,7 +64,9 @@ func (m *File) FromSchema(d *schema.ResourceData) error {
 	path := d.Get("path").(string)
 
 	m.FileParams = FileParams{
-		path:          path,
+		Path:          path,
+		Checksum:      d.Get("checksum").(string),
+		Uploaded:      d.Get("uploaded").(bool),
 		Name:          filepath.Base(path),
 		Description:   d.Get("description").(string),
 		Parent:        d.Get("parent").(string),
@@ -76,6 +80,20 @@ func (m *File) FromSchema(d *schema.ResourceData) error {
 func (m *File) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
 
+	md5, err := MD5Checksum(d.Get("path").(string))
+	if err != nil {
+		return err
+	}
+
+	if d.Get("checksum").(string) != "" {
+		if m.Checksum != md5 {
+			d.Set("path", nil)
+			return nil
+		}
+	}
+
+	d.Set("checksum", m.Checksum)
+	d.Set("uploaded", true)
 	d.Set("description", m.Description)
 	d.Set("parent", m.Parent)
 
@@ -88,12 +106,14 @@ func (m *File) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("related_assets", relatedasets)
 
-	checksum, err := MD5Checksum(m.path)
-	if err != nil {
-		return err
+	var tags []map[string]any
+	for _, tag := range m.Tags {
+		tags = append(tags, map[string]any{
+			"id":   tag.Id,
+			"name": tag.Name,
+		})
 	}
-
-	d.Set("checksum", checksum)
+	d.Set("tags", tags)
 
 	return nil
 }
