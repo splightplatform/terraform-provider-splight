@@ -93,6 +93,7 @@ resource "splight_segment" "my_segment" {
 
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
+- `line` (Set of Object) Related line (see [below for nested schema](#nestedatt--line))
 - `temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--temperature))
 - `wind_direction` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--wind_direction))
 - `wind_speed` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--wind_speed))
@@ -161,6 +162,46 @@ Read-Only:
 
 - `id` (String)
 - `name` (String)
+
+
+<a id="nestedatt--line"></a>
+### Nested Schema for `line`
+
+Read-Only:
+
+- `asset` (Set of Object) (see [below for nested schema](#nestedobjatt--line--asset))
+- `description` (String)
+- `id` (String)
+- `name` (String)
+- `related_asset` (Set of Object) (see [below for nested schema](#nestedobjatt--line--related_asset))
+- `related_asset_kind` (Set of Object) (see [below for nested schema](#nestedobjatt--line--related_asset_kind))
+
+<a id="nestedobjatt--line--asset"></a>
+### Nested Schema for `line.asset`
+
+Read-Only:
+
+- `id` (String)
+- `name` (String)
+
+
+<a id="nestedobjatt--line--related_asset"></a>
+### Nested Schema for `line.related_asset`
+
+Read-Only:
+
+- `id` (String)
+- `name` (String)
+
+
+<a id="nestedobjatt--line--related_asset_kind"></a>
+### Nested Schema for `line.related_asset_kind`
+
+Read-Only:
+
+- `id` (String)
+- `name` (String)
+
 
 
 <a id="nestedatt--temperature"></a>
