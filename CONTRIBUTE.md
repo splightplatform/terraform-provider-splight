@@ -6,10 +6,10 @@ For more details, see [Generate docs](#generate-docs).
 
 ### Requirements
 
-Install golang, terraform and delve (MacOS)
+Install golang, terraform and delve and gofumpt (MacOS)
 
 ```bash
-brew install go terraform delve
+brew install go terraform delve gofumpt
 ```
 
 ### Installation
@@ -60,7 +60,7 @@ Type 'help' for list of commands.
 (dlv)
 ```
 
-Input ```continue``` or ```c``` to start the server:
+Input `continue` or `c` to start the server:
 
 ```
 (dlv) c
