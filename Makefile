@@ -14,9 +14,6 @@ DEBUG_FLAGS := "-debug"
 
 default: tidy provider
 
-build:
-	@go build
-
 docs:
 	@go generate
 

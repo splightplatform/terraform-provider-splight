@@ -109,5 +109,9 @@ func buildDataSourceMap() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
 		"splight_asset_kinds": dataSourceForType[*models.AssetKinds](schemas.SchemaAssetKinds),
 		"splight_tags":        dataSourceForType[*models.Tags](schemas.SchemaTags),
+		"splight_grids":       dataSourceForType[*models.Grid](schemas.SchemaTags),
+		"splight_buses":       dataSourceForType[*models.Bus](schemas.SchemaTags),
+		"splight_lines":       dataSourceForType[*models.Line](schemas.SchemaTags),
+		"splight_generators":  dataSourceForType[*models.Generator](schemas.SchemaTags),
 	}
 }

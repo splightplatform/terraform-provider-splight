@@ -67,7 +67,7 @@ func SchemaAssetRelation() map[string]*schema.Schema {
 		},
 		"related_asset": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "target asset of the relation",
 			Elem: &schema.Resource{

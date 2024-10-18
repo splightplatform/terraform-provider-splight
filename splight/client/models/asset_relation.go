@@ -5,11 +5,11 @@ import (
 )
 
 type AssetRelationParams struct {
-	Name             string      `json:"name"`
-	Description      string      `json:"description"`
-	RelatedAssetKind QueryFilter `json:"related_asset_kind"`
-	Asset            QueryFilter `json:"asset"`
-	RelatedAsset     QueryFilter `json:"related_asset"`
+	Name             string       `json:"name"`
+	Description      string       `json:"description"`
+	RelatedAssetKind QueryFilter  `json:"related_asset_kind"`
+	Asset            QueryFilter  `json:"asset"`
+	RelatedAsset     *QueryFilter `json:"related_asset"`
 }
 
 type AssetRelation struct {
@@ -34,14 +34,20 @@ func (m *AssetRelation) FromSchema(d *schema.ResourceData) error {
 
 	relatedAssetKind := d.Get("related_asset_kind").(*schema.Set).List()
 	asset := d.Get("asset").(*schema.Set).List()
+
 	relatedAsset := d.Get("related_asset").(*schema.Set).List()
+
+	var parsedRelatedAsset *QueryFilter = nil
+	if len(relatedAsset) == 0 {
+		parsedRelatedAsset = convertSingleQueryFilter(relatedAsset)
+	}
 
 	m.AssetRelationParams = AssetRelationParams{
 		Name:             d.Get("name").(string),
 		Description:      d.Get("description").(string),
 		RelatedAssetKind: *convertSingleQueryFilter(relatedAssetKind),
 		Asset:            *convertSingleQueryFilter(asset),
-		RelatedAsset:     *convertSingleQueryFilter(relatedAsset),
+		RelatedAsset:     parsedRelatedAsset,
 	}
 
 	return nil
@@ -65,12 +71,14 @@ func (m *AssetRelation) ToSchema(d *schema.ResourceData) error {
 			"name": m.Asset.Name,
 		},
 	})
-	d.Set("related_asset", []map[string]any{
-		{
-			"id":   m.RelatedAsset.Id,
-			"name": m.RelatedAsset.Name,
-		},
-	})
+	if m.RelatedAsset != nil {
+		d.Set("related_asset", []map[string]any{
+			{
+				"id":   m.RelatedAsset.Id,
+				"name": m.RelatedAsset.Name,
+			},
+		})
+	}
 
 	return nil
 }
