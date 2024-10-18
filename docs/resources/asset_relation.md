@@ -93,12 +93,12 @@ resource "splight_asset_relation" "my_relation" {
 
 - `asset` (Block Set, Min: 1, Max: 1) asset where the relation origins (see [below for nested schema](#nestedblock--asset))
 - `name` (String) relation name
-- `related_asset` (Block Set, Min: 1, Max: 1) target asset of the relation (see [below for nested schema](#nestedblock--related_asset))
 - `related_asset_kind` (Block Set, Min: 1, Max: 1) kind of the target relation asset (see [below for nested schema](#nestedblock--related_asset_kind))
 
 ### Optional
 
 - `description` (String) relation description
+- `related_asset` (Block Set, Max: 1) target asset of the relation (see [below for nested schema](#nestedblock--related_asset))
 
 ### Read-Only
 
@@ -113,15 +113,6 @@ Required:
 - `name` (String) asset name
 
 
-<a id="nestedblock--related_asset"></a>
-### Nested Schema for `related_asset`
-
-Required:
-
-- `id` (String) asset id
-- `name` (String) asset name
-
-
 <a id="nestedblock--related_asset_kind"></a>
 ### Nested Schema for `related_asset_kind`
 
@@ -129,6 +120,15 @@ Required:
 
 - `id` (String) kind id
 - `name` (String) kind name
+
+
+<a id="nestedblock--related_asset"></a>
+### Nested Schema for `related_asset`
+
+Required:
+
+- `id` (String) asset id
+- `name` (String) asset name
 
 ## Import
 
