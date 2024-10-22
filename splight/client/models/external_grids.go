@@ -11,17 +11,17 @@ func (m *ExternalGrids) ResourcePath() string {
 }
 
 func (m *ExternalGrids) ToSchema(d *schema.ResourceData) error {
-	var linesMap []map[string]string
+	var gridsMap []map[string]string
 
 	for _, queryFilter := range m.ExternalGrids {
-		lineMap := map[string]string{
+		gridMap := map[string]string{
 			"id":   queryFilter.Id,
 			"name": queryFilter.Name,
 		}
-		linesMap = append(linesMap, lineMap)
+		gridsMap = append(gridsMap, gridMap)
 	}
 
-	d.Set("external_grids", linesMap)
+	d.Set("external_grids", gridsMap)
 	d.SetId("external_grids")
 
 	return nil
