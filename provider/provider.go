@@ -100,6 +100,7 @@ func buildResourceMap() map[string]*schema.Resource {
 		"splight_dashboard_alertlist_chart":   resourceForType[*models.DashboardAlertListChart](schemas.SchemaDashboardAlertListChart),
 		"splight_dashboard_assetlist_chart":   resourceForType[*models.DashboardAssetListChart](schemas.SchemaDashboardAssetListChart),
 		"splight_dashboard_actionlist_chart":  resourceForType[*models.DashboardActionListChart](schemas.SchemaDashboardActionListChart),
+		"splight_external_grid":               resourceForType[*models.ExternalGrid](schemas.SchemaExternalGrid),
 		"splight_file":                        resourceForType[*models.File](schemas.SchemaFile),
 		"splight_file_folder":                 resourceForType[*models.FileFolder](schemas.SchemaFileFolder),
 		"splight_secret":                      resourceForType[*models.Secret](schemas.SchemaSecret),
