@@ -73,6 +73,7 @@ func buildResourceMap() map[string]*schema.Resource {
 		"splight_grid":                        resourceForType[*models.Grid](schemas.SchemaGrid),
 		"splight_bus":                         resourceForType[*models.Bus](schemas.SchemaBus),
 		"splight_line":                        resourceForType[*models.Line](schemas.SchemaLine),
+		"splight_slack_line":                  resourceForType[*models.SlackLine](schemas.SchemaSlackLine),
 		"splight_segment":                     resourceForType[*models.Segment](schemas.SchemaSegment),
 		"splight_generator":                   resourceForType[*models.Generator](schemas.SchemaGenerator),
 		"splight_inverter":                    resourceForType[*models.Inverter](schemas.SchemaInverter),
