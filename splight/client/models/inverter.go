@@ -11,6 +11,7 @@ type InverterParams struct {
 	AccumulatedEnergy     AssetAttribute `json:"accumulated_energy"`
 	ActivePower           AssetAttribute `json:"active_power"`
 	DailyEnergy           AssetAttribute `json:"daily_energy"`
+	RawDailyEnergy        AssetAttribute `json:"raw_daily_energy"`
 	Temperature           AssetAttribute `json:"temperature"`
 	Make                  AssetMetadata  `json:"make"`
 	Model                 AssetMetadata  `json:"model"`
@@ -73,6 +74,17 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		}
 	}
 	m.InverterParams.DailyEnergy = *dailyEnergy
+
+	rawDailyEnergy := convertAssetAttribute(d.Get("raw_daily_energy").(*schema.Set).List())
+	if rawDailyEnergy == nil {
+		rawDailyEnergy = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "raw_daily_energy",
+			},
+		}
+	}
+	m.InverterParams.RawDailyEnergy = *rawDailyEnergy
 
 	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
 	if activePower == nil {
@@ -169,6 +181,7 @@ func (m *Inverter) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("accumulated_energy", []map[string]any{m.AccumulatedEnergy.ToMap()})
 	d.Set("daily_energy", []map[string]any{m.DailyEnergy.ToMap()})
+	d.Set("raw_daily_energy", []map[string]any{m.RawDailyEnergy.ToMap()})
 	d.Set("active_power", []map[string]any{m.ActivePower.ToMap()})
 	d.Set("temperature", []map[string]any{m.Temperature.ToMap()})
 	d.Set("make", []map[string]any{m.Make.ToMap()})
