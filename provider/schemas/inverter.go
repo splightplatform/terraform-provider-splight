@@ -47,6 +47,14 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
+		"raw_daily_energy": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
 		"temperature": {
 			Type:        schema.TypeSet,
 			Computed:    true,
