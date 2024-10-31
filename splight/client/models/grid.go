@@ -8,7 +8,6 @@ import (
 
 type GridParams struct {
 	AssetParams
-	NominalVoltage AssetMetadata `json:"nominal_voltage"`
 }
 
 type Grid struct {

@@ -8,16 +8,16 @@ import (
 
 type InverterParams struct {
 	AssetParams
-	AccumulatedEnergy     AssetAttribute `json:"accumulated_energy"`
-	ActivePower           AssetAttribute `json:"active_power"`
-	DailyEnergy           AssetAttribute `json:"daily_energy"`
-	RawDailyEnergy        AssetAttribute `json:"raw_daily_energy"`
-	Temperature           AssetAttribute `json:"temperature"`
-	Make                  AssetMetadata  `json:"make"`
-	Model                 AssetMetadata  `json:"model"`
-	SerialNumber          AssetMetadata  `json:"serial_number"`
-	MaxActivePower        AssetMetadata  `json:"max_active_power"`
-	EnergyMeasurementType AssetMetadata  `json:"energy_measurement_type"`
+	AccumulatedEnergy     *AssetAttribute `json:"accumulated_energy,omitempty"`
+	ActivePower           *AssetAttribute `json:"active_power,omitempty"`
+	DailyEnergy           *AssetAttribute `json:"daily_energy,omitempty"`
+	RawDailyEnergy        *AssetAttribute `json:"raw_daily_energy,omitempty"`
+	Temperature           *AssetAttribute `json:"temperature,omitempty"`
+	Make                  *AssetMetadata  `json:"make,omitempty"`
+	Model                 *AssetMetadata  `json:"model,omitempty"`
+	SerialNumber          *AssetMetadata  `json:"serial_number,omitempty"`
+	MaxActivePower        *AssetMetadata  `json:"max_active_power,omitempty"`
+	EnergyMeasurementType *AssetMetadata  `json:"energy_measurement_type,omitempty"`
 }
 
 type Inverter struct {
@@ -53,105 +53,40 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		},
 	}
 
-	accumulatedEnergy := convertAssetAttribute(d.Get("accumulated_energy").(*schema.Set).List())
-	if accumulatedEnergy == nil {
-		accumulatedEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "accumulated_energy",
-			},
-		}
-	}
-	m.InverterParams.AccumulatedEnergy = *accumulatedEnergy
-
-	dailyEnergy := convertAssetAttribute(d.Get("daily_energy").(*schema.Set).List())
-	if dailyEnergy == nil {
-		dailyEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "daily_energy",
-			},
-		}
-	}
-	m.InverterParams.DailyEnergy = *dailyEnergy
-
-	rawDailyEnergy := convertAssetAttribute(d.Get("raw_daily_energy").(*schema.Set).List())
-	if rawDailyEnergy == nil {
-		rawDailyEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "raw_daily_energy",
-			},
-		}
-	}
-	m.InverterParams.RawDailyEnergy = *rawDailyEnergy
-
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
-		}
-	}
-	m.InverterParams.ActivePower = *activePower
-
-	temperature := convertAssetAttribute(d.Get("temperature").(*schema.Set).List())
-	if temperature == nil {
-		temperature = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "temperature",
-			},
-		}
-	}
-	m.InverterParams.Temperature = *temperature
-
 	make := convertAssetMetadata(d.Get("make").(*schema.Set).List())
-	if make.Type == "" {
+	if make != nil {
 		make.Type = "String"
-	}
-	if make.Name == "" {
 		make.Name = "Make"
 	}
-	m.InverterParams.Make = *make
+	m.InverterParams.Make = make
 
 	model := convertAssetMetadata(d.Get("model").(*schema.Set).List())
-	if model.Type == "" {
+	if model != nil {
 		model.Type = "String"
-	}
-	if model.Name == "" {
 		model.Name = "Model"
 	}
-	m.InverterParams.Model = *model
+	m.InverterParams.Model = model
 
 	serial_number := convertAssetMetadata(d.Get("serial_number").(*schema.Set).List())
-	if serial_number.Type == "" {
+	if serial_number != nil {
 		serial_number.Type = "Number"
-	}
-	if serial_number.Name == "" {
 		serial_number.Name = "SerialNumber"
 	}
-	m.InverterParams.SerialNumber = *serial_number
+	m.InverterParams.SerialNumber = serial_number
 
 	max_active_power := convertAssetMetadata(d.Get("max_active_power").(*schema.Set).List())
-	if max_active_power.Type == "" {
+	if max_active_power != nil {
 		max_active_power.Type = "Number"
-	}
-	if max_active_power.Name == "" {
 		max_active_power.Name = "MaxActivePower"
 	}
-	m.InverterParams.MaxActivePower = *max_active_power
+	m.InverterParams.MaxActivePower = max_active_power
 
 	energy_measurement_type := convertAssetMetadata(d.Get("energy_measurement_type").(*schema.Set).List())
-	if energy_measurement_type.Type == "" {
+	if energy_measurement_type != nil {
 		energy_measurement_type.Type = "String"
-	}
-	if energy_measurement_type.Name == "" {
 		energy_measurement_type.Name = "EnergyMeasurementType"
 	}
-	m.InverterParams.EnergyMeasurementType = *energy_measurement_type
+	m.InverterParams.EnergyMeasurementType = energy_measurement_type
 
 	return nil
 }

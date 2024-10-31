@@ -33,7 +33,7 @@ func schemaConstrainedAttribute(isMetadata bool) map[string]*schema.Schema {
 		},
 	}
 
-	// Add "value" field only if it's metadata
+	// Add "value" field only if it's a metadata
 	if isMetadata {
 		schemaMap["value"] = &schema.Schema{
 			Type:        schema.TypeString,

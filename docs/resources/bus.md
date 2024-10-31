@@ -59,6 +59,7 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
+  # NOTE: metadata fields will be assigned default values if omitted
   nominal_voltage {
     value = jsonencode(2.2)
   }

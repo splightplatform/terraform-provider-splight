@@ -8,12 +8,12 @@ import (
 
 type SegmentParams struct {
 	AssetParams
-	Temperature        AssetAttribute `json:"temperature"`
-	WindSpeed          AssetAttribute `json:"wind_speed"`
-	WindDirection      AssetAttribute `json:"wind_direction"`
-	Altitude           AssetMetadata  `json:"altitude"`
-	Azimuth            AssetMetadata  `json:"azimuth"`
-	CumulativeDistance AssetMetadata  `json:"cumulative_distance"`
+	Temperature        *AssetAttribute `json:"temperature,omitempty"`
+	WindSpeed          *AssetAttribute `json:"wind_speed,omitempty"`
+	WindDirection      *AssetAttribute `json:"wind_direction,omitempty"`
+	Altitude           *AssetMetadata  `json:"altitude,omitempty,omitempty"`
+	Azimuth            *AssetMetadata  `json:"azimuth,omitempty,omitempty"`
+	CumulativeDistance *AssetMetadata  `json:"cumulative_distance,omitempty"`
 }
 
 type Segment struct {
@@ -49,66 +49,26 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 		},
 	}
 
-	// TODO: remove ALL of these sets when API fixes its contract
-	temperature := convertAssetAttribute(d.Get("temperature").(*schema.Set).List())
-	if temperature == nil {
-		temperature = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "temperature",
-			},
-		}
-	}
-	m.SegmentParams.Temperature = *temperature
-
-	windSpeed := convertAssetAttribute(d.Get("wind_speed").(*schema.Set).List())
-	if windSpeed == nil {
-		windSpeed = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "wind_speed",
-			},
-		}
-	}
-	m.SegmentParams.WindSpeed = *windSpeed
-
-	windDirection := convertAssetAttribute(d.Get("wind_direction").(*schema.Set).List())
-	if windDirection == nil {
-		windDirection = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "wind_direction",
-			},
-		}
-	}
-	m.SegmentParams.WindDirection = *windDirection
-
 	altitude := convertAssetMetadata(d.Get("altitude").(*schema.Set).List())
-	if altitude.Type == "" {
+	if altitude != nil {
 		altitude.Type = "Number"
-	}
-	if altitude.Name == "" {
 		altitude.Name = "altitude"
 	}
-	m.SegmentParams.Altitude = *altitude
+	m.SegmentParams.Altitude = altitude
 
 	azimuth := convertAssetMetadata(d.Get("azimuth").(*schema.Set).List())
-	if azimuth.Type == "" {
+	if azimuth != nil {
 		azimuth.Type = "Number"
-	}
-	if azimuth.Name == "" {
 		azimuth.Name = "azimuth"
 	}
-	m.SegmentParams.Azimuth = *azimuth
+	m.SegmentParams.Azimuth = azimuth
 
 	cumulativeDistance := convertAssetMetadata(d.Get("cumulative_distance").(*schema.Set).List())
-	if cumulativeDistance.Type == "" {
+	if cumulativeDistance != nil {
 		cumulativeDistance.Type = "Number"
-	}
-	if cumulativeDistance.Name == "" {
 		cumulativeDistance.Name = "cumulative_distance"
 	}
-	m.SegmentParams.CumulativeDistance = *cumulativeDistance
+	m.SegmentParams.CumulativeDistance = cumulativeDistance
 
 	return nil
 }
