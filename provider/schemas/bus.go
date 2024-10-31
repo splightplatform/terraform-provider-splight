@@ -22,7 +22,7 @@ func SchemaBus() map[string]*schema.Schema {
 			Description:      "geo position and shape of the resource",
 			DiffSuppressFunc: JSONStringEqualSupressFunc,
 		},
-		"nominal_voltage_kv": {
+		"nominal_voltage": {
 			Type:        schema.TypeSet,
 			Optional:    true,
 			MaxItems:    1,
