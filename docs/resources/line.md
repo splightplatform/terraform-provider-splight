@@ -143,32 +143,32 @@ resource "splight_line" "my_line" {
 
 ### Required
 
-- `absorptivity` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--absorptivity))
-- `atmosphere` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--atmosphere))
-- `capacitance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
-- `conductance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
-- `diameter` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--diameter))
-- `emissivity` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--emissivity))
-- `length` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--length))
-- `maximum_allowed_current` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_current))
-- `maximum_allowed_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_power))
-- `maximum_allowed_temperature` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_temperature))
-- `maximum_allowed_temperature_lte` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_temperature_lte))
-- `maximum_allowed_temperature_ste` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_temperature_ste))
 - `name` (String) name of the resource
-- `number_of_conductors` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--number_of_conductors))
-- `reactance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reactance))
-- `reference_resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_resistance))
-- `resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--resistance))
-- `safety_margin_for_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
-- `susceptance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--susceptance))
-- `temperature_coeff_resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--temperature_coeff_resistance))
 
 ### Optional
 
+- `absorptivity` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--absorptivity))
+- `atmosphere` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--atmosphere))
+- `capacitance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
+- `conductance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
 - `description` (String) description of the resource
+- `diameter` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--diameter))
+- `emissivity` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--emissivity))
 - `geometry` (String) geo position and shape of the resource
+- `length` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--length))
+- `maximum_allowed_current` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_current))
+- `maximum_allowed_power` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_power))
+- `maximum_allowed_temperature` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_temperature))
+- `maximum_allowed_temperature_lte` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_temperature_lte))
+- `maximum_allowed_temperature_ste` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_temperature_ste))
+- `number_of_conductors` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--number_of_conductors))
+- `reactance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reactance))
+- `reference_resistance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_resistance))
+- `resistance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--resistance))
+- `safety_margin_for_power` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
+- `susceptance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--susceptance))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
+- `temperature_coeff_resistance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--temperature_coeff_resistance))
 
 ### Read-Only
 
@@ -476,6 +476,15 @@ Read-Only:
 - `unit` (String) unit of measure
 
 
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `id` (String) tag id
+- `name` (String) tag name
+
+
 <a id="nestedblock--temperature_coeff_resistance"></a>
 ### Nested Schema for `temperature_coeff_resistance`
 
@@ -490,15 +499,6 @@ Read-Only:
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
 - `unit` (String) unit of measure
-
-
-<a id="nestedblock--tags"></a>
-### Nested Schema for `tags`
-
-Required:
-
-- `id` (String) tag id
-- `name` (String) tag name
 
 
 <a id="nestedatt--active_power"></a>

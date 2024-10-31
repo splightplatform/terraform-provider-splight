@@ -8,7 +8,7 @@ import (
 
 type BusParams struct {
 	AssetParams
-	NominalVoltage *AssetMetadata `json:"nominal_voltage,omitempty"`
+	NominalVoltageKv *AssetMetadata `json:"nominal_voltage_kv,omitempty"`
 }
 
 type Bus struct {
@@ -44,12 +44,12 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 		},
 	}
 
-	nominalVoltage := convertAssetMetadata(d.Get("nominal_voltage").(*schema.Set).List())
+	nominalVoltage := convertAssetMetadata(d.Get("nominal_voltage_kv").(*schema.Set).List())
 	if nominalVoltage != nil {
 		nominalVoltage.Type = "Number"
 		nominalVoltage.Name = "nominal_voltage"
 	}
-	m.BusParams.NominalVoltage = nominalVoltage
+	m.BusParams.NominalVoltageKv = nominalVoltage
 
 	return nil
 }
@@ -77,7 +77,7 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 		},
 	})
 
-	d.Set("nominal_voltage", []map[string]any{m.NominalVoltage.ToMap()})
+	d.Set("nominal_voltage_kv", []map[string]any{m.NominalVoltageKv.ToMap()})
 
 	return nil
 }

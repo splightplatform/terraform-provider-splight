@@ -87,17 +87,17 @@ resource "splight_inverter" "my_inverter" {
 
 ### Required
 
-- `energy_measurement_type` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--energy_measurement_type))
-- `make` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--make))
-- `max_active_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--max_active_power))
-- `model` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--model))
 - `name` (String) name of the resource
-- `serial_number` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--serial_number))
 
 ### Optional
 
 - `description` (String) description of the resource
+- `energy_measurement_type` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--energy_measurement_type))
 - `geometry` (String) geo position and shape of the resource
+- `make` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--make))
+- `max_active_power` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--max_active_power))
+- `model` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--model))
+- `serial_number` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--serial_number))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only

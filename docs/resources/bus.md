@@ -72,12 +72,12 @@ resource "splight_bus" "my_bus" {
 ### Required
 
 - `name` (String) name of the resource
-- `nominal_voltage` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage))
 
 ### Optional
 
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `nominal_voltage_kv` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage_kv))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
@@ -85,8 +85,8 @@ resource "splight_bus" "my_bus" {
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 
-<a id="nestedblock--nominal_voltage"></a>
-### Nested Schema for `nominal_voltage`
+<a id="nestedblock--nominal_voltage_kv"></a>
+### Nested Schema for `nominal_voltage_kv`
 
 Required:
 
