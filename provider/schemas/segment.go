@@ -48,7 +48,7 @@ func SchemaSegment() map[string]*schema.Schema {
 		},
 		"altitude": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -57,7 +57,7 @@ func SchemaSegment() map[string]*schema.Schema {
 		},
 		"azimuth": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -66,7 +66,7 @@ func SchemaSegment() map[string]*schema.Schema {
 		},
 		"cumulative_distance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{

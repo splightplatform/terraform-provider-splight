@@ -44,9 +44,10 @@ resource "splight_segment" "my_segment" {
     ]
   })
 
-  altitude {
-    value = jsonencode(1.1)
-  }
+  # NOTE: metadata fields will be assigned default values if omitted
+  # altitude {
+  #   value = jsonencode(1.1)
+  # }
 
   azimuth {
     value = jsonencode(1.1)

@@ -59,6 +59,7 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
+  # NOTE: metadata fields will be assigned default values if omitted
   nominal_voltage {
     value = jsonencode(2.2)
   }
@@ -71,12 +72,12 @@ resource "splight_bus" "my_bus" {
 ### Required
 
 - `name` (String) name of the resource
-- `nominal_voltage` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage))
 
 ### Optional
 
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `nominal_voltage` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only

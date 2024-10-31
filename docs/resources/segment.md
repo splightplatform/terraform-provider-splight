@@ -59,9 +59,10 @@ resource "splight_segment" "my_segment" {
     ]
   })
 
-  altitude {
-    value = jsonencode(1.1)
-  }
+  # NOTE: metadata fields will be assigned default values if omitted
+  # altitude {
+  #   value = jsonencode(1.1)
+  # }
 
   azimuth {
     value = jsonencode(1.1)
@@ -78,13 +79,13 @@ resource "splight_segment" "my_segment" {
 
 ### Required
 
-- `altitude` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
-- `azimuth` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
-- `cumulative_distance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
 - `name` (String) name of the resource
 
 ### Optional
 
+- `altitude` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
+- `azimuth` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
+- `cumulative_distance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))

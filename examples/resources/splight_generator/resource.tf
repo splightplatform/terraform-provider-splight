@@ -44,6 +44,7 @@ resource "splight_generator" "my_generator" {
     ]
   })
 
+  # NOTE: metadata fields will be assigned default values if omitted
   co2_coefficient {
     value = jsonencode(1.1)
   }

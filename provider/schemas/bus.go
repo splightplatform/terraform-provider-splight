@@ -24,7 +24,7 @@ func SchemaBus() map[string]*schema.Schema {
 		},
 		"nominal_voltage": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{

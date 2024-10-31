@@ -59,6 +59,7 @@ resource "splight_generator" "my_generator" {
     ]
   })
 
+  # NOTE: metadata fields will be assigned default values if omitted
   co2_coefficient {
     value = jsonencode(1.1)
   }
@@ -70,11 +71,11 @@ resource "splight_generator" "my_generator" {
 
 ### Required
 
-- `co2_coefficient` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--co2_coefficient))
 - `name` (String) name of the resource
 
 ### Optional
 
+- `co2_coefficient` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--co2_coefficient))
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
