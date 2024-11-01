@@ -83,6 +83,7 @@ func buildResourceMap() map[string]*schema.Resource {
 		"splight_action":                      resourceForType[*models.Action](schemas.SchemaAction),
 		"splight_command":                     resourceForType[*models.Command](schemas.SchemaCommand),
 		"splight_algorithm":                   resourceForType[*models.Algorithm](schemas.SchemaAlgorithm),
+		"splight_server":                      resourceForType[*models.Server](schemas.SchemaServer),
 		"splight_connector":                   resourceForType[*models.Algorithm](schemas.SchemaConnector),
 		"splight_component_routine":           resourceForType[*models.ComponentRoutine](schemas.SchemaComponentRoutine),
 		"splight_dashboard":                   resourceForType[*models.Dashboard](schemas.SchemaDashboard),

@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-func inputParameter() *schema.Schema {
+func schemaInputParameter() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeSet,
 		Optional:    true,

@@ -40,6 +40,6 @@ func SchemaConnector() map[string]*schema.Schema {
 			Required:    true,
 			Description: "[NAME-VERSION] the version of the hub component",
 		},
-		"input": inputParameter(),
+		"input": schemaInputParameter(),
 	}
 }
