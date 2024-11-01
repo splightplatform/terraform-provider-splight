@@ -11,25 +11,90 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 )
 
-// InstantiateType creates a new instance of type T, ensuring that T is a pointer type
-// We could just use a switch too
-func InstantiateType[T models.SplightObject]() T {
-	var model T
-	modelType := reflect.TypeOf(model)
-	return reflect.New(modelType.Elem()).Interface().(T)
+// ResourceMethod represents available CRUD methods for a resource
+type ResourceMethod int
+
+const (
+	Create ResourceMethod = 1 << iota
+	Read
+	Update
+	Delete
+	Import
+)
+
+// Common method combinations
+const (
+	ReadOnly     = Read
+	FullAccess   = Create | Read | Update | Delete | Import
+	NoUpdate     = Create | Read | Delete | Import
+	CreateRead   = Create | Read
+	UpdateRead   = Read | Update
+	CreateDelete = Create | Read | Delete
+)
+
+// ResourceMethods is a set of enabled methods
+type ResourceMethods struct {
+	methods ResourceMethod
 }
 
-func resourceForType[T models.SplightModel](schemaFunc func() map[string]*schema.Schema) *schema.Resource {
-	return &schema.Resource{
-		Schema:        schemaFunc(),
-		CreateContext: SaveResource[T],
-		UpdateContext: SaveResource[T],
-		ReadContext:   RetrieveResource[T],
-		DeleteContext: DeleteResource[T],
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
+// NewResourceMethods creates a new ResourceMethods with all methods enabled by default
+func NewResourceMethods() ResourceMethods {
+	return ResourceMethods{methods: FullAccess}
+}
+
+// Enable adds the specified methods to the set
+func (r *ResourceMethods) Enable(methods ...ResourceMethod) {
+	for _, m := range methods {
+		r.methods |= m
 	}
+}
+
+// Disable removes the specified methods from the set
+func (r *ResourceMethods) Disable(methods ...ResourceMethod) {
+	for _, m := range methods {
+		r.methods &^= m
+	}
+}
+
+// Has checks if a specific method is enabled
+func (r ResourceMethods) Has(method ResourceMethod) bool {
+	return r.methods&method != 0
+}
+
+func resourceForType[T models.SplightModel](schemaFunc func() map[string]*schema.Schema, methods ...ResourceMethods) *schema.Resource {
+	// Default to full access if no methods specified
+	methodsToUse := ResourceMethods{methods: FullAccess}
+	if len(methods) > 0 {
+		methodsToUse = methods[0]
+	}
+
+	resource := &schema.Resource{
+		Schema: schemaFunc(),
+	}
+
+	if methodsToUse.Has(Create) {
+		resource.CreateContext = SaveResource[T]
+	}
+
+	if methodsToUse.Has(Read) {
+		resource.ReadContext = RetrieveResource[T]
+	}
+
+	if methodsToUse.Has(Update) {
+		resource.UpdateContext = SaveResource[T]
+	}
+
+	if methodsToUse.Has(Delete) {
+		resource.DeleteContext = DeleteResource[T]
+	}
+
+	if methodsToUse.Has(Import) {
+		resource.Importer = &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		}
+	}
+
+	return resource
 }
 
 func dataSourceForType[T models.DataSource](schemaFunc func() map[string]*schema.Schema) *schema.Resource {
@@ -37,6 +102,14 @@ func dataSourceForType[T models.DataSource](schemaFunc func() map[string]*schema
 		Schema:      schemaFunc(),
 		ReadContext: ListDataSource[T],
 	}
+}
+
+// InstantiateType creates a new instance of type T, ensuring that T is a pointer type
+// We could just use a switch too
+func InstantiateType[T models.SplightObject]() T {
+	var model T
+	modelType := reflect.TypeOf(model)
+	return reflect.New(modelType.Elem()).Interface().(T)
 }
 
 func SaveResource[T models.SplightModel](ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
