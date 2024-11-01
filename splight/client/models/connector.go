@@ -4,7 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-type ComponentParams struct {
+type ConnectorParams struct {
 	Name        string           `json:"name"`
 	Description string           `json:"description"`
 	Tags        []QueryFilter    `json:"tags"`
@@ -12,30 +12,30 @@ type ComponentParams struct {
 	Input       []InputParameter `json:"input"`
 }
 
-type Component struct {
-	ComponentParams
+type Connector struct {
+	ConnectorParams
 	Id string `json:"id"`
 }
 
-func (m *Component) GetId() string {
+func (m *Connector) GetId() string {
 	return m.Id
 }
 
-func (m *Component) GetParams() Params {
-	return &m.ComponentParams
+func (m *Connector) GetParams() Params {
+	return &m.ConnectorParams
 }
 
-func (m *Component) ResourcePath() string {
-	return "v2/engine/component/components/"
+func (m *Connector) ResourcePath() string {
+	return "v2/engine/component/connectors/"
 }
 
-func (m *Component) FromSchema(d *schema.ResourceData) error {
+func (m *Connector) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 	input := convertInputParameters(d.Get("input").(*schema.Set).List())
 
-	m.ComponentParams = ComponentParams{
+	m.ConnectorParams = ConnectorParams{
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
 		Version:     d.Get("version").(string),
@@ -46,7 +46,7 @@ func (m *Component) FromSchema(d *schema.ResourceData) error {
 	return nil
 }
 
-func (m *Component) ToSchema(d *schema.ResourceData) error {
+func (m *Connector) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
 
 	d.Set("name", m.Name)

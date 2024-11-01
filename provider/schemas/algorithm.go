@@ -4,7 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func SchemaComponent() map[string]*schema.Schema {
+func SchemaAlgorithm() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,
