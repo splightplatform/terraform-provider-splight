@@ -20,6 +20,12 @@ resource "splight_file" "my_file" {
   description = "My File"
 }
 
+# Create node for the server to run
+resource "splight_node" "my_node" {
+  name = "My Node"
+  type = "splight_hosted"
+}
+
 resource "splight_server" "my_server" {
   name        = "My Server"
   description = "My Server Description"
@@ -47,4 +53,9 @@ resource "splight_server" "my_server" {
     description = "Mosquitto configuration file"
     value       = splight_file.my_file.id
   }
+
+  node                  = splight_node.my_node.id
+  machine_instance_size = "very_large"
+  log_level             = "error"
+  restart_policy        = "Always"
 }

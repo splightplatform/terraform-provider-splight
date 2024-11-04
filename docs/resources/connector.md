@@ -29,10 +29,16 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
+# Create node for the connector to run
+resource "splight_node" "my_node" {
+  name = "My Node"
+  type = "splight_hosted"
+}
+
 resource "splight_connector" "my_connector" {
   name        = "My Connector"
   description = "My Connector Description"
-  version     = "MQTT-6.5.5"
+  version     = "MQTT-6.5.7"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -122,6 +128,11 @@ resource "splight_connector" "my_connector" {
     type        = "int"
     value       = jsonencode(300)
   }
+
+  node                  = splight_node.my_node.id
+  machine_instance_size = "very_large"
+  log_level             = "error"
+  restart_policy        = "Always"
 }
 ```
 
@@ -130,13 +141,17 @@ resource "splight_connector" "my_connector" {
 
 ### Required
 
-- `name` (String) the name of the component to be created
-- `version` (String) [NAME-VERSION] the version of the hub component
+- `name` (String) the name of the connector to be created
+- `version` (String) [NAME-VERSION] the version of the hub connector
 
 ### Optional
 
 - `description` (String) optional description to add details of the resource
 - `input` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--input))
+- `log_level` (String) log level of the connector
+- `machine_instance_size` (String) instance size
+- `node` (String) id of the compute node where the connector runs
+- `restart_policy` (String) restart policy of the connector
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only

@@ -7,24 +7,18 @@ import (
 )
 
 type Port struct {
-	Name         string           `json:"name"`
-	Protocol     string           `json:"protocol"`
-	InternalPort int              `json:"internal_port"`
-	ExposedPort  int              `json:"exposed_port"`
-	Value        *json.RawMessage `json:"value"`
+	Name         string `json:"name"`
+	Protocol     string `json:"protocol"`
+	InternalPort int    `json:"internal_port"`
+	ExposedPort  int    `json:"exposed_port"`
 }
 
-func (p Port) ToMap() map[string]interface{} {
-	var valueStr string
-	if p.Value != nil {
-		valueStr = string(*p.Value)
-	}
+func (p Port) ToMap() map[string]any {
 	return map[string]interface{}{
 		"name":          p.Name,
 		"protocol":      p.Protocol,
 		"internal_port": p.InternalPort,
 		"exposed_port":  p.ExposedPort,
-		"value":         valueStr,
 	}
 }
 
@@ -37,10 +31,6 @@ func convertPorts(data []any) []Port {
 			Protocol:     portMap["protocol"].(string),
 			InternalPort: portMap["internal_port"].(int),
 			ExposedPort:  portMap["exposed_port"].(int),
-		}
-		if value, exists := portMap["value"]; exists && value != "" {
-			rawValue := json.RawMessage(value.(string))
-			ports[i].Value = &rawValue
 		}
 	}
 	return ports
@@ -78,18 +68,43 @@ func convertEnvVars(data []any) []EnvVar {
 }
 
 type ServerParams struct {
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Tags        []QueryFilter    `json:"tags"`
-	Version     string           `json:"version"`
-	Config      []InputParameter `json:"config"`
-	Ports       []Port           `json:"ports"`
-	EnvVars     []EnvVar         `json:"env_vars"`
+	Name                string           `json:"name"`
+	Description         string           `json:"description"`
+	Tags                []QueryFilter    `json:"tags"`
+	Version             string           `json:"version"`
+	Config              []InputParameter `json:"config"`
+	Ports               []Port           `json:"ports"`
+	EnvVars             []EnvVar         `json:"env_vars"`
+	Node                string           `json:"compute_node_id,omitempty"`
+	MachineInstanceSize string           `json:"deployment_capacity,omitempty"`
+	LogLevel            string           `json:"deployment_log_level,omitempty"`
+	RestartPolicy       string           `json:"deployment_restart_policy,omitempty"`
 }
 
 type Server struct {
 	ServerParams
 	Id string `json:"id"`
+}
+
+// UnmarshalJSON is a custom method to handle both the top-level "id" and nested "compute_node.id".
+func (c *Server) UnmarshalJSON(data []byte) error {
+	// Define an auxiliary struct that includes both `id` and `compute_node`
+	type Alias Server
+	aux := &struct {
+		ComputeNode computeNodeWrapper `json:"compute_node"`
+		*Alias
+	}{
+		Alias: (*Alias)(c),
+	}
+
+	// Unmarshal JSON into the auxiliary struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Set the nested compute_node.id value to the Node field in ServerParams
+	c.Node = aux.ComputeNode.ID
+	return nil
 }
 
 func (m *Server) GetId() string {
@@ -106,25 +121,33 @@ func (m *Server) ResourcePath() string {
 
 func (m *Server) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
+
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 	config := convertInputParameters(d.Get("config").(*schema.Set).List())
 	ports := convertPorts(d.Get("ports").(*schema.Set).List())
 	envVars := convertEnvVars(d.Get("env_vars").(*schema.Set).List())
 
+	logLevel := d.Get("log_level").(string)
 	m.ServerParams = ServerParams{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
-		Version:     d.Get("version").(string),
-		Config:      config,
-		Tags:        tags,
-		Ports:       ports,
-		EnvVars:     envVars,
+		Name:                d.Get("name").(string),
+		Description:         d.Get("description").(string),
+		Version:             d.Get("version").(string),
+		Config:              config,
+		Tags:                tags,
+		Ports:               ports,
+		EnvVars:             envVars,
+		Node:                d.Get("node").(string),
+		MachineInstanceSize: d.Get("machine_instance_size").(string),
+		LogLevel:            mapLogLevelToNumber(logLevel),
+		RestartPolicy:       d.Get("restart_policy").(string),
 	}
+
 	return nil
 }
 
 func (m *Server) ToSchema(d *schema.ResourceData) error {
 	d.SetId(m.Id)
+
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
 	d.Set("version", m.Version)
@@ -139,35 +162,30 @@ func (m *Server) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("tags", tags)
 
-	// Handle Config
-	if _, ok := d.GetOk("config"); !ok {
-		d.Set("config", []interface{}{})
-	}
 	configMap := make([]map[string]any, len(m.Config))
 	for i, config := range m.Config {
 		configMap[i] = config.ToMap()
 	}
 	d.Set("config", configMap)
 
-	// Handle Ports
-	if _, ok := d.GetOk("ports"); !ok {
-		d.Set("ports", []interface{}{})
-	}
 	portsMap := make([]map[string]any, len(m.Ports))
 	for i, port := range m.Ports {
 		portsMap[i] = port.ToMap()
 	}
 	d.Set("ports", portsMap)
 
-	// Handle EnvVars
-	if _, ok := d.GetOk("env_vars"); !ok {
-		d.Set("env_vars", []interface{}{})
-	}
 	envVarsMap := make([]map[string]any, len(m.EnvVars))
 	for i, envVar := range m.EnvVars {
 		envVarsMap[i] = envVar.ToMap()
 	}
 	d.Set("env_vars", envVarsMap)
+
+	d.Set("node", m.Node)
+	d.Set("machine_instance_size", m.MachineInstanceSize)
+
+	// Convert numeric string back to log level name
+	d.Set("log_level", mapNumberToLogLevel(m.LogLevel))
+	d.Set("restart_policy", m.RestartPolicy)
 
 	return nil
 }

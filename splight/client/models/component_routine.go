@@ -59,12 +59,6 @@ func (m *ComponentRoutine) ToSchema(d *schema.ResourceData) error {
 	d.Set("type", m.Type)
 	d.Set("component_id", m.ComponentId)
 
-	// We need to initialize the memory for nested elements
-	// Needed because d.Set() can not handle properly json.RawMessage
-	if _, ok := d.GetOk("config"); !ok {
-		d.Set("config", []interface{}{})
-	}
-
 	configsMap := make([]map[string]any, len(m.Config))
 	for i, config := range m.Config {
 		configsMap[i] = config.ToMap()

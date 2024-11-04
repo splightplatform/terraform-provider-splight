@@ -14,10 +14,16 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
+# Create node for the connector to run
+resource "splight_node" "my_node" {
+  name = "My Node"
+  type = "splight_hosted"
+}
+
 resource "splight_connector" "my_connector" {
   name        = "My Connector"
   description = "My Connector Description"
-  version     = "MQTT-6.5.5"
+  version     = "MQTT-6.5.7"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -107,4 +113,9 @@ resource "splight_connector" "my_connector" {
     type        = "int"
     value       = jsonencode(300)
   }
+
+  node                  = splight_node.my_node.id
+  machine_instance_size = "very_large"
+  log_level             = "error"
+  restart_policy        = "Always"
 }

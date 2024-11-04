@@ -2,6 +2,7 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func SchemaAlgorithm() map[string]*schema.Schema {
@@ -9,7 +10,7 @@ func SchemaAlgorithm() map[string]*schema.Schema {
 		"name": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "the name of the component to be created",
+			Description: "the name of the algorithm to be created",
 		},
 		"description": {
 			Type:        schema.TypeString,
@@ -38,8 +39,50 @@ func SchemaAlgorithm() map[string]*schema.Schema {
 		"version": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "[NAME-VERSION] the version of the hub component",
+			Description: "[NAME-VERSION] the version of the hub algorithm",
 		},
 		"input": schemaInputParameter(),
+		"node": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "id of the compute node where the algorithm runs",
+		},
+		"machine_instance_size": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "instance size",
+			ValidateFunc: validation.StringInSlice([]string{
+				"small",
+				"medium",
+				"large",
+				"very_large",
+			}, false),
+			Default: "large",
+		},
+		"log_level": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "log level of the algorithm",
+			ValidateFunc: validation.StringInSlice([]string{
+				"critical",
+				"error",
+				"warning",
+				"info",
+				"debug",
+				"all",
+			}, false),
+			Default: "info",
+		},
+		"restart_policy": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "restart policy of the algorithm",
+			ValidateFunc: validation.StringInSlice([]string{
+				"Always",
+				"Never",
+				"OnFailure",
+			}, false),
+			Default: "OnFailure",
+		},
 	}
 }

@@ -14,6 +14,12 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
+# Create node for the algorithm to run
+resource "splight_node" "my_node" {
+  name = "My Node"
+  type = "splight_hosted"
+}
+
 resource "splight_algorithm" "my_algorithm" {
   name        = "My Algorithm"
   description = "My Algorithm Description"
@@ -82,4 +88,9 @@ resource "splight_algorithm" "my_algorithm" {
     required    = false
     value       = jsonencode("")
   }
+
+  node                  = splight_node.my_node.id
+  machine_instance_size = "very_large"
+  log_level             = "error"
+  restart_policy        = "Always"
 }

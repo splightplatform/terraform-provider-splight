@@ -35,6 +35,12 @@ resource "splight_file" "my_file" {
   description = "My File"
 }
 
+# Create node for the server to run
+resource "splight_node" "my_node" {
+  name = "My Node"
+  type = "splight_hosted"
+}
+
 resource "splight_server" "my_server" {
   name        = "My Server"
   description = "My Server Description"
@@ -62,6 +68,11 @@ resource "splight_server" "my_server" {
     description = "Mosquitto configuration file"
     value       = splight_file.my_file.id
   }
+
+  node                  = splight_node.my_node.id
+  machine_instance_size = "very_large"
+  log_level             = "error"
+  restart_policy        = "Always"
 }
 ```
 
@@ -70,15 +81,19 @@ resource "splight_server" "my_server" {
 
 ### Required
 
-- `name` (String) the name of the component to be created
-- `version` (String) [NAME-VERSION] the version of the hub component
+- `name` (String) the name of the server to be created
+- `version` (String) [NAME-VERSION] the version of the hub server
 
 ### Optional
 
 - `config` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--config))
 - `description` (String) optional description to add details of the resource
 - `env_vars` (Block Set) ports of the server (see [below for nested schema](#nestedblock--env_vars))
+- `log_level` (String) log level of the server
+- `machine_instance_size` (String) instance size
+- `node` (String) id of the compute node where the server runs
 - `ports` (Block Set) ports of the server (see [below for nested schema](#nestedblock--ports))
+- `restart_policy` (String) restart policy of the server
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
