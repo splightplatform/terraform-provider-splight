@@ -26,7 +26,7 @@ func SchemaComponentRoutine() map[string]*schema.Schema {
 			Required:    true,
 			Description: "reference to component to be attached",
 		},
-		"config": inputParameter(),
+		"config": schemaInputParameter(),
 		"output": inputDataAddress(),
 		"input":  inputDataAddress(),
 	}
