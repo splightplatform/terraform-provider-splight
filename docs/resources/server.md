@@ -66,7 +66,19 @@ resource "splight_server" "my_server" {
     name        = "mosquitto_conf"
     type        = "File"
     description = "Mosquitto configuration file"
-    value       = splight_file.my_file.id
+    value       = jsonencode(splight_file.my_file.id)
+  }
+
+  env_vars {
+    name  = "My Env Var"
+    value = "My Env Var Value"
+  }
+
+  ports {
+    name          = "My Port"
+    protocol      = "My Protocol"
+    internal_port = 8080
+    exposed_port  = 8000
   }
 
   node                  = splight_node.my_node.id
@@ -88,7 +100,7 @@ resource "splight_server" "my_server" {
 
 - `config` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--config))
 - `description` (String) optional description to add details of the resource
-- `env_vars` (Block Set) ports of the server (see [below for nested schema](#nestedblock--env_vars))
+- `env_vars` (Block Set) environment variables for the server (see [below for nested schema](#nestedblock--env_vars))
 - `log_level` (String) log level of the server
 - `machine_instance_size` (String) instance size
 - `node` (String) id of the compute node where the server runs

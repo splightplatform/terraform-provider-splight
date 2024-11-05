@@ -51,7 +51,19 @@ resource "splight_server" "my_server" {
     name        = "mosquitto_conf"
     type        = "File"
     description = "Mosquitto configuration file"
-    value       = splight_file.my_file.id
+    value       = jsonencode(splight_file.my_file.id)
+  }
+
+  env_vars {
+    name  = "My Env Var"
+    value = "My Env Var Value"
+  }
+
+  ports {
+    name          = "My Port"
+    protocol      = "My Protocol"
+    internal_port = 8080
+    exposed_port  = 8000
   }
 
   node                  = splight_node.my_node.id

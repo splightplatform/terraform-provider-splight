@@ -37,31 +37,27 @@ func convertPorts(data []any) []Port {
 }
 
 type EnvVar struct {
-	Name  string           `json:"name"`
-	Value *json.RawMessage `json:"value"`
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 func (e EnvVar) ToMap() map[string]interface{} {
-	var valueStr string
-	if e.Value != nil {
-		valueStr = string(*e.Value)
-	}
 	return map[string]interface{}{
 		"name":  e.Name,
-		"value": valueStr,
+		"value": e.Value,
 	}
 }
 
 func convertEnvVars(data []any) []EnvVar {
+	if len(data) == 0 {
+		return nil
+	}
 	envVars := make([]EnvVar, len(data))
-	for i, env := range data {
-		envMap := env.(map[string]interface{})
+	for i, envVarData := range data {
+		envVarMap := envVarData.(map[string]any)
 		envVars[i] = EnvVar{
-			Name: envMap["name"].(string),
-		}
-		if value, exists := envMap["value"]; exists && value != "" {
-			rawValue := json.RawMessage(value.(string))
-			envVars[i].Value = &rawValue
+			Name:  envVarMap["name"].(string),
+			Value: envVarMap["value"].(string),
 		}
 	}
 	return envVars

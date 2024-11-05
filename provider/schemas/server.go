@@ -9,7 +9,7 @@ func schemaEnvVars() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeSet,
 		Optional:    true,
-		Description: "ports of the server",
+		Description: "environment variables for the server", // Updated description
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name": {
@@ -41,12 +41,14 @@ func schemaPorts() *schema.Schema {
 					Required: true,
 				},
 				"internal_port": {
-					Type:     schema.TypeInt,
-					Required: true,
+					Type:         schema.TypeInt,
+					Required:     true,
+					ValidateFunc: validation.IntBetween(1, 65535),
 				},
 				"exposed_port": {
-					Type:     schema.TypeInt,
-					Required: true,
+					Type:         schema.TypeInt,
+					Required:     true,
+					ValidateFunc: validation.IntBetween(1, 65535),
 				},
 			},
 		},
