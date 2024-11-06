@@ -67,12 +67,12 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 
 	m.LineParams = LineParams{
 		AssetParams: AssetParams{
-			Name:        d.Get("name").(string),
-			Description: d.Get("description").(string),
-			Geometry:    json.RawMessage(d.Get("geometry").(string)),
+			Name:           d.Get("name").(string),
+			Description:    d.Get("description").(string),
+			Geometry:       json.RawMessage(d.Get("geometry").(string)),
 			CustomTimezone: d.Get("custom_timezone").(string),
-			Tags:        tags,
-			Kind:        kind,
+			Tags:           tags,
+			Kind:           kind,
 		},
 	}
 

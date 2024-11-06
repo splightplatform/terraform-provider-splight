@@ -6,17 +6,20 @@ terraform {
   }
 }
 
+# Fetch kinds
+data "splight_asset_kinds" "my_kinds" {}
+
 # Create a tag
 resource "splight_tag" "my_tag" {
-  name = "My Tag"
+  name = "Berry Tag"
 }
 
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
-resource "splight_generator" "my_generator" {
-  name            = "My Generator"
-  description     = "My Generator Description"
+resource "splight_asset" "my_asset" {
+  name        = "My Asset"
+  description = "My Asset Description"
   custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
@@ -35,6 +38,12 @@ resource "splight_generator" "my_generator" {
     id   = splight_tag.my_tag.id
   }
 
+  # Choose the kind by name
+  kind {
+    name = "Line"
+    id   = one([for k in data.splight_asset_kinds.my_kinds.kinds : k.id if k.name == "Line"])
+  }
+
   geometry = jsonencode({
     type = "GeometryCollection"
     geometries = [
@@ -45,7 +54,4 @@ resource "splight_generator" "my_generator" {
     ]
   })
 
-  co2_coefficient {
-    value = jsonencode(1.1)
-  }
 }

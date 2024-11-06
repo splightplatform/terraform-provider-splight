@@ -7,12 +7,12 @@ import (
 )
 
 type AssetParams struct {
-	Name        string          `json:"name"`
-	Description string          `json:"description"`
-	Geometry    json.RawMessage `json:"geometry"`
-	CustomTimezone string		`json:"custom_timezone"`
-	Tags        []QueryFilter   `json:"tags"`
-	Kind        *QueryFilter    `json:"kind"`
+	Name           string          `json:"name"`
+	Description    string          `json:"description"`
+	Geometry       json.RawMessage `json:"geometry"`
+	CustomTimezone string          `json:"custom_timezone"`
+	Tags           []QueryFilter   `json:"tags"`
+	Kind           *QueryFilter    `json:"kind"`
 }
 
 type Asset struct {
@@ -39,12 +39,12 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
 	m.AssetParams = AssetParams{
-		Name:        d.Get("name").(string),
-		Description: d.Get("description").(string),
-		Geometry:    json.RawMessage(d.Get("geometry").(string)),
+		Name:           d.Get("name").(string),
+		Description:    d.Get("description").(string),
+		Geometry:       json.RawMessage(d.Get("geometry").(string)),
 		CustomTimezone: d.Get("custom_timezone").(string),
-		Tags:        tags,
-		Kind:        kind,
+		Tags:           tags,
+		Kind:           kind,
 	}
 
 	return nil
