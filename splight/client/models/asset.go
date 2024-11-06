@@ -10,6 +10,7 @@ type AssetParams struct {
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
 	Geometry    json.RawMessage `json:"geometry"`
+	CustomTimezone string		`json:"custom_timezone"`
 	Tags        []QueryFilter   `json:"tags"`
 	Kind        *QueryFilter    `json:"kind"`
 }
@@ -41,6 +42,7 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 		Name:        d.Get("name").(string),
 		Description: d.Get("description").(string),
 		Geometry:    json.RawMessage(d.Get("geometry").(string)),
+		CustomTimezone: d.Get("custom_timezone").(string),
 		Tags:        tags,
 		Kind:        kind,
 	}
@@ -54,6 +56,7 @@ func (m *Asset) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
 	d.Set("geometry", string(m.Geometry))
+	d.Set("custom_timezone", m.CustomTimezone)
 
 	var tags []map[string]any
 	for _, tag := range m.AssetParams.Tags {
