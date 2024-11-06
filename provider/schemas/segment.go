@@ -22,6 +22,11 @@ func SchemaSegment() map[string]*schema.Schema {
 			Description:      "geo position and shape of the resource",
 			DiffSuppressFunc: JSONStringEqualSupressFunc,
 		},
+		"custom_timezone": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "timezone that overrides location-based timezone of the resource",
+		},
 		"temperature": {
 			Type:        schema.TypeSet,
 			Computed:    true,

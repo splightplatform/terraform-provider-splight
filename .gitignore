@@ -6,3 +6,5 @@ terraform-provider*
 *.tfvars
 .DS_Store
 bin/*
+mise.toml
+.mise.toml

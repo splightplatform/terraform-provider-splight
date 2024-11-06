@@ -36,11 +36,12 @@ func (m *Grid) FromSchema(d *schema.ResourceData) error {
 
 	m.GridParams = GridParams{
 		AssetParams: AssetParams{
-			Name:        d.Get("name").(string),
-			Description: d.Get("description").(string),
-			Geometry:    json.RawMessage(d.Get("geometry").(string)),
-			Tags:        tags,
-			Kind:        kind,
+			Name:           d.Get("name").(string),
+			Description:    d.Get("description").(string),
+			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			CustomTimezone: d.Get("custom_timezone").(string),
+			Tags:           tags,
+			Kind:           kind,
 		},
 	}
 
@@ -53,6 +54,7 @@ func (m *Grid) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
 	d.Set("geometry", string(m.AssetParams.Geometry))
+	d.Set("custom_timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any
 	for _, tag := range m.AssetParams.Tags {
