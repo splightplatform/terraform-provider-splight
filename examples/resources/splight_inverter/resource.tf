@@ -15,9 +15,9 @@ resource "splight_tag" "my_tag" {
 data "splight_tags" "my_tags" {}
 
 resource "splight_inverter" "my_inverter" {
-  name            = "My Inverter"
-  description     = "My Inverter Description"
-  custom_timezone = "America/Los_Angeles"
+  name        = "My Inverter"
+  description = "My Inverter Description"
+  timezone    = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {

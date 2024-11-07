@@ -30,9 +30,9 @@ resource "splight_tag" "my_tag" {
 data "splight_tags" "my_tags" {}
 
 resource "splight_inverter" "my_inverter" {
-  name            = "My Inverter"
-  description     = "My Inverter Description"
-  custom_timezone = "America/Los_Angeles"
+  name        = "My Inverter"
+  description = "My Inverter Description"
+  timezone    = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -96,10 +96,10 @@ resource "splight_inverter" "my_inverter" {
 
 ### Optional
 
-- `custom_timezone` (String) timezone that overrides location-based timezone of the resource
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
+- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 

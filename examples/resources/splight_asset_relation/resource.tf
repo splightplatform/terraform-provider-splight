@@ -11,7 +11,8 @@ data "splight_asset_kinds" "my_kinds" {}
 
 # Create a Segment
 resource "splight_asset" "my_segment" {
-  name = "My Segment"
+  name     = "My Segment"
+  timezone = "America/Los_Angeles"
 
   kind {
     name = "Segment"
@@ -32,7 +33,8 @@ resource "splight_asset" "my_segment" {
 
 # Create a Line
 resource "splight_asset" "my_line" {
-  name = "My Line"
+  name     = "My Line"
+  timezone = "America/Los_Angeles"
 
   kind {
     name = "Line"
