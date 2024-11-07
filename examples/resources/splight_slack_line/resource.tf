@@ -15,9 +15,9 @@ resource "splight_tag" "my_tag" {
 data "splight_tags" "my_tags" {}
 
 resource "splight_slack_line" "my_line" {
-  name            = "My Slack Line"
-  description     = "My Slack Line Description"
-  custom_timezone = "America/Los_Angeles"
+  name        = "My Slack Line"
+  description = "My Slack Line Description"
+  timezone    = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {

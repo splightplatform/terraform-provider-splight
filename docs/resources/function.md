@@ -32,6 +32,8 @@ data "splight_tags" "my_tags" {}
 resource "splight_asset" "my_asset" {
   name        = "My Asset"
   description = "My Asset Description"
+  timezone    = "America/Los_Angeles"
+
   geometry = jsonencode({
     type = "GeometryCollection"
     geometries = [
@@ -52,6 +54,8 @@ resource "splight_asset_attribute" "my_attribute" {
 resource "splight_asset" "my_target_asset" {
   name        = "My Target Asset"
   description = "My Target Asset Description"
+  timezone    = "America/Los_Angeles"
+
   geometry = jsonencode({
     type = "GeometryCollection"
     geometries = [

@@ -9,6 +9,8 @@ terraform {
 resource "splight_asset" "AssetTest" {
   name        = "AssetTest"
   description = "Created with Terraform"
+  timezone    = "America/Los_Angeles"
+
   geometry = jsonencode({
     type       = "GeometryCollection"
     geometries = []

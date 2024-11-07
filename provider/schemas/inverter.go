@@ -22,7 +22,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Description:      "geo position and shape of the resource",
 			DiffSuppressFunc: JSONStringEqualSupressFunc,
 		},
-		"custom_timezone": {
+		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
 			Description: "timezone that overrides location-based timezone of the resource",

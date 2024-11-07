@@ -15,9 +15,9 @@ resource "splight_tag" "my_tag" {
 data "splight_tags" "my_tags" {}
 
 resource "splight_bus" "my_bus" {
-  name            = "My Bus"
-  description     = "My Bus Description"
-  custom_timezone = "America/Los_Angeles"
+  name        = "My Bus"
+  description = "My Bus Description"
+  timezone    = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
