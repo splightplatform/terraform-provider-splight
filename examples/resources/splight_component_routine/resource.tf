@@ -38,10 +38,16 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
-resource "splight_component" "my_component" {
-  name        = "My Component"
-  description = "My Component Description"
-  version     = "MQTT-6.5.5"
+# Create node for the connector to run
+resource "splight_node" "my_node" {
+  name = "My Node"
+  type = "splight_hosted"
+}
+
+resource "splight_connector" "my_connector" {
+  name        = "My Connector"
+  description = "My Connector Description"
+  version     = "MQTT-6.5.7"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -131,14 +137,19 @@ resource "splight_component" "my_component" {
     type        = "int"
     value       = jsonencode(300)
   }
+
+  node                  = splight_node.my_node.id
+  machine_instance_size = "very_large"
+  log_level             = "error"
+  restart_policy        = "Always"
 }
 
-# Create a routine for the component
+# Create a routine for the connector
 resource "splight_component_routine" "my_routine" {
   name         = "My Routine"
   description  = "My Routine Description"
   type         = "MQTTReadNumber"
-  component_id = splight_component.my_component.id
+  component_id = splight_connector.my_connector.id
 
   config {
     name        = "path"
@@ -162,7 +173,7 @@ resource "splight_component_routine" "my_routine" {
 
   output {
     name        = "value"
-    description = "The received values are saved to this AssetAttribute"
+    description = "The received values are cast to the appropriate type before being saved to this AssetAttribute"
     multiple    = false
     required    = true
     type        = "DataAddress"
