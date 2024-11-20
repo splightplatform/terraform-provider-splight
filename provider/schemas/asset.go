@@ -56,7 +56,7 @@ func SchemaAsset() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "timezone that overrides location-based timezone of the resource",
+			Description: "timezone of the resource (overriden by the location if set)",
 		},
 		"tags": {
 			Type:        schema.TypeSet,

@@ -70,13 +70,13 @@ func (m *ComponentRoutine) ToSchema(d *schema.ResourceData) error {
 	for i, inputItem := range m.Input {
 		inputsMap[i] = inputItem.ToMap()
 	}
-	d.Set("input", m.Input)
+	d.Set("input", inputsMap)
 
 	outputsMap := make([]map[string]any, len(m.Output))
 	for i, output := range m.Output {
 		outputsMap[i] = output.ToMap()
 	}
-	d.Set("output", m.Output)
+	d.Set("output", outputsMap)
 
 	// TODO: fix invalid address to set...
 	return nil

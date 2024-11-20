@@ -84,7 +84,7 @@ resource "splight_asset" "my_asset" {
 - `description` (String) description of the resource
 - `kind` (Block Set, Max: 1) kind of the resource (see [below for nested schema](#nestedblock--kind))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
+- `timezone` (String) timezone of the resource (overriden by the location if set)
 
 ### Read-Only
 
