@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -55,7 +56,15 @@ func convertSetpoints(setpointsInterface []interface{}) []Setpoint {
 	setpoints := make([]Setpoint, len(setpointsInterface))
 
 	for i, item := range setpointsInterface {
+
 		setpoint := item.(map[string]interface{})
+
+		// Validate value JSON
+		valueStr := setpoint["value"].(string)
+		if err := validateJSONString(valueStr); err != nil {
+			return nil, fmt.Errorf("setpoint value JSON must be json encoded: %w", err)
+		}
+
 		attribute := convertSingleQueryFilter(setpoint["attribute"].(*schema.Set).List())
 		setpoints[i] = Setpoint{
 			Id:        setpoint["id"].(string),

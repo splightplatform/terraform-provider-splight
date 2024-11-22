@@ -54,14 +54,14 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	// Validate geometry JSON
 	geometryStr := d.Get("geometry").(string)
 	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry field contains %w", err)
+		return fmt.Errorf("geometry must be a jsonencoded GeoJSON")
 	}
 
 	m.SegmentParams = SegmentParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			Geometry:       json.RawMessage(geometryStr),
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,

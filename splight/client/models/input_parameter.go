@@ -32,6 +32,7 @@ func (m InputParameter) ToMap() map[string]interface{} {
 }
 
 func convertInputParameters(data []any) []InputParameter {
+	// TODO: validate jsonencoded value
 	inputs := make([]InputParameter, len(data))
 	for i, input := range data {
 		inputMap := input.(map[string]interface{})

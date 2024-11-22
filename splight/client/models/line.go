@@ -69,7 +69,7 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	// Validate geometry JSON
 	geometryStr := d.Get("geometry").(string)
 	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry field contains %w", err)
+		return fmt.Errorf("geometry must be a jsonencoded GeoJSON")
 	}
 
 	m.LineParams = LineParams{

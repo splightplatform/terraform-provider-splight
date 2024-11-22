@@ -72,11 +72,17 @@ func convertAssetMetadata(data []any) (*AssetMetadata, error) {
 func (m *AssetMetadata) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
+	// Validate geometry JSON
+	valueStr := d.Get("geometry").(string)
+	if err := validateJSONString(valueStr); err != nil {
+		return fmt.Errorf("metadata value must be a jsonencoded GeoJSON")
+	}
+
 	m.AssetMetadataParams = AssetMetadataParams{
 		Asset: d.Get("asset").(string),
 		Name:  d.Get("name").(string),
 		Type:  d.Get("type").(string),
-		Value: json.RawMessage(d.Get("value").(string)),
+		Value: json.RawMessage(valueStr),
 		Unit:  d.Get("unit").(string),
 	}
 
