@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -44,21 +45,28 @@ func (m *AssetMetadata) ResourcePath() string {
 	return "v2/engine/asset/metadata/"
 }
 
-func convertAssetMetadata(data []any) *AssetMetadata {
+func convertAssetMetadata(data []any) (*AssetMetadata, error) {
 	if len(data) == 0 {
-		return nil
+		return nil, nil
 	}
 	metadataMap := data[0].(map[string]any)
+
+	// Validate value JSON
+	valueStr := metadataMap["value"].(string)
+	if err := validateJSONString(valueStr); err != nil {
+		return nil, fmt.Errorf("metadata value JSON must be json encoded: %w", err)
+	}
+
 	return &AssetMetadata{
 		AssetMetadataParams: AssetMetadataParams{
 			Asset: metadataMap["asset"].(string),
 			Name:  metadataMap["name"].(string),
 			Type:  metadataMap["type"].(string),
-			Value: json.RawMessage(metadataMap["value"].(string)),
+			Value: json.RawMessage(valueStr),
 			Unit:  metadataMap["unit"].(string),
 		},
 		Id: metadataMap["id"].(string),
-	}
+	}, nil
 }
 
 func (m *AssetMetadata) FromSchema(d *schema.ResourceData) error {

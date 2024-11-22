@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -30,22 +31,31 @@ func (m *Bus) ResourcePath() string {
 
 func (m *Bus) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
-
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry field contains %w", err)
+	}
 
 	m.BusParams = BusParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			Geometry:       json.RawMessage(geometryStr),
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,
 		},
 	}
 
-	nominalVoltage := convertAssetMetadata(d.Get("nominal_voltage").(*schema.Set).List())
+	nominalVoltage, err := convertAssetMetadata(d.Get("nominal_voltage").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid nominal voltage metadata: %w", err)
+	}
+
 	if nominalVoltage.Type == "" {
 		nominalVoltage.Type = "Number"
 	}

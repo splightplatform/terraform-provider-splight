@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -37,6 +38,12 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry field contains %w", err)
+	}
 
 	m.AssetParams = AssetParams{
 		Name:           d.Get("name").(string),

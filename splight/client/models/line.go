@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -65,331 +66,120 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry field contains %w", err)
+	}
+
 	m.LineParams = LineParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			Geometry:       json.RawMessage(geometryStr),
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,
 		},
 	}
 
-	// TODO: remove ALL of these sets when API fixes its contract
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
+	// Asset Attributes with consistent nil handling
+	attributes := map[string]*AssetAttribute{
+		"active_power":     convertAssetAttribute(d.Get("active_power").(*schema.Set).List()),
+		"active_power_end": convertAssetAttribute(d.Get("active_power_end").(*schema.Set).List()),
+		"ampacity":         convertAssetAttribute(d.Get("ampacity").(*schema.Set).List()),
+		"current":          convertAssetAttribute(d.Get("current").(*schema.Set).List()),
+		"current_r":        convertAssetAttribute(d.Get("current_r").(*schema.Set).List()),
+		"current_s":        convertAssetAttribute(d.Get("current_s").(*schema.Set).List()),
+		"current_t":        convertAssetAttribute(d.Get("current_t").(*schema.Set).List()),
+		"energy":           convertAssetAttribute(d.Get("energy").(*schema.Set).List()),
+		"max_temperature":  convertAssetAttribute(d.Get("max_temperature").(*schema.Set).List()),
+		"reactive_power":   convertAssetAttribute(d.Get("reactive_power").(*schema.Set).List()),
+		"voltage_rs":       convertAssetAttribute(d.Get("voltage_rs").(*schema.Set).List()),
+		"voltage_st":       convertAssetAttribute(d.Get("voltage_st").(*schema.Set).List()),
+		"voltage_tr":       convertAssetAttribute(d.Get("voltage_tr").(*schema.Set).List()),
+	}
+
+	for name, attr := range attributes {
+		if attr == nil {
+			attr = &AssetAttribute{
+				AssetAttributeParams: AssetAttributeParams{
+					Type: "Number",
+					Name: name,
+				},
+			}
+		}
+		switch name {
+		case "active_power":
+			m.LineParams.ActivePower = *attr
+		case "active_power_end":
+			m.LineParams.ActivePowerEnd = *attr
+		case "ampacity":
+			m.LineParams.Ampacity = *attr
+		case "current":
+			m.LineParams.Current = *attr
+		case "current_r":
+			m.LineParams.CurrentR = *attr
+		case "current_s":
+			m.LineParams.CurrentS = *attr
+		case "current_t":
+			m.LineParams.CurrentT = *attr
+		case "energy":
+			m.LineParams.Energy = *attr
+		case "max_temperature":
+			m.LineParams.MaxTemperature = *attr
+		case "reactive_power":
+			m.LineParams.ReactivePower = *attr
+		case "voltage_rs":
+			m.LineParams.VoltageRS = *attr
+		case "voltage_st":
+			m.LineParams.VoltageST = *attr
+		case "voltage_tr":
+			m.LineParams.VoltageTR = *attr
 		}
 	}
-	m.LineParams.ActivePower = *activePower
 
-	activePowerEnd := convertAssetAttribute(d.Get("active_power_end").(*schema.Set).List())
-	if activePowerEnd == nil {
-		activePowerEnd = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power_end",
-			},
+	// Metadata fields with error handling and type/name defaults
+	metadataFields := []struct {
+		name        string
+		defaultType string
+		defaultName string
+		destination *AssetMetadata
+	}{
+		{"diameter", "Number", "diameter", &m.LineParams.Diameter},
+		{"absorptivity", "Number", "absorptivity", &m.LineParams.Absorptivity},
+		{"atmosphere", "Number", "atmosphere", &m.LineParams.Atmosphere},
+		{"capacitance", "Number", "capacitance", &m.LineParams.Capacitance},
+		{"conductance", "Number", "conductance", &m.LineParams.Conductance},
+		{"emissivity", "Number", "emissivity", &m.LineParams.Emissivity},
+		{"length", "Number", "length", &m.LineParams.Length},
+		{"maximum_allowed_current", "Number", "maximum_allowed_current", &m.LineParams.MaximumAllowedCurrent},
+		{"maximum_allowed_power", "Number", "maximum_allowed_power", &m.LineParams.MaximumAllowedPower},
+		{"maximum_allowed_temperature", "Number", "maximum_allowed_temperature", &m.LineParams.MaximumAllowedTemperature},
+		{"maximum_allowed_temperature_lte", "Number", "maximum_allowed_temperature_lte", &m.LineParams.MaximumAllowedTemperatureLTE},
+		{"maximum_allowed_temperature_ste", "Number", "maximum_allowed_temperature_ste", &m.LineParams.MaximumAllowedTemperatureSTE},
+		{"number_of_conductors", "Number", "number_of_conductors", &m.LineParams.NumberOfConductors},
+		{"reactance", "Number", "reactance", &m.LineParams.Reactance},
+		{"reference_resistance", "Number", "reference_resistance", &m.LineParams.ReferenceResistance},
+		{"resistance", "Number", "resistance", &m.LineParams.Resistance},
+		{"safety_margin_for_power", "Number", "safety_margin_for_power", &m.LineParams.SafetyMarginForPower},
+		{"susceptance", "Number", "susceptance", &m.LineParams.Susceptance},
+		{"temperature_coeff_resistance", "Number", "temperature_coeff_resistance", &m.LineParams.TemperatureCoeffResistance},
+	}
+
+	for _, field := range metadataFields {
+		metadata, err := convertAssetMetadata(d.Get(field.name).(*schema.Set).List())
+		if err != nil {
+			return fmt.Errorf("invalid %s metadata: %w", field.name, err)
 		}
-	}
-	m.LineParams.ActivePowerEnd = *activePowerEnd
-
-	ampacity := convertAssetAttribute(d.Get("ampacity").(*schema.Set).List())
-	if ampacity == nil {
-		ampacity = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "ampacity",
-			},
+		if metadata.Type == "" {
+			metadata.Type = field.defaultType
 		}
-	}
-	m.LineParams.Ampacity = *ampacity
-
-	current := convertAssetAttribute(d.Get("current").(*schema.Set).List())
-	if current == nil {
-		current = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current",
-			},
+		if metadata.Name == "" {
+			metadata.Name = field.defaultName
 		}
+		*field.destination = *metadata
 	}
-	m.LineParams.Current = *current
-
-	currentR := convertAssetAttribute(d.Get("current_r").(*schema.Set).List())
-	if currentR == nil {
-		currentR = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_r",
-			},
-		}
-	}
-	m.LineParams.CurrentR = *currentR
-
-	currentS := convertAssetAttribute(d.Get("current_s").(*schema.Set).List())
-	if currentS == nil {
-		currentS = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_s",
-			},
-		}
-	}
-	m.LineParams.CurrentS = *currentS
-
-	currentT := convertAssetAttribute(d.Get("current_t").(*schema.Set).List())
-	if currentT == nil {
-		currentT = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_t",
-			},
-		}
-	}
-	m.LineParams.CurrentT = *currentT
-
-	energy := convertAssetAttribute(d.Get("energy").(*schema.Set).List())
-	if energy == nil {
-		energy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "energy",
-			},
-		}
-	}
-	m.LineParams.Energy = *energy
-
-	maxTemperature := convertAssetAttribute(d.Get("max_temperature").(*schema.Set).List())
-	if maxTemperature == nil {
-		maxTemperature = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "max_temperature",
-			},
-		}
-	}
-	m.LineParams.MaxTemperature = *maxTemperature
-
-	reactivePower := convertAssetAttribute(d.Get("reactive_power").(*schema.Set).List())
-	if reactivePower == nil {
-		reactivePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power",
-			},
-		}
-	}
-	m.LineParams.ReactivePower = *reactivePower
-
-	voltageRs := convertAssetAttribute(d.Get("voltage_rs").(*schema.Set).List())
-	if voltageRs == nil {
-		voltageRs = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_rs",
-			},
-		}
-	}
-	m.LineParams.VoltageRS = *voltageRs
-
-	voltageSt := convertAssetAttribute(d.Get("voltage_st").(*schema.Set).List())
-	if voltageSt == nil {
-		voltageSt = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_st",
-			},
-		}
-	}
-	m.LineParams.VoltageST = *voltageSt
-
-	voltageTr := convertAssetAttribute(d.Get("voltage_tr").(*schema.Set).List())
-	if voltageTr == nil {
-		voltageTr = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_tr",
-			},
-		}
-	}
-	m.LineParams.VoltageTR = *voltageTr
-
-	diameter := convertAssetMetadata(d.Get("diameter").(*schema.Set).List())
-	if diameter.Type == "" {
-		diameter.Type = "Number"
-	}
-	if diameter.Name == "" {
-		diameter.Name = "diameter"
-	}
-	m.LineParams.Diameter = *diameter
-
-	absorptivity := convertAssetMetadata(d.Get("absorptivity").(*schema.Set).List())
-	if absorptivity.Type == "" {
-		absorptivity.Type = "Number"
-	}
-	if absorptivity.Name == "" {
-		absorptivity.Name = "absorptivity"
-	}
-	m.LineParams.Absorptivity = *absorptivity
-
-	atmosphere := convertAssetMetadata(d.Get("atmosphere").(*schema.Set).List())
-	if atmosphere.Type == "" {
-		atmosphere.Type = "Number"
-	}
-	if atmosphere.Name == "" {
-		atmosphere.Name = "atmosphere"
-	}
-	m.LineParams.Atmosphere = *atmosphere
-
-	capacitance := convertAssetMetadata(d.Get("capacitance").(*schema.Set).List())
-	if capacitance.Type == "" {
-		capacitance.Type = "Number"
-	}
-	if capacitance.Name == "" {
-		capacitance.Name = "capacitance"
-	}
-	m.LineParams.Capacitance = *capacitance
-
-	conductance := convertAssetMetadata(d.Get("conductance").(*schema.Set).List())
-	if conductance.Type == "" {
-		conductance.Type = "Number"
-	}
-	if conductance.Name == "" {
-		conductance.Name = "conductance"
-	}
-	m.LineParams.Conductance = *conductance
-
-	emissivity := convertAssetMetadata(d.Get("emissivity").(*schema.Set).List())
-	if emissivity.Type == "" {
-		emissivity.Type = "Number"
-	}
-	if emissivity.Name == "" {
-		emissivity.Name = "emissivity"
-	}
-	m.LineParams.Emissivity = *emissivity
-
-	length := convertAssetMetadata(d.Get("length").(*schema.Set).List())
-	if length.Type == "" {
-		length.Type = "Number"
-	}
-	if length.Name == "" {
-		length.Name = "length"
-	}
-	m.LineParams.Length = *length
-
-	maximumAllowedCurrent := convertAssetMetadata(d.Get("maximum_allowed_current").(*schema.Set).List())
-	if maximumAllowedCurrent.Type == "" {
-		maximumAllowedCurrent.Type = "Number"
-	}
-	if maximumAllowedCurrent.Name == "" {
-		maximumAllowedCurrent.Name = "maximum_allowed_current"
-	}
-	m.LineParams.MaximumAllowedCurrent = *maximumAllowedCurrent
-
-	maximumAllowedPower := convertAssetMetadata(d.Get("maximum_allowed_power").(*schema.Set).List())
-	if maximumAllowedPower.Type == "" {
-		maximumAllowedPower.Type = "Number"
-	}
-	if maximumAllowedPower.Name == "" {
-		maximumAllowedPower.Name = "maximum_allowed_power"
-	}
-	m.LineParams.MaximumAllowedPower = *maximumAllowedPower
-
-	maximumAllowedTemperature := convertAssetMetadata(d.Get("maximum_allowed_temperature").(*schema.Set).List())
-	if maximumAllowedTemperature.Type == "" {
-		maximumAllowedTemperature.Type = "Number"
-	}
-	if maximumAllowedTemperature.Name == "" {
-		maximumAllowedTemperature.Name = "maximum_allowed_temperature"
-	}
-	m.LineParams.MaximumAllowedTemperature = *maximumAllowedTemperature
-
-	maximumAllowedTemperatureLTE := convertAssetMetadata(d.Get("maximum_allowed_temperature_lte").(*schema.Set).List())
-	if maximumAllowedTemperatureLTE.Type == "" {
-		maximumAllowedTemperatureLTE.Type = "Number"
-	}
-	if maximumAllowedTemperatureLTE.Name == "" {
-		maximumAllowedTemperatureLTE.Name = "maximum_allowed_temperature_lte"
-	}
-	m.LineParams.MaximumAllowedTemperatureLTE = *maximumAllowedTemperatureLTE
-
-	maximumAllowedTemperatureSTE := convertAssetMetadata(d.Get("maximum_allowed_temperature_ste").(*schema.Set).List())
-	if maximumAllowedTemperatureSTE.Type == "" {
-		maximumAllowedTemperatureSTE.Type = "Number"
-	}
-	if maximumAllowedTemperatureSTE.Name == "" {
-		maximumAllowedTemperatureSTE.Name = "maximum_allowed_temperature_ste"
-	}
-	m.LineParams.MaximumAllowedTemperatureSTE = *maximumAllowedTemperatureSTE
-
-	numberOfConductors := convertAssetMetadata(d.Get("number_of_conductors").(*schema.Set).List())
-	if numberOfConductors.Type == "" {
-		numberOfConductors.Type = "Number"
-	}
-	if numberOfConductors.Name == "" {
-		numberOfConductors.Name = "number_of_conductors"
-	}
-	m.LineParams.NumberOfConductors = *numberOfConductors
-
-	reactance := convertAssetMetadata(d.Get("reactance").(*schema.Set).List())
-	if reactance.Type == "" {
-		reactance.Type = "Number"
-	}
-	if reactance.Name == "" {
-		reactance.Name = "reactance"
-	}
-	m.LineParams.Reactance = *reactance
-
-	referenceResistance := convertAssetMetadata(d.Get("reference_resistance").(*schema.Set).List())
-	if referenceResistance.Type == "" {
-		referenceResistance.Type = "Number"
-	}
-	if referenceResistance.Name == "" {
-		referenceResistance.Name = "reference_resistance"
-	}
-	m.LineParams.ReferenceResistance = *referenceResistance
-
-	resistance := convertAssetMetadata(d.Get("resistance").(*schema.Set).List())
-	if resistance.Type == "" {
-		resistance.Type = "Number"
-	}
-	if resistance.Name == "" {
-		resistance.Name = "resistance"
-	}
-	m.LineParams.Resistance = *resistance
-
-	safetyMarginForPower := convertAssetMetadata(d.Get("safety_margin_for_power").(*schema.Set).List())
-	if safetyMarginForPower.Type == "" {
-		safetyMarginForPower.Type = "Number"
-	}
-	if safetyMarginForPower.Name == "" {
-		safetyMarginForPower.Name = "safety_margin_for_power"
-	}
-	m.LineParams.SafetyMarginForPower = *safetyMarginForPower
-
-	susceptance := convertAssetMetadata(d.Get("susceptance").(*schema.Set).List())
-	if susceptance.Type == "" {
-		susceptance.Type = "Number"
-	}
-	if susceptance.Name == "" {
-		susceptance.Name = "susceptance"
-	}
-	m.LineParams.Susceptance = *susceptance
-
-	temperatureCoeffResistance := convertAssetMetadata(d.Get("temperature_coeff_resistance").(*schema.Set).List())
-	if temperatureCoeffResistance.Type == "" {
-		temperatureCoeffResistance.Type = "Number"
-	}
-	if temperatureCoeffResistance.Name == "" {
-		temperatureCoeffResistance.Name = "temperature_coeff_resistance"
-	}
-	m.LineParams.TemperatureCoeffResistance = *temperatureCoeffResistance
 
 	return nil
 }

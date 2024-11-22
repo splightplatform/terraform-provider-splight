@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -33,11 +34,28 @@ func (m *Segment) ResourcePath() string {
 	return "v2/engine/asset/segments/"
 }
 
+func validateJSONString(s string) error {
+	if s == "" {
+		return nil
+	}
+	var js json.RawMessage
+	if err := json.Unmarshal([]byte(s), &js); err != nil {
+		return fmt.Errorf("invalid JSON: %v", err)
+	}
+	return nil
+}
+
 func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry field contains %w", err)
+	}
 
 	m.SegmentParams = SegmentParams{
 		AssetParams: AssetParams{
@@ -84,7 +102,10 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	}
 	m.SegmentParams.WindDirection = *windDirection
 
-	altitude := convertAssetMetadata(d.Get("altitude").(*schema.Set).List())
+	altitude, err := convertAssetMetadata(d.Get("altitude").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid altitude metadata: %w", err)
+	}
 	if altitude.Type == "" {
 		altitude.Type = "Number"
 	}
@@ -93,7 +114,10 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	}
 	m.SegmentParams.Altitude = *altitude
 
-	azimuth := convertAssetMetadata(d.Get("azimuth").(*schema.Set).List())
+	azimuth, err := convertAssetMetadata(d.Get("azimuth").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid azimuth metadata: %w", err)
+	}
 	if azimuth.Type == "" {
 		azimuth.Type = "Number"
 	}
@@ -102,7 +126,10 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	}
 	m.SegmentParams.Azimuth = *azimuth
 
-	cumulativeDistance := convertAssetMetadata(d.Get("cumulative_distance").(*schema.Set).List())
+	cumulativeDistance, err := convertAssetMetadata(d.Get("cumulative_distance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid cumulative distance metadata: %w", err)
+	}
 	if cumulativeDistance.Type == "" {
 		cumulativeDistance.Type = "Number"
 	}
