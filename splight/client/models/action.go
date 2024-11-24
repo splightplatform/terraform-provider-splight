@@ -40,7 +40,11 @@ func (m *Action) ResourcePath() string {
 func (m *Action) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
-	setpoints := convertSetpoints(d.Get("setpoints").(*schema.Set).List())
+	setpoints, err := convertSetpoints(d.Get("setpoints").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("error converting setpoints: %w", err)
+	}
+
 	asset := convertSingleQueryFilter(d.Get("asset").(*schema.Set).List())
 
 	m.ActionParams = ActionParams{
@@ -52,7 +56,7 @@ func (m *Action) FromSchema(d *schema.ResourceData) error {
 	return nil
 }
 
-func convertSetpoints(setpointsInterface []interface{}) []Setpoint {
+func convertSetpoints(setpointsInterface []interface{}) ([]Setpoint, error) {
 	setpoints := make([]Setpoint, len(setpointsInterface))
 
 	for i, item := range setpointsInterface {
@@ -62,7 +66,7 @@ func convertSetpoints(setpointsInterface []interface{}) []Setpoint {
 		// Validate value JSON
 		valueStr := setpoint["value"].(string)
 		if err := validateJSONString(valueStr); err != nil {
-			return nil, fmt.Errorf("setpoint value JSON must be json encoded: %w", err)
+			return nil, fmt.Errorf("setpoint value JSON must be json encoded.")
 		}
 
 		attribute := convertSingleQueryFilter(setpoint["attribute"].(*schema.Set).List())
@@ -75,7 +79,7 @@ func convertSetpoints(setpointsInterface []interface{}) []Setpoint {
 
 	}
 
-	return setpoints
+	return setpoints, nil
 }
 
 func (m *Action) ToSchema(d *schema.ResourceData) error {
