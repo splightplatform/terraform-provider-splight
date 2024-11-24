@@ -42,7 +42,7 @@ func (m *Action) FromSchema(d *schema.ResourceData) error {
 
 	setpoints, err := convertSetpoints(d.Get("setpoints").(*schema.Set).List())
 	if err != nil {
-		return fmt.Errorf("error converting setpoints: %w", err)
+		return fmt.Errorf("error converting action: %w", err)
 	}
 
 	asset := convertSingleQueryFilter(d.Get("asset").(*schema.Set).List())
