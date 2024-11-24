@@ -104,7 +104,6 @@ func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	if err != nil {
 		return fmt.Errorf("invalid CO2 coefficient metadata: %w", err)
 	}
-
 	if CO2_coefficient.Type == "" {
 		CO2_coefficient.Type = "Number"
 	}

@@ -55,7 +55,6 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 	if err != nil {
 		return fmt.Errorf("invalid nominal voltage metadata: %w", err)
 	}
-
 	if nominalVoltage.Type == "" {
 		nominalVoltage.Type = "Number"
 	}

@@ -75,7 +75,7 @@ func (m *AssetMetadata) FromSchema(d *schema.ResourceData) error {
 	// Validate geometry JSON
 	valueStr := d.Get("geometry").(string)
 	if err := validateJSONString(valueStr); err != nil {
-		return fmt.Errorf("metadata value must be a jsonencoded GeoJSON")
+		return fmt.Errorf("metadata value JSON must be json encoded")
 	}
 
 	m.AssetMetadataParams = AssetMetadataParams{
