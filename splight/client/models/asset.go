@@ -48,7 +48,7 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	m.AssetParams = AssetParams{
 		Name:           d.Get("name").(string),
 		Description:    d.Get("description").(string),
-		Geometry:       json.RawMessage(d.Get("geometry").(string)),
+		Geometry:       json.RawMessage(geometryStr),
 		CustomTimezone: d.Get("timezone").(string),
 		Tags:           tags,
 		Kind:           kind,

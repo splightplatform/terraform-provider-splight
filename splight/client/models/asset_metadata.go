@@ -54,7 +54,7 @@ func convertAssetMetadata(data []any) (*AssetMetadata, error) {
 	// Validate value JSON
 	valueStr := metadataMap["value"].(string)
 	if err := validateJSONString(valueStr); err != nil {
-		return nil, fmt.Errorf("metadata value JSON must be json encoded: %w", err)
+		return nil, fmt.Errorf("metadata value JSON must be json encoded")
 	}
 
 	return &AssetMetadata{

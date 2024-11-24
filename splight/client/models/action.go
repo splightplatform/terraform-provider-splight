@@ -66,14 +66,14 @@ func convertSetpoints(setpointsInterface []interface{}) ([]Setpoint, error) {
 		// Validate value JSON
 		valueStr := setpoint["value"].(string)
 		if err := validateJSONString(valueStr); err != nil {
-			return nil, fmt.Errorf("setpoint value JSON must be json encoded.")
+			return nil, fmt.Errorf("setpoint value JSON must be json encoded")
 		}
 
 		attribute := convertSingleQueryFilter(setpoint["attribute"].(*schema.Set).List())
 		setpoints[i] = Setpoint{
 			Id:        setpoint["id"].(string),
 			Name:      "setpoint",
-			Value:     json.RawMessage(setpoint["value"].(string)),
+			Value:     json.RawMessage(valueStr),
 			Attribute: *attribute,
 		}
 
