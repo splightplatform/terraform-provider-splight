@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -39,20 +40,36 @@ func (m *Inverter) ResourcePath() string {
 
 func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
-
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+	}
 
 	m.InverterParams = InverterParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			Geometry:       json.RawMessage(geometryStr),
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,
 		},
 	}
+
+	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
+	if activePower == nil {
+		activePower = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "active_power",
+			},
+		}
+	}
+	m.InverterParams.ActivePower = *activePower
 
 	accumulatedEnergy := convertAssetAttribute(d.Get("accumulated_energy").(*schema.Set).List())
 	if accumulatedEnergy == nil {
@@ -87,17 +104,6 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	}
 	m.InverterParams.RawDailyEnergy = *rawDailyEnergy
 
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
-		}
-	}
-	m.InverterParams.ActivePower = *activePower
-
 	temperature := convertAssetAttribute(d.Get("temperature").(*schema.Set).List())
 	if temperature == nil {
 		temperature = &AssetAttribute{
@@ -109,7 +115,10 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	}
 	m.InverterParams.Temperature = *temperature
 
-	make := convertAssetMetadata(d.Get("make").(*schema.Set).List())
+	make, err := convertAssetMetadata(d.Get("make").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid make metadata: %w", err)
+	}
 	if make.Type == "" {
 		make.Type = "String"
 	}
@@ -118,7 +127,10 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	}
 	m.InverterParams.Make = *make
 
-	model := convertAssetMetadata(d.Get("model").(*schema.Set).List())
+	model, err := convertAssetMetadata(d.Get("model").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid model metadata: %w", err)
+	}
 	if model.Type == "" {
 		model.Type = "String"
 	}
@@ -127,32 +139,41 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	}
 	m.InverterParams.Model = *model
 
-	serial_number := convertAssetMetadata(d.Get("serial_number").(*schema.Set).List())
-	if serial_number.Type == "" {
-		serial_number.Type = "Number"
+	serialNumber, err := convertAssetMetadata(d.Get("serial_number").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid serial number metadata: %w", err)
 	}
-	if serial_number.Name == "" {
-		serial_number.Name = "SerialNumber"
+	if serialNumber.Type == "" {
+		serialNumber.Type = "Number"
 	}
-	m.InverterParams.SerialNumber = *serial_number
+	if serialNumber.Name == "" {
+		serialNumber.Name = "SerialNumber"
+	}
+	m.InverterParams.SerialNumber = *serialNumber
 
-	max_active_power := convertAssetMetadata(d.Get("max_active_power").(*schema.Set).List())
-	if max_active_power.Type == "" {
-		max_active_power.Type = "Number"
+	maxActivePower, err := convertAssetMetadata(d.Get("max_active_power").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid max active power metadata: %w", err)
 	}
-	if max_active_power.Name == "" {
-		max_active_power.Name = "MaxActivePower"
+	if maxActivePower.Type == "" {
+		maxActivePower.Type = "Number"
 	}
-	m.InverterParams.MaxActivePower = *max_active_power
+	if maxActivePower.Name == "" {
+		maxActivePower.Name = "MaxActivePower"
+	}
+	m.InverterParams.MaxActivePower = *maxActivePower
 
-	energy_measurement_type := convertAssetMetadata(d.Get("energy_measurement_type").(*schema.Set).List())
-	if energy_measurement_type.Type == "" {
-		energy_measurement_type.Type = "String"
+	energyMeasurementType, err := convertAssetMetadata(d.Get("energy_measurement_type").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid energy measurement type metadata: %w", err)
 	}
-	if energy_measurement_type.Name == "" {
-		energy_measurement_type.Name = "EnergyMeasurementType"
+	if energyMeasurementType.Type == "" {
+		energyMeasurementType.Type = "String"
 	}
-	m.InverterParams.EnergyMeasurementType = *energy_measurement_type
+	if energyMeasurementType.Name == "" {
+		energyMeasurementType.Name = "EnergyMeasurementType"
+	}
+	m.InverterParams.EnergyMeasurementType = *energyMeasurementType
 
 	return nil
 }

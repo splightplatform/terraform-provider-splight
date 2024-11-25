@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -34,15 +35,20 @@ func (m *Generator) ResourcePath() string {
 
 func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
-
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
+
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry field contains %w", err)
+	}
 
 	m.GeneratorParams = GeneratorParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			Geometry:       json.RawMessage(geometryStr),
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,
@@ -94,7 +100,10 @@ func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	}
 	m.GeneratorParams.DailyEmissionAvoided = *dailyEmissionAvoided
 
-	CO2_coefficient := convertAssetMetadata(d.Get("co2_coefficient").(*schema.Set).List())
+	CO2_coefficient, err := convertAssetMetadata(d.Get("co2_coefficient").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid CO2 coefficient metadata: %w", err)
+	}
 	if CO2_coefficient.Type == "" {
 		CO2_coefficient.Type = "Number"
 	}

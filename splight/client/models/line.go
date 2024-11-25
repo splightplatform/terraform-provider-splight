@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -65,11 +66,17 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+	}
+
 	m.LineParams = LineParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(d.Get("geometry").(string)),
+			Geometry:       json.RawMessage(geometryStr),
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,
@@ -220,7 +227,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.VoltageTR = *voltageTr
 
-	diameter := convertAssetMetadata(d.Get("diameter").(*schema.Set).List())
+	diameter, err := convertAssetMetadata(d.Get("diameter").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid diameter metadata: %w", err)
+	}
 	if diameter.Type == "" {
 		diameter.Type = "Number"
 	}
@@ -229,7 +239,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Diameter = *diameter
 
-	absorptivity := convertAssetMetadata(d.Get("absorptivity").(*schema.Set).List())
+	absorptivity, err := convertAssetMetadata(d.Get("absorptivity").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid absorptivity metadata: %w", err)
+	}
 	if absorptivity.Type == "" {
 		absorptivity.Type = "Number"
 	}
@@ -238,7 +251,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Absorptivity = *absorptivity
 
-	atmosphere := convertAssetMetadata(d.Get("atmosphere").(*schema.Set).List())
+	atmosphere, err := convertAssetMetadata(d.Get("atmosphere").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid atmosphere metadata: %w", err)
+	}
 	if atmosphere.Type == "" {
 		atmosphere.Type = "Number"
 	}
@@ -247,7 +263,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Atmosphere = *atmosphere
 
-	capacitance := convertAssetMetadata(d.Get("capacitance").(*schema.Set).List())
+	capacitance, err := convertAssetMetadata(d.Get("capacitance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid capacitance metadata: %w", err)
+	}
 	if capacitance.Type == "" {
 		capacitance.Type = "Number"
 	}
@@ -256,7 +275,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Capacitance = *capacitance
 
-	conductance := convertAssetMetadata(d.Get("conductance").(*schema.Set).List())
+	conductance, err := convertAssetMetadata(d.Get("conductance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid conductance metadata: %w", err)
+	}
 	if conductance.Type == "" {
 		conductance.Type = "Number"
 	}
@@ -265,7 +287,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Conductance = *conductance
 
-	emissivity := convertAssetMetadata(d.Get("emissivity").(*schema.Set).List())
+	emissivity, err := convertAssetMetadata(d.Get("emissivity").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid emissivity metadata: %w", err)
+	}
 	if emissivity.Type == "" {
 		emissivity.Type = "Number"
 	}
@@ -274,7 +299,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Emissivity = *emissivity
 
-	length := convertAssetMetadata(d.Get("length").(*schema.Set).List())
+	length, err := convertAssetMetadata(d.Get("length").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid length metadata: %w", err)
+	}
 	if length.Type == "" {
 		length.Type = "Number"
 	}
@@ -283,7 +311,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Length = *length
 
-	maximumAllowedCurrent := convertAssetMetadata(d.Get("maximum_allowed_current").(*schema.Set).List())
+	maximumAllowedCurrent, err := convertAssetMetadata(d.Get("maximum_allowed_current").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid maximum_allowed_current metadata: %w", err)
+	}
 	if maximumAllowedCurrent.Type == "" {
 		maximumAllowedCurrent.Type = "Number"
 	}
@@ -292,7 +323,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.MaximumAllowedCurrent = *maximumAllowedCurrent
 
-	maximumAllowedPower := convertAssetMetadata(d.Get("maximum_allowed_power").(*schema.Set).List())
+	maximumAllowedPower, err := convertAssetMetadata(d.Get("maximum_allowed_power").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid maximum_allowed_power metadata: %w", err)
+	}
 	if maximumAllowedPower.Type == "" {
 		maximumAllowedPower.Type = "Number"
 	}
@@ -301,7 +335,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.MaximumAllowedPower = *maximumAllowedPower
 
-	maximumAllowedTemperature := convertAssetMetadata(d.Get("maximum_allowed_temperature").(*schema.Set).List())
+	maximumAllowedTemperature, err := convertAssetMetadata(d.Get("maximum_allowed_temperature").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid maximum_allowed_temperature metadata: %w", err)
+	}
 	if maximumAllowedTemperature.Type == "" {
 		maximumAllowedTemperature.Type = "Number"
 	}
@@ -310,7 +347,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.MaximumAllowedTemperature = *maximumAllowedTemperature
 
-	maximumAllowedTemperatureLTE := convertAssetMetadata(d.Get("maximum_allowed_temperature_lte").(*schema.Set).List())
+	maximumAllowedTemperatureLTE, err := convertAssetMetadata(d.Get("maximum_allowed_temperature_lte").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid maximum_allowed_temperature_lte metadata: %w", err)
+	}
 	if maximumAllowedTemperatureLTE.Type == "" {
 		maximumAllowedTemperatureLTE.Type = "Number"
 	}
@@ -319,7 +359,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.MaximumAllowedTemperatureLTE = *maximumAllowedTemperatureLTE
 
-	maximumAllowedTemperatureSTE := convertAssetMetadata(d.Get("maximum_allowed_temperature_ste").(*schema.Set).List())
+	maximumAllowedTemperatureSTE, err := convertAssetMetadata(d.Get("maximum_allowed_temperature_ste").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid maximum_allowed_temperature_ste metadata: %w", err)
+	}
 	if maximumAllowedTemperatureSTE.Type == "" {
 		maximumAllowedTemperatureSTE.Type = "Number"
 	}
@@ -328,7 +371,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.MaximumAllowedTemperatureSTE = *maximumAllowedTemperatureSTE
 
-	numberOfConductors := convertAssetMetadata(d.Get("number_of_conductors").(*schema.Set).List())
+	numberOfConductors, err := convertAssetMetadata(d.Get("number_of_conductors").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid number_of_conductors metadata: %w", err)
+	}
 	if numberOfConductors.Type == "" {
 		numberOfConductors.Type = "Number"
 	}
@@ -337,7 +383,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.NumberOfConductors = *numberOfConductors
 
-	reactance := convertAssetMetadata(d.Get("reactance").(*schema.Set).List())
+	reactance, err := convertAssetMetadata(d.Get("reactance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid reactance metadata: %w", err)
+	}
 	if reactance.Type == "" {
 		reactance.Type = "Number"
 	}
@@ -346,7 +395,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Reactance = *reactance
 
-	referenceResistance := convertAssetMetadata(d.Get("reference_resistance").(*schema.Set).List())
+	referenceResistance, err := convertAssetMetadata(d.Get("reference_resistance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid reference_resistance metadata: %w", err)
+	}
 	if referenceResistance.Type == "" {
 		referenceResistance.Type = "Number"
 	}
@@ -355,7 +407,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.ReferenceResistance = *referenceResistance
 
-	resistance := convertAssetMetadata(d.Get("resistance").(*schema.Set).List())
+	resistance, err := convertAssetMetadata(d.Get("resistance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid resistance metadata: %w", err)
+	}
 	if resistance.Type == "" {
 		resistance.Type = "Number"
 	}
@@ -364,7 +419,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Resistance = *resistance
 
-	safetyMarginForPower := convertAssetMetadata(d.Get("safety_margin_for_power").(*schema.Set).List())
+	safetyMarginForPower, err := convertAssetMetadata(d.Get("safety_margin_for_power").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid safety_margin_for_power metadata: %w", err)
+	}
 	if safetyMarginForPower.Type == "" {
 		safetyMarginForPower.Type = "Number"
 	}
@@ -373,7 +431,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.SafetyMarginForPower = *safetyMarginForPower
 
-	susceptance := convertAssetMetadata(d.Get("susceptance").(*schema.Set).List())
+	susceptance, err := convertAssetMetadata(d.Get("susceptance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid susceptance metadata: %w", err)
+	}
 	if susceptance.Type == "" {
 		susceptance.Type = "Number"
 	}
@@ -382,7 +443,10 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.Susceptance = *susceptance
 
-	temperatureCoeffResistance := convertAssetMetadata(d.Get("temperature_coeff_resistance").(*schema.Set).List())
+	temperatureCoeffResistance, err := convertAssetMetadata(d.Get("temperature_coeff_resistance").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid temperature_coeff_resistance metadata: %w", err)
+	}
 	if temperatureCoeffResistance.Type == "" {
 		temperatureCoeffResistance.Type = "Number"
 	}

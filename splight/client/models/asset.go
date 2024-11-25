@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -38,10 +39,16 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
+	// Validate geometry JSON
+	geometryStr := d.Get("geometry").(string)
+	if err := validateJSONString(geometryStr); err != nil {
+		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+	}
+
 	m.AssetParams = AssetParams{
 		Name:           d.Get("name").(string),
 		Description:    d.Get("description").(string),
-		Geometry:       json.RawMessage(d.Get("geometry").(string)),
+		Geometry:       json.RawMessage(geometryStr),
 		CustomTimezone: d.Get("timezone").(string),
 		Tags:           tags,
 		Kind:           kind,

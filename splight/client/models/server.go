@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -119,11 +120,17 @@ func (m *Server) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
-	config := convertInputParameters(d.Get("config").(*schema.Set).List())
+
+	config, err := convertInputParameters(d.Get("config").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("error converting input parameters: %v", err)
+	}
+
 	ports := convertPorts(d.Get("ports").(*schema.Set).List())
 	envVars := convertEnvVars(d.Get("env_vars").(*schema.Set).List())
 
 	logLevel := d.Get("log_level").(string)
+
 	m.ServerParams = ServerParams{
 		Name:                d.Get("name").(string),
 		Description:         d.Get("description").(string),
