@@ -1,6 +1,9 @@
 package models
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type InputParameter struct {
 	Name        string           `json:"name"`
@@ -31,8 +34,7 @@ func (m InputParameter) ToMap() map[string]interface{} {
 	}
 }
 
-func convertInputParameters(data []any) []InputParameter {
-	// TODO: validate jsonencoded value
+func convertInputParameters(data []any) ([]InputParameter, error) {
 	inputs := make([]InputParameter, len(data))
 	for i, input := range data {
 		inputMap := input.(map[string]interface{})
@@ -45,10 +47,13 @@ func convertInputParameters(data []any) []InputParameter {
 			Type:        inputMap["type"].(string),
 		}
 		if value, exists := inputMap["value"]; exists && value != "" {
-			rawValue := json.RawMessage(value.(string))
+			valueStr := value.(string)
+			if err := validateJSONString(valueStr); err != nil {
+				return nil, fmt.Errorf("Value for input parameter %q must be json encoded", inputs[i].Name)
+			}
+			rawValue := json.RawMessage(valueStr)
 			inputs[i].Value = &rawValue
 		}
 	}
-
-	return inputs
+	return inputs, nil
 }
