@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -103,7 +104,10 @@ func (m *Connector) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
-	input := convertInputParameters(d.Get("input").(*schema.Set).List())
+	input, err := convertInputParameters(d.Get("input").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("error converting input parameters: %v", err)
+	}
 
 	// Convert the log level to a numeric string
 	logLevel := d.Get("log_level").(string)

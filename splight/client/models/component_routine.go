@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -34,7 +36,11 @@ func (m *ComponentRoutine) ResourcePath() string {
 func (m *ComponentRoutine) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
-	config := convertInputParameters(d.Get("config").(*schema.Set).List())
+	config, err := convertInputParameters(d.Get("config").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("error converting input parameters: %v", err)
+	}
+
 	outputs := convertInputDataAddresses(d.Get("output").(*schema.Set).List())
 	inputs := convertInputDataAddresses(d.Get("input").(*schema.Set).List())
 
