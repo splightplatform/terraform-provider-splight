@@ -38,7 +38,7 @@ func (m *Grid) FromSchema(d *schema.ResourceData) error {
 	// Validate geometry JSON
 	geometryStr := d.Get("geometry").(string)
 	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a jsonencoded GeoJSON")
+		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
 	}
 
 	m.GridParams = GridParams{

@@ -51,7 +51,7 @@ func convertInputParameters(data []any) ([]InputParameter, error) {
 			// Validate geometry JSON
 			valueStr := value.(string)
 			if err := validateJSONString(valueStr); err != nil {
-				return nil, fmt.Errorf("Value for input parameter %q must be json encoded", inputs[i].Name)
+				return nil, fmt.Errorf("Value for input parameter %q must be JSON encoded", inputs[i].Name)
 			}
 
 			rawValue := json.RawMessage(valueStr)
