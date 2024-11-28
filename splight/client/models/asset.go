@@ -11,7 +11,7 @@ type AssetParams struct {
 	Name           string          `json:"name"`
 	Description    string          `json:"description"`
 	Geometry       json.RawMessage `json:"geometry"`
-	CustomTimezone string          `json:"timezone"`
+	CustomTimezone string          `json:"timezone,omitempty"`
 	Tags           []QueryFilter   `json:"tags"`
 	Kind           *QueryFilter    `json:"kind"`
 }
