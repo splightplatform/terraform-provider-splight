@@ -80,6 +80,9 @@ resource "splight_slack_line" "my_line" {
 
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
+- `switch_status_start` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_start))
+- `switch_status_end` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_end))
+
 
 <a id="nestedblock--tags"></a>
 ### Nested Schema for `tags`
@@ -97,6 +100,30 @@ Read-Only:
 
 - `id` (String)
 - `name` (String)
+
+
+<a id="nestedatt--switch_status_start"></a>
+### Nested Schema for `switch_status_start`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status_end"></a>
+### Nested Schema for `switch_status_end`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
 
 ## Import
 

@@ -9,12 +9,15 @@ import (
 
 type SegmentParams struct {
 	AssetParams
-	Temperature        AssetAttribute `json:"temperature"`
-	WindSpeed          AssetAttribute `json:"wind_speed"`
-	WindDirection      AssetAttribute `json:"wind_direction"`
-	Altitude           AssetMetadata  `json:"altitude"`
-	Azimuth            AssetMetadata  `json:"azimuth"`
-	CumulativeDistance AssetMetadata  `json:"cumulative_distance"`
+	Temperature        		AssetAttribute `json:"temperature"`
+	WindSpeed          		AssetAttribute `json:"wind_speed"`
+	WindDirection      		AssetAttribute `json:"wind_direction"`
+	Altitude           		AssetMetadata  `json:"altitude"`
+	Azimuth            		AssetMetadata  `json:"azimuth"`
+	CumulativeDistance 		AssetMetadata  `json:"cumulative_distance"`
+	ReferenceSag 	 		AssetMetadata  `json:"reference_sag"`
+	ReferenceTemperature 	AssetMetadata  `json:"reference_temperature"`
+	SpanLength 		 	 	AssetMetadata  `json:"span_length"`
 }
 
 type Segment struct {
@@ -137,6 +140,42 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 		cumulativeDistance.Name = "cumulative_distance"
 	}
 	m.SegmentParams.CumulativeDistance = *cumulativeDistance
+	
+	referenceSag, err := convertAssetMetadata(d.Get("reference_sag").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid reference sag metadata: %w", err)
+	}
+	if referenceSag.Type == "" {
+		referenceSag.Type = "Number"
+	}
+	if referenceSag.Name == "" {
+		referenceSag.Name = "reference_sag"
+	}
+	m.SegmentParams.ReferenceSag = *referenceSag
+
+	referenceTemperature, err := convertAssetMetadata(d.Get("reference_temperature").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid reference temperature metadata: %w", err)
+	}
+	if referenceTemperature.Type == "" {
+		referenceTemperature.Type = "Number"
+	}
+	if referenceTemperature.Name == "" {
+		referenceTemperature.Name = "reference_temperature"
+	}
+	m.SegmentParams.ReferenceTemperature = *referenceTemperature
+
+	spanLength, err := convertAssetMetadata(d.Get("span_length").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid span length metadata: %w", err)
+	}
+	if spanLength.Type == "" {
+		spanLength.Type = "Number"
+	}
+	if spanLength.Name == "" {
+		spanLength.Name = "span_length"
+	}
+	m.SegmentParams.SpanLength = *spanLength
 
 	return nil
 }
@@ -171,6 +210,9 @@ func (m *Segment) ToSchema(d *schema.ResourceData) error {
 	d.Set("altitude", []map[string]any{m.Altitude.ToMap()})
 	d.Set("azimuth", []map[string]any{m.Azimuth.ToMap()})
 	d.Set("cumulative_distance", []map[string]any{m.CumulativeDistance.ToMap()})
+	d.Set("reference_sag", []map[string]any{m.ReferenceSag.ToMap()})
+	d.Set("reference_temperature", []map[string]any{m.ReferenceTemperature.ToMap()})
+	d.Set("span_length", []map[string]any{m.SpanLength.ToMap()})
 
 	return nil
 }

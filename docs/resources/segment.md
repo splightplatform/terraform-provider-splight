@@ -71,6 +71,18 @@ resource "splight_segment" "my_segment" {
   cumulative_distance {
     value = jsonencode(1.1)
   }
+
+  reference_sag {
+    value = jsonencode(1.1)
+  }
+
+  reference_temperature {
+    value = jsonencode(1.1)
+  }
+
+  span_length {
+    value = jsonencode(1.1)
+  }
 }
 ```
 
@@ -79,10 +91,13 @@ resource "splight_segment" "my_segment" {
 
 ### Required
 
+- `name` (String) name of the resource
 - `altitude` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
 - `azimuth` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
 - `cumulative_distance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
-- `name` (String) name of the resource
+- reference_sag (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
+- reference_temperature (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
+- span_length (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))
 
 ### Optional
 
@@ -133,6 +148,54 @@ Read-Only:
 
 <a id="nestedblock--cumulative_distance"></a>
 ### Nested Schema for `cumulative_distance`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--reference_sag"></a>
+### Nested Schema for `reference_sag`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--reference_temperature"></a>
+### Nested Schema for `reference_temperature`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--span_length"></a>
+### Nested Schema for `span_length`
 
 Required:
 

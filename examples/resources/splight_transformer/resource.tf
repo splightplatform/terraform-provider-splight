@@ -14,9 +14,9 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
-resource "splight_bus" "my_bus" {
-  name        = "My Bus"
-  description = "My Bus Description"
+resource "splight_transformer" "my_transformer" {
+  name        = "My Transformer"
+  description = "My Transformer Description"
   timezone    = "America/Los_Angeles"
 
   # Use an existing tag in the platform
@@ -45,7 +45,43 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
-  nominal_voltage_kv {
-    value = jsonencode(2.2)
+  tap_pos {
+    value = jsonencode(0)
+  }
+
+  xn_ohm {
+    value = jsonencode(0)
+  }
+
+  standard_type {
+    value = jsonencode("")
+  }
+
+  capacitance {
+    value = jsonencode(10.7)
+  }
+
+  conductance {
+    value = jsonencode(0.001)
+  }
+
+  maximum_allowed_current {
+    value = jsonencode(1.18)
+  }
+
+  maximum_allowed_power {
+    value = jsonencode(450)
+  }
+
+  reactance {
+    value = jsonencode(21.8)
+  }
+
+  resistance {
+    value = jsonencode(0.21)
+  }
+
+  safety_margin_for_power {
+    value = jsonencode(5)
   }
 }

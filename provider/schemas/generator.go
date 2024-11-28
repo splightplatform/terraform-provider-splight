@@ -59,6 +59,22 @@ func SchemaGenerator() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
+		"monthly_energy": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"switch_status": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
 		"co2_coefficient": {
 			Type:        schema.TypeSet,
 			Required:    true,

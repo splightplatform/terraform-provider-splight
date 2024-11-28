@@ -78,6 +78,33 @@ func SchemaSegment() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(true),
 			},
 		},
+		"reference_sag": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"reference_temperature": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"span_length": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
 		"tags": {
 			Type:        schema.TypeSet,
 			Optional:    true,

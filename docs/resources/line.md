@@ -163,6 +163,9 @@ resource "splight_line" "my_line" {
 - `safety_margin_for_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
 - `susceptance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--susceptance))
 - `temperature_coeff_resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--temperature_coeff_resistance))
+- `specific_heat` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--specific_heat))
+- `conductor_mass` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductor_mass))
+- `thermal_elongation_coef` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--thermal_elongation_coef))
 
 ### Optional
 
@@ -188,6 +191,9 @@ resource "splight_line" "my_line" {
 - `voltage_rs` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_rs))
 - `voltage_st` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_st))
 - `voltage_tr` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_tr))
+- `contingency` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--contingency))
+- `switch_status_start` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_start))
+- `switch_status_end` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_end))
 
 <a id="nestedblock--absorptivity"></a>
 ### Nested Schema for `absorptivity`
@@ -493,6 +499,53 @@ Read-Only:
 - `unit` (String) unit of measure
 
 
+<a id="nestedblock--specific_heat"></a>
+### Nested Schema for `specific_heat`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--conductor_mass"></a>
+### Nested Schema for `conductor_mass`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit
+
+
+<a id="nestedblock--thermal_elongation_coef"></a>
+### Nested Schema for `thermal_elongation_coef`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit
+
 <a id="nestedblock--tags"></a>
 ### Nested Schema for `tags`
 
@@ -665,6 +718,43 @@ Read-Only:
 - `name` (String)
 - `type` (String)
 - `unit` (String)
+
+
+<a id="nestedatt--contingency"></a>
+### Nested Schema for `contingency`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status_start"></a>
+### Nested Schema for `switch_status_start`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status_end"></a>
+### Nested Schema for `switch_status_end`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
 
 ## Import
 

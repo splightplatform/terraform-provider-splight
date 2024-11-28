@@ -67,6 +67,14 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
+		"switch_status": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
 		"make": {
 			Type:        schema.TypeSet,
 			Required:    true,
