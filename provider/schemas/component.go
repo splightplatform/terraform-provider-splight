@@ -10,7 +10,7 @@ func SchemaComponent() map[string]*schema.Schema {
 		"name": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "the name of the algorithm to be created",
+			Description: "the name of the component to be created",
 		},
 		"description": {
 			Type:        schema.TypeString,
@@ -39,13 +39,13 @@ func SchemaComponent() map[string]*schema.Schema {
 		"version": {
 			Type:        schema.TypeString,
 			Required:    true,
-			Description: "[NAME-VERSION] the version of the hub algorithm",
+			Description: "[NAME-VERSION] the version of the hub component",
 		},
 		"input": schemaInputParameter(),
 		"node": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "id of the compute node where the algorithm runs",
+			Description: "id of the compute node where the component runs",
 		},
 		"machine_instance_size": {
 			Type:        schema.TypeString,
@@ -62,7 +62,7 @@ func SchemaComponent() map[string]*schema.Schema {
 		"log_level": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "log level of the algorithm",
+			Description: "log level of the component",
 			ValidateFunc: validation.StringInSlice([]string{
 				"critical",
 				"error",
@@ -76,7 +76,7 @@ func SchemaComponent() map[string]*schema.Schema {
 		"restart_policy": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "restart policy of the algorithm",
+			Description: "restart policy of the component",
 			ValidateFunc: validation.StringInSlice([]string{
 				"Always",
 				"Never",

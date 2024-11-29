@@ -141,17 +141,17 @@ resource "splight_component" "my_component" {
 
 ### Required
 
-- `name` (String) the name of the algorithm to be created
-- `version` (String) [NAME-VERSION] the version of the hub algorithm
+- `name` (String) the name of the component to be created
+- `version` (String) [NAME-VERSION] the version of the hub component
 
 ### Optional
 
 - `description` (String) optional description to add details of the resource
 - `input` (Block Set) static config parameters of the routine (see [below for nested schema](#nestedblock--input))
-- `log_level` (String) log level of the algorithm
+- `log_level` (String) log level of the component
 - `machine_instance_size` (String) instance size
-- `node` (String) id of the compute node where the algorithm runs
-- `restart_policy` (String) restart policy of the algorithm
+- `node` (String) id of the compute node where the component runs
+- `restart_policy` (String) restart policy of the component
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 
 ### Read-Only
