@@ -1,1 +1,1 @@
-terraform import [options] splight_connector.<name> <connector_id>
+terraform import [options] splight_component.<name> <component_id>
