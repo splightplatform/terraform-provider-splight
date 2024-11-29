@@ -14,6 +14,7 @@ type InverterParams struct {
 	DailyEnergy           AssetAttribute `json:"daily_energy"`
 	RawDailyEnergy        AssetAttribute `json:"raw_daily_energy"`
 	Temperature           AssetAttribute `json:"temperature"`
+	SwitchStatus          AssetAttribute `json:"switch_status"`
 	Make                  AssetMetadata  `json:"make"`
 	Model                 AssetMetadata  `json:"model"`
 	SerialNumber          AssetMetadata  `json:"serial_number"`
@@ -115,6 +116,17 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	}
 	m.InverterParams.Temperature = *temperature
 
+	switchStatus := convertAssetAttribute(d.Get("switch_status").(*schema.Set).List())
+	if switchStatus == nil {
+		switchStatus = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "switch_status",
+			},
+		}
+	}
+	m.InverterParams.SwitchStatus = *switchStatus
+
 	make, err := convertAssetMetadata(d.Get("make").(*schema.Set).List())
 	if err != nil {
 		return fmt.Errorf("invalid make metadata: %w", err)
@@ -207,6 +219,7 @@ func (m *Inverter) ToSchema(d *schema.ResourceData) error {
 	d.Set("raw_daily_energy", []map[string]any{m.RawDailyEnergy.ToMap()})
 	d.Set("active_power", []map[string]any{m.ActivePower.ToMap()})
 	d.Set("temperature", []map[string]any{m.Temperature.ToMap()})
+	d.Set("switch_status", []map[string]any{m.SwitchStatus.ToMap()})
 	d.Set("make", []map[string]any{m.Make.ToMap()})
 	d.Set("model", []map[string]any{m.Model.ToMap()})
 	d.Set("serial_number", []map[string]any{m.SerialNumber.ToMap()})

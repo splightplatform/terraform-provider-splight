@@ -13,6 +13,7 @@ type GeneratorParams struct {
 	ReactivePower        AssetAttribute `json:"reactive_power"`
 	DailyEnergy          AssetAttribute `json:"daily_energy"`
 	DailyEmissionAvoided AssetAttribute `json:"daily_emission_avoided"`
+	MonthlyEnergy        AssetAttribute `json:"monthly_energy"`
 	CO2Coefficient       AssetMetadata  `json:"CO2_coefficient"`
 }
 
@@ -100,6 +101,17 @@ func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	}
 	m.GeneratorParams.DailyEmissionAvoided = *dailyEmissionAvoided
 
+	monthlyEnergy := convertAssetAttribute(d.Get("monthly_energy").(*schema.Set).List())
+	if monthlyEnergy == nil {
+		monthlyEnergy = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "monthly_energy",
+			},
+		}
+	}
+	m.GeneratorParams.MonthlyEnergy = *monthlyEnergy
+
 	CO2_coefficient, err := convertAssetMetadata(d.Get("co2_coefficient").(*schema.Set).List())
 	if err != nil {
 		return fmt.Errorf("invalid CO2 coefficient metadata: %w", err)
@@ -143,6 +155,7 @@ func (m *Generator) ToSchema(d *schema.ResourceData) error {
 	d.Set("reactive_power", []map[string]any{m.ReactivePower.ToMap()})
 	d.Set("daily_energy", []map[string]any{m.DailyEnergy.ToMap()})
 	d.Set("daily_emission_avoided", []map[string]any{m.DailyEmissionAvoided.ToMap()})
+	d.Set("monthly_energy", []map[string]any{m.MonthlyEnergy.ToMap()})
 	d.Set("co2_coefficient", []map[string]any{m.CO2Coefficient.ToMap()})
 
 	return nil

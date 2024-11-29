@@ -9,7 +9,9 @@ import (
 
 type BusParams struct {
 	AssetParams
-	NominalVoltage AssetMetadata `json:"nominal_voltage"`
+	ActivePower      AssetAttribute `json:"active_power"`
+	ReactivePower    AssetAttribute `json:"reactive_power"`
+	NominalVoltageKV AssetMetadata  `json:"nominal_voltage_kv"`
 }
 
 type Bus struct {
@@ -51,17 +53,39 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 		},
 	}
 
-	nominalVoltage, err := convertAssetMetadata(d.Get("nominal_voltage").(*schema.Set).List())
+	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
+	if activePower == nil {
+		activePower = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "active_power",
+			},
+		}
+	}
+	m.BusParams.ActivePower = *activePower
+
+	reactivePower := convertAssetAttribute(d.Get("reactive_power").(*schema.Set).List())
+	if reactivePower == nil {
+		reactivePower = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "reactive_power",
+			},
+		}
+	}
+	m.BusParams.ReactivePower = *reactivePower
+
+	nominalVoltageKV, err := convertAssetMetadata(d.Get("nominal_voltage_kv").(*schema.Set).List())
 	if err != nil {
 		return fmt.Errorf("invalid nominal voltage metadata: %w", err)
 	}
-	if nominalVoltage.Type == "" {
-		nominalVoltage.Type = "Number"
+	if nominalVoltageKV.Type == "" {
+		nominalVoltageKV.Type = "Number"
 	}
-	if nominalVoltage.Name == "" {
-		nominalVoltage.Name = "nominal_voltage"
+	if nominalVoltageKV.Name == "" {
+		nominalVoltageKV.Name = "nominal_voltage_kv"
 	}
-	m.BusParams.NominalVoltage = *nominalVoltage
+	m.BusParams.NominalVoltageKV = *nominalVoltageKV
 
 	return nil
 }
@@ -90,7 +114,7 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 		},
 	})
 
-	d.Set("nominal_voltage", []map[string]any{m.NominalVoltage.ToMap()})
+	d.Set("nominal_voltage_kv", []map[string]any{m.NominalVoltageKV.ToMap()})
 
 	return nil
 }

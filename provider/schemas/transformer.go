@@ -4,7 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func SchemaInverter() map[string]*schema.Schema {
+func SchemaTransformer() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,
@@ -27,7 +27,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
-		"accumulated_energy": {
+		"active_power_hv": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Description: "attribute of the resource",
@@ -35,7 +35,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		"active_power": {
+		"active_power_lv": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Description: "attribute of the resource",
@@ -43,7 +43,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		"daily_energy": {
+		"reactive_power_hv": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Description: "attribute of the resource",
@@ -51,7 +51,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		"raw_daily_energy": {
+		"reactive_power_lv": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Description: "attribute of the resource",
@@ -59,7 +59,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		"temperature": {
+		"active_power_loss": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Description: "attribute of the resource",
@@ -67,7 +67,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		"switch_status": {
+		"reactive_power_loss": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Description: "attribute of the resource",
@@ -75,7 +75,63 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
-		"make": {
+		"current_hv": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"current_lv": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"voltage_hv": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"voltage_lv": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"contingency": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"switch_status_lv": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"switch_status_hv": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(false),
+			},
+		},
+		"tap_pos": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
@@ -84,7 +140,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(true),
 			},
 		},
-		"model": {
+		"xn_ohm": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
@@ -93,7 +149,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(true),
 			},
 		},
-		"serial_number": {
+		"standard_type": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
@@ -102,7 +158,7 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(true),
 			},
 		},
-		"max_active_power": {
+		"capacitance": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,
@@ -111,7 +167,52 @@ func SchemaInverter() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(true),
 			},
 		},
-		"energy_measurement_type": {
+		"conductance": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"maximum_allowed_current": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"maximum_allowed_power": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"reactance": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"resistance": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"safety_margin_for_power": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,

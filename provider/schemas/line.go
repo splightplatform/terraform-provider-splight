@@ -172,6 +172,30 @@ func SchemaLine() map[string]*schema.Schema {
 				Schema: schemaConstrainedAttribute(false),
 			},
 		},
+		"contingency": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"switch_status_start": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"switch_status_end": {
+			Type:        schema.TypeSet,
+			Computed:    true,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
 		"diameter": {
 			Type:        schema.TypeSet,
 			Required:    true,
@@ -335,6 +359,33 @@ func SchemaLine() map[string]*schema.Schema {
 			},
 		},
 		"temperature_coeff_resistance": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"specific_heat": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"conductor_mass": {
+			Type:        schema.TypeSet,
+			Required:    true,
+			MaxItems:    1,
+			Description: "attribute of the resource",
+			Elem: &schema.Resource{
+				Schema: schemaConstrainedAttribute(true),
+			},
+		},
+		"thermal_elongation_coef": {
 			Type:        schema.TypeSet,
 			Required:    true,
 			MaxItems:    1,

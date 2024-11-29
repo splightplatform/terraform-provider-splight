@@ -108,6 +108,7 @@ func buildResourceMap() map[string]*schema.Resource {
 		"splight_file_folder":                 resourceForType[*models.FileFolder](schemas.SchemaFileFolder),
 		"splight_secret":                      resourceForType[*models.Secret](schemas.SchemaSecret),
 		"splight_node":                        resourceForType[*models.Node](schemas.SchemaNode, ResourceMethods{methods: NoUpdate}),
+		"splight_transformer":                 resourceForType[*models.Transformer](schemas.SchemaTransformer),
 	}
 }
 

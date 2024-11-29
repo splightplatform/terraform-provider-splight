@@ -120,4 +120,16 @@ resource "splight_line" "my_line" {
   temperature_coeff_resistance {
     value = jsonencode(1.1)
   }
+
+  specific_heat {
+    value = jsonencode(1.1)
+  }
+
+  conductor_mass {
+    value = jsonencode(1.1)
+  }
+
+  thermal_elongation_coef {
+    value = jsonencode(1.1)
+  }
 }

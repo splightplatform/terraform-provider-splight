@@ -22,6 +22,9 @@ type LineParams struct {
 	VoltageRS                    AssetAttribute `json:"voltage_rs"`
 	VoltageST                    AssetAttribute `json:"voltage_st"`
 	VoltageTR                    AssetAttribute `json:"voltage_tr"`
+	Contingency                  AssetAttribute `json:"contingency"`
+	SwitchStatusStart            AssetAttribute `json:"switch_status_start"`
+	SwitchStatusEnd              AssetAttribute `json:"switch_status_end"`
 	Absorptivity                 AssetMetadata  `json:"absorptivity"`
 	Atmosphere                   AssetMetadata  `json:"atmosphere"`
 	Capacitance                  AssetMetadata  `json:"capacitance"`
@@ -41,6 +44,9 @@ type LineParams struct {
 	SafetyMarginForPower         AssetMetadata  `json:"safety_margin_for_power"`
 	Susceptance                  AssetMetadata  `json:"susceptance"`
 	TemperatureCoeffResistance   AssetMetadata  `json:"temperature_coeff_resistance"`
+	SpecificHeat                 AssetMetadata  `json:"specific_heat"`
+	ConductorMass                AssetMetadata  `json:"conductor_mass"`
+	ThermalElongationCoef        AssetMetadata  `json:"thermal_elongation_coef"`
 }
 
 type Line struct {
@@ -226,6 +232,39 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 		}
 	}
 	m.LineParams.VoltageTR = *voltageTr
+
+	contingency := convertAssetAttribute(d.Get("contingency").(*schema.Set).List())
+	if contingency == nil {
+		contingency = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "contingency",
+			},
+		}
+	}
+	m.LineParams.Contingency = *contingency
+
+	switchStatusStart := convertAssetAttribute(d.Get("switch_status_start").(*schema.Set).List())
+	if switchStatusStart == nil {
+		switchStatusStart = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "switch_status_start",
+			},
+		}
+	}
+	m.LineParams.SwitchStatusStart = *switchStatusStart
+
+	switchStatusEnd := convertAssetAttribute(d.Get("switch_status_end").(*schema.Set).List())
+	if switchStatusEnd == nil {
+		switchStatusEnd = &AssetAttribute{
+			AssetAttributeParams: AssetAttributeParams{
+				Type: "Number",
+				Name: "switch_status_end",
+			},
+		}
+	}
+	m.LineParams.SwitchStatusEnd = *switchStatusEnd
 
 	diameter, err := convertAssetMetadata(d.Get("diameter").(*schema.Set).List())
 	if err != nil {
@@ -455,6 +494,42 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 	}
 	m.LineParams.TemperatureCoeffResistance = *temperatureCoeffResistance
 
+	specificHeat, err := convertAssetMetadata(d.Get("specific_heat").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid specific_heat metadata: %w", err)
+	}
+	if specificHeat.Type == "" {
+		specificHeat.Type = "Number"
+	}
+	if specificHeat.Name == "" {
+		specificHeat.Name = "specific_heat"
+	}
+	m.LineParams.SpecificHeat = *specificHeat
+
+	conductorMass, err := convertAssetMetadata(d.Get("conductor_mass").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid conductor_mass metadata: %w", err)
+	}
+	if conductorMass.Type == "" {
+		conductorMass.Type = "Number"
+	}
+	if conductorMass.Name == "" {
+		conductorMass.Name = "conductor_mass"
+	}
+	m.LineParams.ConductorMass = *conductorMass
+
+	thermalElongationCoef, err := convertAssetMetadata(d.Get("thermal_elongation_coef").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid thermal_elongation_coef metadata: %w", err)
+	}
+	if thermalElongationCoef.Type == "" {
+		thermalElongationCoef.Type = "Number"
+	}
+	if thermalElongationCoef.Name == "" {
+		thermalElongationCoef.Name = "thermal_elongation_coef"
+	}
+	m.LineParams.ThermalElongationCoef = *thermalElongationCoef
+
 	return nil
 }
 
@@ -495,6 +570,9 @@ func (m *Line) ToSchema(d *schema.ResourceData) error {
 	d.Set("voltage_rs", []map[string]any{m.VoltageRS.ToMap()})
 	d.Set("voltage_st", []map[string]any{m.VoltageST.ToMap()})
 	d.Set("voltage_tr", []map[string]any{m.VoltageTR.ToMap()})
+	d.Set("contingency", []map[string]any{m.Contingency.ToMap()})
+	d.Set("switch_status_start", []map[string]any{m.SwitchStatusStart.ToMap()})
+	d.Set("switch_status_end", []map[string]any{m.SwitchStatusEnd.ToMap()})
 	d.Set("diameter", []map[string]any{m.Diameter.ToMap()})
 	d.Set("absorptivity", []map[string]any{m.Absorptivity.ToMap()})
 	d.Set("atmosphere", []map[string]any{m.Atmosphere.ToMap()})
@@ -514,6 +592,9 @@ func (m *Line) ToSchema(d *schema.ResourceData) error {
 	d.Set("safety_margin_for_power", []map[string]any{m.SafetyMarginForPower.ToMap()})
 	d.Set("susceptance", []map[string]any{m.Susceptance.ToMap()})
 	d.Set("temperature_coeff_resistance", []map[string]any{m.TemperatureCoeffResistance.ToMap()})
+	d.Set("specific_heat", []map[string]any{m.SpecificHeat.ToMap()})
+	d.Set("conductor_mass", []map[string]any{m.ConductorMass.ToMap()})
+	d.Set("thermal_elongation_coef", []map[string]any{m.ThermalElongationCoef.ToMap()})
 
 	return nil
 }

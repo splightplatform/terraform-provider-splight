@@ -56,4 +56,16 @@ resource "splight_segment" "my_segment" {
   cumulative_distance {
     value = jsonencode(1.1)
   }
+
+  reference_sag {
+    value = jsonencode(1.1)
+  }
+
+  reference_temperature {
+    value = jsonencode(1.1)
+  }
+
+  span_length {
+    value = jsonencode(1.1)
+  }
 }

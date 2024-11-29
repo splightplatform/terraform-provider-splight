@@ -110,6 +110,7 @@ resource "splight_inverter" "my_inverter" {
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `raw_daily_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--raw_daily_energy))
 - `temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--temperature))
+- `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status))
 
 <a id="nestedblock--energy_measurement_type"></a>
 ### Nested Schema for `energy_measurement_type`
@@ -259,6 +260,18 @@ Read-Only:
 
 <a id="nestedatt--temperature"></a>
 ### Nested Schema for `temperature`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status"></a>
+### Nested Schema for `switch_status`
 
 Read-Only:
 

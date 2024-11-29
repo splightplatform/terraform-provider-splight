@@ -89,6 +89,8 @@ resource "splight_generator" "my_generator" {
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
+- `monthly_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--monthly_energy))
+- `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--monthly_energy))
 
 <a id="nestedblock--co2_coefficient"></a>
 ### Nested Schema for `co2_coefficient`
@@ -162,6 +164,30 @@ Read-Only:
 
 <a id="nestedatt--reactive_power"></a>
 ### Nested Schema for `reactive_power`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--monthly_energy"></a>
+### Nested Schema for `monthly_energy`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status"></a>
+### Nested Schema for `switch_status`
 
 Read-Only:
 
