@@ -9,28 +9,28 @@ import (
 
 type TransformerParams struct {
 	AssetParams
-	ActivePowerHV     		AssetAttribute `json:"active_power_hv"`
-	ActivePowerLV           AssetAttribute `json:"active_power_lv"`
-	ReactivePowerHV         AssetAttribute `json:"reactive_power_hv"`
-	ReactivePowerLV        	AssetAttribute `json:"reactive_power_lv"`
-	ActivePowerLoss         AssetAttribute `json:"active_power_loss"`
-	ReactivePowerLoss		AssetAttribute `json:"reactive_power_loss"`
-	CurrentHV		  		AssetAttribute `json:"current_hv"`
-	CurrentLV		  		AssetAttribute `json:"current_lv"`
-	VoltageHV		  		AssetAttribute `json:"volatge_hv"`
-	VoltageLV		  		AssetAttribute `json:"voltage_lv"`
-	Contingency		  		AssetAttribute `json:"continency"`
-	SwitchStatusHV		  	AssetAttribute `json:"switch_status_hv"`
-	SwitchStatusLV		  	AssetAttribute `json:"switch_status_lv"`
-	XnOhm                  	AssetMetadata  `json:"xn_ohm"`
-	StandardType            AssetMetadata  `json:"standard_type"`
-	Capacitance          	AssetMetadata  `json:"capacitance"`
-	Conductance        		AssetMetadata  `json:"conductance"`
-	MaximumAllowedPower 	AssetMetadata  `json:"maximum_allowed_power"`
-	Reactance 				AssetMetadata  `json:"reactance"`
-	Resistance 				AssetMetadata  `json:"resistance"`
-	SafetyMarginForPower 	AssetMetadata  `json:"safety_margin_for_power"`
-
+	ActivePowerHV        AssetAttribute `json:"active_power_hv"`
+	ActivePowerLV        AssetAttribute `json:"active_power_lv"`
+	ReactivePowerHV      AssetAttribute `json:"reactive_power_hv"`
+	ReactivePowerLV      AssetAttribute `json:"reactive_power_lv"`
+	ActivePowerLoss      AssetAttribute `json:"active_power_loss"`
+	ReactivePowerLoss    AssetAttribute `json:"reactive_power_loss"`
+	CurrentHV            AssetAttribute `json:"current_hv"`
+	CurrentLV            AssetAttribute `json:"current_lv"`
+	VoltageHV            AssetAttribute `json:"volatge_hv"`
+	VoltageLV            AssetAttribute `json:"voltage_lv"`
+	Contingency          AssetAttribute `json:"continency"`
+	SwitchStatusHV       AssetAttribute `json:"switch_status_hv"`
+	SwitchStatusLV       AssetAttribute `json:"switch_status_lv"`
+	TapPos               AssetMetadata  `json:"tap_pos"`
+	XnOhm                AssetMetadata  `json:"xn_ohm"`
+	StandardType         AssetMetadata  `json:"standard_type"`
+	Capacitance          AssetMetadata  `json:"capacitance"`
+	Conductance          AssetMetadata  `json:"conductance"`
+	MaximumAllowedPower  AssetMetadata  `json:"maximum_allowed_power"`
+	Reactance            AssetMetadata  `json:"reactance"`
+	Resistance           AssetMetadata  `json:"resistance"`
+	SafetyMarginForPower AssetMetadata  `json:"safety_margin_for_power"`
 }
 
 type Transformer struct {

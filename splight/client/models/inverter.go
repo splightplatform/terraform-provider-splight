@@ -14,7 +14,7 @@ type InverterParams struct {
 	DailyEnergy           AssetAttribute `json:"daily_energy"`
 	RawDailyEnergy        AssetAttribute `json:"raw_daily_energy"`
 	Temperature           AssetAttribute `json:"temperature"`
-	SwitchStatus		  AssetAttribute `json:"switch_status"`
+	SwitchStatus          AssetAttribute `json:"switch_status"`
 	Make                  AssetMetadata  `json:"make"`
 	Model                 AssetMetadata  `json:"model"`
 	SerialNumber          AssetMetadata  `json:"serial_number"`

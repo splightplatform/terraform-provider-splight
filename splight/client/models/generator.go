@@ -13,7 +13,7 @@ type GeneratorParams struct {
 	ReactivePower        AssetAttribute `json:"reactive_power"`
 	DailyEnergy          AssetAttribute `json:"daily_energy"`
 	DailyEmissionAvoided AssetAttribute `json:"daily_emission_avoided"`
-	MonthlyEnergy 	     AssetAttribute `json:"monthly_energy"`
+	MonthlyEnergy        AssetAttribute `json:"monthly_energy"`
 	CO2Coefficient       AssetMetadata  `json:"CO2_coefficient"`
 }
 

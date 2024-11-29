@@ -22,9 +22,9 @@ type LineParams struct {
 	VoltageRS                    AssetAttribute `json:"voltage_rs"`
 	VoltageST                    AssetAttribute `json:"voltage_st"`
 	VoltageTR                    AssetAttribute `json:"voltage_tr"`
-	Contingency 				 AssetAttribute `json:"contingency"`
-	SwitchStatusStart 			 AssetAttribute `json:"switch_status_start"`
-	SwitchStatusEnd 			 AssetAttribute `json:"switch_status_end"`
+	Contingency                  AssetAttribute `json:"contingency"`
+	SwitchStatusStart            AssetAttribute `json:"switch_status_start"`
+	SwitchStatusEnd              AssetAttribute `json:"switch_status_end"`
 	Absorptivity                 AssetMetadata  `json:"absorptivity"`
 	Atmosphere                   AssetMetadata  `json:"atmosphere"`
 	Capacitance                  AssetMetadata  `json:"capacitance"`
@@ -44,9 +44,9 @@ type LineParams struct {
 	SafetyMarginForPower         AssetMetadata  `json:"safety_margin_for_power"`
 	Susceptance                  AssetMetadata  `json:"susceptance"`
 	TemperatureCoeffResistance   AssetMetadata  `json:"temperature_coeff_resistance"`
-	SpecificHeat 			   	 AssetMetadata  `json:"specific_heat"`
-	ConductorMass 			   	 AssetMetadata  `json:"conductor_mass"`
-	ThermalElongationCoef 		 AssetMetadata  `json:"thermal_elongation_coef"`
+	SpecificHeat                 AssetMetadata  `json:"specific_heat"`
+	ConductorMass                AssetMetadata  `json:"conductor_mass"`
+	ThermalElongationCoef        AssetMetadata  `json:"thermal_elongation_coef"`
 }
 
 type Line struct {

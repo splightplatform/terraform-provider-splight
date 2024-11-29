@@ -9,8 +9,8 @@ import (
 
 type SlackLineParams struct {
 	AssetParams
-	SwitchStatusStart 			 AssetAttribute `json:"switch_status_start"`
-	SwitchStatusEnd 			 AssetAttribute `json:"switch_status_end"`
+	SwitchStatusStart AssetAttribute `json:"switch_status_start"`
+	SwitchStatusEnd   AssetAttribute `json:"switch_status_end"`
 }
 
 type SlackLine struct {
@@ -62,7 +62,7 @@ func (m *SlackLine) FromSchema(d *schema.ResourceData) error {
 			},
 		}
 	}
-	m.LineParams.SwitchStatusStart = *switchStatusStart
+	m.SlackLineParams.SwitchStatusStart = *switchStatusStart
 
 	switchStatusEnd := convertAssetAttribute(d.Get("switch_status_end").(*schema.Set).List())
 	if switchStatusEnd == nil {
@@ -73,7 +73,7 @@ func (m *SlackLine) FromSchema(d *schema.ResourceData) error {
 			},
 		}
 	}
-	m.LineParams.SwitchStatusEnd = *switchStatusEnd
+	m.SlackLineParams.SwitchStatusEnd = *switchStatusEnd
 
 	return nil
 }

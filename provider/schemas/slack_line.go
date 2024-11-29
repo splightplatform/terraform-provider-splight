@@ -42,7 +42,7 @@ func SchemaSlackLine() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: schemaConstrainedAttribute(true),
 			},
-		}
+		},
 		"tags": {
 			Type:        schema.TypeSet,
 			Optional:    true,

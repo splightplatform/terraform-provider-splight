@@ -179,7 +179,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: schemaConstrainedAttribute(true),
 			},
-		}
+		},
 		"switch_status_start": {
 			Type:        schema.TypeSet,
 			Computed:    true,
@@ -375,7 +375,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: schemaConstrainedAttribute(true),
 			},
-		}
+		},
 		"conductor_mass": {
 			Type:        schema.TypeSet,
 			Required:    true,
@@ -384,7 +384,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: schemaConstrainedAttribute(true),
 			},
-		}
+		},
 		"thermal_elongation_coef": {
 			Type:        schema.TypeSet,
 			Required:    true,
@@ -393,7 +393,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: schemaConstrainedAttribute(true),
 			},
-		}
+		},
 		"tags": {
 			Type:        schema.TypeSet,
 			Optional:    true,
