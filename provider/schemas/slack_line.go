@@ -32,7 +32,7 @@ func SchemaSlackLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"switch_status_end": {
@@ -40,7 +40,7 @@ func SchemaSlackLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"tags": {
