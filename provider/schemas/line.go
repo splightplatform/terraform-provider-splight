@@ -198,7 +198,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"diameter": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -207,7 +207,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"absorptivity": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -216,7 +216,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"atmosphere": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -225,7 +225,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"capacitance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -234,7 +234,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"conductance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -243,7 +243,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"emissivity": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -252,7 +252,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"length": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -261,7 +261,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"maximum_allowed_current": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -270,7 +270,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"maximum_allowed_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -279,7 +279,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"maximum_allowed_temperature": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -288,7 +288,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"maximum_allowed_temperature_lte": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -297,7 +297,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"maximum_allowed_temperature_ste": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -306,7 +306,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"number_of_conductors": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -315,7 +315,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"reactance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -324,7 +324,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"reference_resistance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -333,7 +333,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"resistance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -342,7 +342,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"safety_margin_for_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -351,7 +351,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"susceptance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -360,7 +360,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"temperature_coeff_resistance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -369,7 +369,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"specific_heat": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -378,7 +378,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"conductor_mass": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -387,7 +387,7 @@ func SchemaLine() map[string]*schema.Schema {
 		},
 		"thermal_elongation_coef": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{

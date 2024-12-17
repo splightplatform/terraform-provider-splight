@@ -133,7 +133,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"tap_pos": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -142,7 +142,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"xn_ohm": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -151,7 +151,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"standard_type": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -160,7 +160,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"capacitance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -169,7 +169,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"conductance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -178,7 +178,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"maximum_allowed_current": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -187,7 +187,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"maximum_allowed_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -196,7 +196,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"reactance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -205,7 +205,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"resistance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -214,7 +214,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		},
 		"safety_margin_for_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
