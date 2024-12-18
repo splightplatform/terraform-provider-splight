@@ -77,7 +77,7 @@ func SchemaInverter() map[string]*schema.Schema {
 		},
 		"make": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -86,7 +86,7 @@ func SchemaInverter() map[string]*schema.Schema {
 		},
 		"model": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -95,7 +95,7 @@ func SchemaInverter() map[string]*schema.Schema {
 		},
 		"serial_number": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -104,7 +104,7 @@ func SchemaInverter() map[string]*schema.Schema {
 		},
 		"max_active_power": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
@@ -113,7 +113,7 @@ func SchemaInverter() map[string]*schema.Schema {
 		},
 		"energy_measurement_type": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{

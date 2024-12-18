@@ -77,7 +77,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 		},
 		"co2_coefficient": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
