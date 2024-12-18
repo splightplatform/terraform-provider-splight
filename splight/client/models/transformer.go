@@ -9,28 +9,28 @@ import (
 
 type TransformerParams struct {
 	AssetParams
-	ActivePowerHV        AssetAttribute `json:"active_power_hv"`
-	ActivePowerLV        AssetAttribute `json:"active_power_lv"`
-	ReactivePowerHV      AssetAttribute `json:"reactive_power_hv"`
-	ReactivePowerLV      AssetAttribute `json:"reactive_power_lv"`
-	ActivePowerLoss      AssetAttribute `json:"active_power_loss"`
-	ReactivePowerLoss    AssetAttribute `json:"reactive_power_loss"`
-	CurrentHV            AssetAttribute `json:"current_hv"`
-	CurrentLV            AssetAttribute `json:"current_lv"`
-	VoltageHV            AssetAttribute `json:"volatge_hv"`
-	VoltageLV            AssetAttribute `json:"voltage_lv"`
-	Contingency          AssetAttribute `json:"continency"`
-	SwitchStatusHV       AssetAttribute `json:"switch_status_hv"`
-	SwitchStatusLV       AssetAttribute `json:"switch_status_lv"`
-	TapPos               AssetMetadata  `json:"tap_pos"`
-	XnOhm                AssetMetadata  `json:"xn_ohm"`
-	StandardType         AssetMetadata  `json:"standard_type"`
-	Capacitance          AssetMetadata  `json:"capacitance"`
-	Conductance          AssetMetadata  `json:"conductance"`
-	MaximumAllowedPower  AssetMetadata  `json:"maximum_allowed_power"`
-	Reactance            AssetMetadata  `json:"reactance"`
-	Resistance           AssetMetadata  `json:"resistance"`
-	SafetyMarginForPower AssetMetadata  `json:"safety_margin_for_power"`
+	ActivePowerHV        *AssetAttribute `json:"active_power_hv"`
+	ActivePowerLV        *AssetAttribute `json:"active_power_lv"`
+	ReactivePowerHV      *AssetAttribute `json:"reactive_power_hv"`
+	ReactivePowerLV      *AssetAttribute `json:"reactive_power_lv"`
+	ActivePowerLoss      *AssetAttribute `json:"active_power_loss"`
+	ReactivePowerLoss    *AssetAttribute `json:"reactive_power_loss"`
+	CurrentHV            *AssetAttribute `json:"current_hv"`
+	CurrentLV            *AssetAttribute `json:"current_lv"`
+	VoltageHV            *AssetAttribute `json:"volatge_hv"`
+	VoltageLV            *AssetAttribute `json:"voltage_lv"`
+	Contingency          *AssetAttribute `json:"continency"`
+	SwitchStatusHV       *AssetAttribute `json:"switch_status_hv"`
+	SwitchStatusLV       *AssetAttribute `json:"switch_status_lv"`
+	TapPos               AssetMetadata   `json:"tap_pos"`
+	XnOhm                AssetMetadata   `json:"xn_ohm"`
+	StandardType         AssetMetadata   `json:"standard_type"`
+	Capacitance          AssetMetadata   `json:"capacitance"`
+	Conductance          AssetMetadata   `json:"conductance"`
+	MaximumAllowedPower  AssetMetadata   `json:"maximum_allowed_power"`
+	Reactance            AssetMetadata   `json:"reactance"`
+	Resistance           AssetMetadata   `json:"resistance"`
+	SafetyMarginForPower AssetMetadata   `json:"safety_margin_for_power"`
 }
 
 type Transformer struct {
@@ -71,149 +71,6 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 			Kind:           kind,
 		},
 	}
-
-	activePowerHV := convertAssetAttribute(d.Get("active_power_hv").(*schema.Set).List())
-	if activePowerHV == nil {
-		activePowerHV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power_hv",
-			},
-		}
-	}
-	m.TransformerParams.ActivePowerHV = *activePowerHV
-
-	activePowerLV := convertAssetAttribute(d.Get("active_power_lv").(*schema.Set).List())
-	if activePowerLV == nil {
-		activePowerLV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power_lv",
-			},
-		}
-	}
-	m.TransformerParams.ActivePowerLV = *activePowerLV
-
-	reactivePowerHV := convertAssetAttribute(d.Get("reactive_power_hv").(*schema.Set).List())
-	if reactivePowerHV == nil {
-		reactivePowerHV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power_hv",
-			},
-		}
-	}
-	m.TransformerParams.ReactivePowerHV = *reactivePowerHV
-
-	reactivePowerLV := convertAssetAttribute(d.Get("reactive_power_lv").(*schema.Set).List())
-	if reactivePowerLV == nil {
-		reactivePowerLV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power_lv",
-			},
-		}
-	}
-	m.TransformerParams.ReactivePowerLV = *reactivePowerLV
-
-	activePowerLoss := convertAssetAttribute(d.Get("active_power_loss").(*schema.Set).List())
-	if activePowerLoss == nil {
-		activePowerLoss = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power_loss",
-			},
-		}
-	}
-	m.TransformerParams.ActivePowerLoss = *activePowerLoss
-
-	reactivePowerLoss := convertAssetAttribute(d.Get("reactive_power_loss").(*schema.Set).List())
-	if reactivePowerLoss == nil {
-		reactivePowerLoss = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power_loss",
-			},
-		}
-	}
-	m.TransformerParams.ReactivePowerLoss = *reactivePowerLoss
-
-	currentHV := convertAssetAttribute(d.Get("current_hv").(*schema.Set).List())
-	if currentHV == nil {
-		currentHV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_hv",
-			},
-		}
-	}
-	m.TransformerParams.CurrentHV = *currentHV
-
-	currentLV := convertAssetAttribute(d.Get("current_lv").(*schema.Set).List())
-	if currentLV == nil {
-		currentLV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_lv",
-			},
-		}
-	}
-	m.TransformerParams.CurrentLV = *currentLV
-
-	voltageHV := convertAssetAttribute(d.Get("voltage_hv").(*schema.Set).List())
-	if voltageHV == nil {
-		voltageHV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_hv",
-			},
-		}
-	}
-	m.TransformerParams.VoltageHV = *voltageHV
-
-	voltageLV := convertAssetAttribute(d.Get("voltage_lv").(*schema.Set).List())
-	if voltageLV == nil {
-		voltageLV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_lv",
-			},
-		}
-	}
-	m.TransformerParams.VoltageLV = *voltageLV
-
-	contingency := convertAssetAttribute(d.Get("contingency").(*schema.Set).List())
-	if contingency == nil {
-		contingency = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "contingency",
-			},
-		}
-	}
-	m.TransformerParams.Contingency = *contingency
-
-	switchStatusHV := convertAssetAttribute(d.Get("switch_status_hv").(*schema.Set).List())
-	if switchStatusHV == nil {
-		switchStatusHV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "switch_status_hv",
-			},
-		}
-	}
-	m.TransformerParams.SwitchStatusHV = *switchStatusHV
-
-	switchStatusLV := convertAssetAttribute(d.Get("switch_status_lv").(*schema.Set).List())
-	if switchStatusLV == nil {
-		switchStatusLV = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "switch_status_lv",
-			},
-		}
-	}
-	m.TransformerParams.SwitchStatusLV = *switchStatusLV
 
 	tapPos, err := convertAssetMetadata(d.Get("tap_pos").(*schema.Set).List())
 	if err != nil {

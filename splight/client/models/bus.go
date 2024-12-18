@@ -9,9 +9,9 @@ import (
 
 type BusParams struct {
 	AssetParams
-	ActivePower      AssetAttribute `json:"active_power"`
-	ReactivePower    AssetAttribute `json:"reactive_power"`
-	NominalVoltageKV AssetMetadata  `json:"nominal_voltage_kv"`
+	ActivePower      *AssetAttribute `json:"active_power"`
+	ReactivePower    *AssetAttribute `json:"reactive_power"`
+	NominalVoltageKV AssetMetadata   `json:"nominal_voltage_kv"`
 }
 
 type Bus struct {
@@ -52,28 +52,6 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 			Kind:           kind,
 		},
 	}
-
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
-		}
-	}
-	m.BusParams.ActivePower = *activePower
-
-	reactivePower := convertAssetAttribute(d.Get("reactive_power").(*schema.Set).List())
-	if reactivePower == nil {
-		reactivePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power",
-			},
-		}
-	}
-	m.BusParams.ReactivePower = *reactivePower
 
 	nominalVoltageKV, err := convertAssetMetadata(d.Get("nominal_voltage_kv").(*schema.Set).List())
 	if err != nil {

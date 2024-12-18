@@ -60,6 +60,9 @@ resource "splight_generator" "my_generator" {
     ]
   })
 
+  # You may leave some metadata values unset, in order to use the defaults 
+  # co2_coefficient {}
+
   co2_coefficient {
     value = jsonencode(1.1)
   }
@@ -88,14 +91,14 @@ resource "splight_generator" "my_generator" {
 - `daily_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--daily_energy))
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
-- `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
 - `monthly_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--monthly_energy))
-- `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--monthly_energy))
+- `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
+- `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status))
 
 <a id="nestedblock--co2_coefficient"></a>
 ### Nested Schema for `co2_coefficient`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -162,8 +165,8 @@ Read-Only:
 - `name` (String)
 
 
-<a id="nestedatt--reactive_power"></a>
-### Nested Schema for `reactive_power`
+<a id="nestedatt--monthly_energy"></a>
+### Nested Schema for `monthly_energy`
 
 Read-Only:
 
@@ -174,8 +177,8 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--monthly_energy"></a>
-### Nested Schema for `monthly_energy`
+<a id="nestedatt--reactive_power"></a>
+### Nested Schema for `reactive_power`
 
 Read-Only:
 

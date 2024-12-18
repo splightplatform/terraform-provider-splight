@@ -60,9 +60,8 @@ resource "splight_inverter" "my_inverter" {
     ]
   })
 
-  make {
-    value = jsonencode("Weiwei")
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  make {}
 
   model {
     value = jsonencode("Model A")
@@ -109,13 +108,13 @@ resource "splight_inverter" "my_inverter" {
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `raw_daily_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--raw_daily_energy))
-- `temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--temperature))
 - `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status))
+- `temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--temperature))
 
 <a id="nestedblock--energy_measurement_type"></a>
 ### Nested Schema for `energy_measurement_type`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -131,7 +130,7 @@ Read-Only:
 <a id="nestedblock--make"></a>
 ### Nested Schema for `make`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -147,7 +146,7 @@ Read-Only:
 <a id="nestedblock--max_active_power"></a>
 ### Nested Schema for `max_active_power`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -163,7 +162,7 @@ Read-Only:
 <a id="nestedblock--model"></a>
 ### Nested Schema for `model`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -179,7 +178,7 @@ Read-Only:
 <a id="nestedblock--serial_number"></a>
 ### Nested Schema for `serial_number`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -258,8 +257,8 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--temperature"></a>
-### Nested Schema for `temperature`
+<a id="nestedatt--switch_status"></a>
+### Nested Schema for `switch_status`
 
 Read-Only:
 
@@ -270,8 +269,8 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--switch_status"></a>
-### Nested Schema for `switch_status`
+<a id="nestedatt--temperature"></a>
+### Nested Schema for `temperature`
 
 Read-Only:
 
