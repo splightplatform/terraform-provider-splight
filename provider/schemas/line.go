@@ -4,7 +4,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func schemaConstrainedAttribute(isMetadata bool) map[string]*schema.Schema {
+func schemaConstrainedAttribute(isMetadata bool, defaultValue interface{}) map[string]*schema.Schema {
 	schemaMap := map[string]*schema.Schema{
 		"id": {
 			Type:        schema.TypeString,
@@ -35,11 +35,18 @@ func schemaConstrainedAttribute(isMetadata bool) map[string]*schema.Schema {
 
 	// Add "value" field only if it's metadata
 	if isMetadata {
-		schemaMap["value"] = &schema.Schema{
+		valueSchema := &schema.Schema{
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 			Description: "metadata value",
 		}
+
+		// Set the default value if provided
+		if defaultValue != nil {
+			valueSchema.Default = defaultValue
+		}
+
+		schemaMap["value"] = valueSchema
 	}
 
 	return schemaMap
@@ -73,7 +80,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"active_power_end": {
@@ -81,7 +88,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"ampacity": {
@@ -89,7 +96,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"current": {
@@ -97,7 +104,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"current_r": {
@@ -105,7 +112,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"current_s": {
@@ -113,7 +120,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"current_t": {
@@ -121,7 +128,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"energy": {
@@ -129,7 +136,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"max_temperature": {
@@ -137,7 +144,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"reactive_power": {
@@ -145,7 +152,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"voltage_rs": {
@@ -153,7 +160,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"voltage_st": {
@@ -161,7 +168,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"voltage_tr": {
@@ -169,7 +176,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"contingency": {
@@ -177,7 +184,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"switch_status_start": {
@@ -185,7 +192,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"switch_status_end": {
@@ -193,7 +200,7 @@ func SchemaLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"diameter": {
@@ -202,7 +209,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "30,37"),
 			},
 		},
 		"absorptivity": {
@@ -211,7 +218,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.6"),
 			},
 		},
 		"atmosphere": {
@@ -220,7 +227,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "clean"),
 			},
 		},
 		"capacitance": {
@@ -229,7 +236,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"conductance": {
@@ -238,7 +245,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"emissivity": {
@@ -247,7 +254,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.8"),
 			},
 		},
 		"length": {
@@ -256,7 +263,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"maximum_allowed_current": {
@@ -265,7 +272,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"maximum_allowed_power": {
@@ -274,7 +281,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"maximum_allowed_temperature": {
@@ -283,7 +290,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "160"),
 			},
 		},
 		"maximum_allowed_temperature_lte": {
@@ -292,7 +299,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "160"),
 			},
 		},
 		"maximum_allowed_temperature_ste": {
@@ -301,7 +308,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "160"),
 			},
 		},
 		"number_of_conductors": {
@@ -310,7 +317,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "3"),
 			},
 		},
 		"reactance": {
@@ -319,7 +326,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.0293784"),
 			},
 		},
 		"reference_resistance": {
@@ -328,7 +335,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.0557992717"),
 			},
 		},
 		"resistance": {
@@ -337,7 +344,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.0293784"),
 			},
 		},
 		"safety_margin_for_power": {
@@ -346,7 +353,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"susceptance": {
@@ -355,7 +362,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.0293784"),
 			},
 		},
 		"temperature_coeff_resistance": {
@@ -364,7 +371,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.006164923"),
 			},
 		},
 		"specific_heat": {
@@ -373,7 +380,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "880"),
 			},
 		},
 		"conductor_mass": {
@@ -382,7 +389,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.7815"),
 			},
 		},
 		"thermal_elongation_coef": {
@@ -391,7 +398,7 @@ func SchemaLine() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.006164923"),
 			},
 		},
 		"tags": {

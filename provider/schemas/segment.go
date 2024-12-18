@@ -32,7 +32,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"wind_speed": {
@@ -40,7 +40,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"wind_direction": {
@@ -48,61 +48,61 @@ func SchemaSegment() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"altitude": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "500"),
 			},
 		},
 		"azimuth": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "90"),
 			},
 		},
 		"cumulative_distance": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "300"),
 			},
 		},
 		"reference_sag": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "2"),
 			},
 		},
 		"reference_temperature": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "93"),
 			},
 		},
 		"span_length": {
 			Type:        schema.TypeSet,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "100"),
 			},
 		},
 		"tags": {
