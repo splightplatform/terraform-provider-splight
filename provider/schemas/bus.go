@@ -32,7 +32,7 @@ func SchemaBus() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"reactive_power": {
@@ -40,7 +40,7 @@ func SchemaBus() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"nominal_voltage_kv": {
@@ -49,7 +49,7 @@ func SchemaBus() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"tags": {

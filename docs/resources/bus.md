@@ -60,6 +60,9 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
+  # You may leave some metadata values unset, in order to use the defaults 
+  # nominal_voltage_kv {}
+
   nominal_voltage_kv {
     value = jsonencode(2.2)
   }
@@ -73,7 +76,7 @@ resource "splight_bus" "my_bus" {
 
 - `name` (String) name of the resource
 - `nominal_voltage_kv` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage_kv))
-  
+
 ### Optional
 
 - `description` (String) description of the resource
@@ -83,15 +86,15 @@ resource "splight_bus" "my_bus" {
 
 ### Read-Only
 
+- `active_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power))
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
-- `active_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power))
-- `reacive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reacive_power))
+- `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
 
 <a id="nestedblock--nominal_voltage_kv"></a>
 ### Nested Schema for `nominal_voltage_kv`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -113,15 +116,6 @@ Required:
 - `name` (String) tag name
 
 
-<a id="nestedatt--kind"></a>
-### Nested Schema for `kind`
-
-Read-Only:
-
-- `id` (String)
-- `name` (String)
-
-
 <a id="nestedatt--active_power"></a>
 ### Nested Schema for `active_power`
 
@@ -132,6 +126,15 @@ Read-Only:
 - `name` (String)
 - `type` (String)
 - `unit` (String)
+
+
+<a id="nestedatt--kind"></a>
+### Nested Schema for `kind`
+
+Read-Only:
+
+- `id` (String)
+- `name` (String)
 
 
 <a id="nestedatt--reactive_power"></a>

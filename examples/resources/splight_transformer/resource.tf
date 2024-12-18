@@ -45,9 +45,8 @@ resource "splight_transformer" "my_transformer" {
     ]
   })
 
-  tap_pos {
-    value = jsonencode(0)
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  tap_pos {}
 
   xn_ohm {
     value = jsonencode(0)

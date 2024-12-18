@@ -9,44 +9,44 @@ import (
 
 type LineParams struct {
 	AssetParams
-	ActivePower                  AssetAttribute `json:"active_power"`
-	ActivePowerEnd               AssetAttribute `json:"active_power_end"`
-	Ampacity                     AssetAttribute `json:"ampacity"`
-	Current                      AssetAttribute `json:"current"`
-	CurrentR                     AssetAttribute `json:"current_r"`
-	CurrentS                     AssetAttribute `json:"current_s"`
-	CurrentT                     AssetAttribute `json:"current_t"`
-	Energy                       AssetAttribute `json:"energy"`
-	MaxTemperature               AssetAttribute `json:"max_temperature"`
-	ReactivePower                AssetAttribute `json:"reactive_power"`
-	VoltageRS                    AssetAttribute `json:"voltage_rs"`
-	VoltageST                    AssetAttribute `json:"voltage_st"`
-	VoltageTR                    AssetAttribute `json:"voltage_tr"`
-	Contingency                  AssetAttribute `json:"contingency"`
-	SwitchStatusStart            AssetAttribute `json:"switch_status_start"`
-	SwitchStatusEnd              AssetAttribute `json:"switch_status_end"`
-	Absorptivity                 AssetMetadata  `json:"absorptivity"`
-	Atmosphere                   AssetMetadata  `json:"atmosphere"`
-	Capacitance                  AssetMetadata  `json:"capacitance"`
-	Conductance                  AssetMetadata  `json:"conductance"`
-	Diameter                     AssetMetadata  `json:"diameter"`
-	Emissivity                   AssetMetadata  `json:"emissivity"`
-	Length                       AssetMetadata  `json:"length"`
-	MaximumAllowedCurrent        AssetMetadata  `json:"maximum_allowed_current"`
-	MaximumAllowedPower          AssetMetadata  `json:"maximum_allowed_power"`
-	MaximumAllowedTemperature    AssetMetadata  `json:"maximum_allowed_temperature"`
-	MaximumAllowedTemperatureLTE AssetMetadata  `json:"maximum_allowed_temperature_lte"`
-	MaximumAllowedTemperatureSTE AssetMetadata  `json:"maximum_allowed_temperature_ste"`
-	NumberOfConductors           AssetMetadata  `json:"number_of_conductors"`
-	Reactance                    AssetMetadata  `json:"reactance"`
-	ReferenceResistance          AssetMetadata  `json:"reference_resistance"`
-	Resistance                   AssetMetadata  `json:"resistance"`
-	SafetyMarginForPower         AssetMetadata  `json:"safety_margin_for_power"`
-	Susceptance                  AssetMetadata  `json:"susceptance"`
-	TemperatureCoeffResistance   AssetMetadata  `json:"temperature_coeff_resistance"`
-	SpecificHeat                 AssetMetadata  `json:"specific_heat"`
-	ConductorMass                AssetMetadata  `json:"conductor_mass"`
-	ThermalElongationCoef        AssetMetadata  `json:"thermal_elongation_coef"`
+	ActivePower                  *AssetAttribute `json:"active_power"`
+	ActivePowerEnd               *AssetAttribute `json:"active_power_end"`
+	Ampacity                     *AssetAttribute `json:"ampacity"`
+	Current                      *AssetAttribute `json:"current"`
+	CurrentR                     *AssetAttribute `json:"current_r"`
+	CurrentS                     *AssetAttribute `json:"current_s"`
+	CurrentT                     *AssetAttribute `json:"current_t"`
+	Energy                       *AssetAttribute `json:"energy"`
+	MaxTemperature               *AssetAttribute `json:"max_temperature"`
+	ReactivePower                *AssetAttribute `json:"reactive_power"`
+	VoltageRS                    *AssetAttribute `json:"voltage_rs"`
+	VoltageST                    *AssetAttribute `json:"voltage_st"`
+	VoltageTR                    *AssetAttribute `json:"voltage_tr"`
+	Contingency                  *AssetAttribute `json:"contingency"`
+	SwitchStatusStart            *AssetAttribute `json:"switch_status_start"`
+	SwitchStatusEnd              *AssetAttribute `json:"switch_status_end"`
+	Absorptivity                 AssetMetadata   `json:"absorptivity"`
+	Atmosphere                   AssetMetadata   `json:"atmosphere"`
+	Capacitance                  AssetMetadata   `json:"capacitance"`
+	Conductance                  AssetMetadata   `json:"conductance"`
+	Diameter                     AssetMetadata   `json:"diameter"`
+	Emissivity                   AssetMetadata   `json:"emissivity"`
+	Length                       AssetMetadata   `json:"length"`
+	MaximumAllowedCurrent        AssetMetadata   `json:"maximum_allowed_current"`
+	MaximumAllowedPower          AssetMetadata   `json:"maximum_allowed_power"`
+	MaximumAllowedTemperature    AssetMetadata   `json:"maximum_allowed_temperature"`
+	MaximumAllowedTemperatureLTE AssetMetadata   `json:"maximum_allowed_temperature_lte"`
+	MaximumAllowedTemperatureSTE AssetMetadata   `json:"maximum_allowed_temperature_ste"`
+	NumberOfConductors           AssetMetadata   `json:"number_of_conductors"`
+	Reactance                    AssetMetadata   `json:"reactance"`
+	ReferenceResistance          AssetMetadata   `json:"reference_resistance"`
+	Resistance                   AssetMetadata   `json:"resistance"`
+	SafetyMarginForPower         AssetMetadata   `json:"safety_margin_for_power"`
+	Susceptance                  AssetMetadata   `json:"susceptance"`
+	TemperatureCoeffResistance   AssetMetadata   `json:"temperature_coeff_resistance"`
+	SpecificHeat                 AssetMetadata   `json:"specific_heat"`
+	ConductorMass                AssetMetadata   `json:"conductor_mass"`
+	ThermalElongationCoef        AssetMetadata   `json:"thermal_elongation_coef"`
 }
 
 type Line struct {
@@ -88,183 +88,6 @@ func (m *Line) FromSchema(d *schema.ResourceData) error {
 			Kind:           kind,
 		},
 	}
-
-	// TODO: remove ALL of these sets when API fixes its contract
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
-		}
-	}
-	m.LineParams.ActivePower = *activePower
-
-	activePowerEnd := convertAssetAttribute(d.Get("active_power_end").(*schema.Set).List())
-	if activePowerEnd == nil {
-		activePowerEnd = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power_end",
-			},
-		}
-	}
-	m.LineParams.ActivePowerEnd = *activePowerEnd
-
-	ampacity := convertAssetAttribute(d.Get("ampacity").(*schema.Set).List())
-	if ampacity == nil {
-		ampacity = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "ampacity",
-			},
-		}
-	}
-	m.LineParams.Ampacity = *ampacity
-
-	current := convertAssetAttribute(d.Get("current").(*schema.Set).List())
-	if current == nil {
-		current = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current",
-			},
-		}
-	}
-	m.LineParams.Current = *current
-
-	currentR := convertAssetAttribute(d.Get("current_r").(*schema.Set).List())
-	if currentR == nil {
-		currentR = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_r",
-			},
-		}
-	}
-	m.LineParams.CurrentR = *currentR
-
-	currentS := convertAssetAttribute(d.Get("current_s").(*schema.Set).List())
-	if currentS == nil {
-		currentS = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_s",
-			},
-		}
-	}
-	m.LineParams.CurrentS = *currentS
-
-	currentT := convertAssetAttribute(d.Get("current_t").(*schema.Set).List())
-	if currentT == nil {
-		currentT = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "current_t",
-			},
-		}
-	}
-	m.LineParams.CurrentT = *currentT
-
-	energy := convertAssetAttribute(d.Get("energy").(*schema.Set).List())
-	if energy == nil {
-		energy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "energy",
-			},
-		}
-	}
-	m.LineParams.Energy = *energy
-
-	maxTemperature := convertAssetAttribute(d.Get("max_temperature").(*schema.Set).List())
-	if maxTemperature == nil {
-		maxTemperature = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "max_temperature",
-			},
-		}
-	}
-	m.LineParams.MaxTemperature = *maxTemperature
-
-	reactivePower := convertAssetAttribute(d.Get("reactive_power").(*schema.Set).List())
-	if reactivePower == nil {
-		reactivePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power",
-			},
-		}
-	}
-	m.LineParams.ReactivePower = *reactivePower
-
-	voltageRs := convertAssetAttribute(d.Get("voltage_rs").(*schema.Set).List())
-	if voltageRs == nil {
-		voltageRs = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_rs",
-			},
-		}
-	}
-	m.LineParams.VoltageRS = *voltageRs
-
-	voltageSt := convertAssetAttribute(d.Get("voltage_st").(*schema.Set).List())
-	if voltageSt == nil {
-		voltageSt = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_st",
-			},
-		}
-	}
-	m.LineParams.VoltageST = *voltageSt
-
-	voltageTr := convertAssetAttribute(d.Get("voltage_tr").(*schema.Set).List())
-	if voltageTr == nil {
-		voltageTr = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "voltage_tr",
-			},
-		}
-	}
-	m.LineParams.VoltageTR = *voltageTr
-
-	contingency := convertAssetAttribute(d.Get("contingency").(*schema.Set).List())
-	if contingency == nil {
-		contingency = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "contingency",
-			},
-		}
-	}
-	m.LineParams.Contingency = *contingency
-
-	switchStatusStart := convertAssetAttribute(d.Get("switch_status_start").(*schema.Set).List())
-	if switchStatusStart == nil {
-		switchStatusStart = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "switch_status_start",
-			},
-		}
-	}
-	m.LineParams.SwitchStatusStart = *switchStatusStart
-
-	switchStatusEnd := convertAssetAttribute(d.Get("switch_status_end").(*schema.Set).List())
-	if switchStatusEnd == nil {
-		switchStatusEnd = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "switch_status_end",
-			},
-		}
-	}
-	m.LineParams.SwitchStatusEnd = *switchStatusEnd
 
 	diameter, err := convertAssetMetadata(d.Get("diameter").(*schema.Set).List())
 	if err != nil {

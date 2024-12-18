@@ -45,9 +45,8 @@ resource "splight_line" "my_line" {
     ]
   })
 
-  diameter {
-    value = jsonencode(1.1)
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  diameter {}
 
   absorptivity {
     value = jsonencode(1.1)

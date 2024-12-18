@@ -9,15 +9,15 @@ import (
 
 type SegmentParams struct {
 	AssetParams
-	Temperature          AssetAttribute `json:"temperature"`
-	WindSpeed            AssetAttribute `json:"wind_speed"`
-	WindDirection        AssetAttribute `json:"wind_direction"`
-	Altitude             AssetMetadata  `json:"altitude"`
-	Azimuth              AssetMetadata  `json:"azimuth"`
-	CumulativeDistance   AssetMetadata  `json:"cumulative_distance"`
-	ReferenceSag         AssetMetadata  `json:"reference_sag"`
-	ReferenceTemperature AssetMetadata  `json:"reference_temperature"`
-	SpanLength           AssetMetadata  `json:"span_length"`
+	Temperature          *AssetAttribute `json:"temperature"`
+	WindSpeed            *AssetAttribute `json:"wind_speed"`
+	WindDirection        *AssetAttribute `json:"wind_direction"`
+	Altitude             AssetMetadata   `json:"altitude"`
+	Azimuth              AssetMetadata   `json:"azimuth"`
+	CumulativeDistance   AssetMetadata   `json:"cumulative_distance"`
+	ReferenceSag         AssetMetadata   `json:"reference_sag"`
+	ReferenceTemperature AssetMetadata   `json:"reference_temperature"`
+	SpanLength           AssetMetadata   `json:"span_length"`
 }
 
 type Segment struct {
@@ -70,40 +70,6 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 			Kind:           kind,
 		},
 	}
-
-	// TODO: remove ALL of these sets when API fixes its contract
-	temperature := convertAssetAttribute(d.Get("temperature").(*schema.Set).List())
-	if temperature == nil {
-		temperature = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "temperature",
-			},
-		}
-	}
-	m.SegmentParams.Temperature = *temperature
-
-	windSpeed := convertAssetAttribute(d.Get("wind_speed").(*schema.Set).List())
-	if windSpeed == nil {
-		windSpeed = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "wind_speed",
-			},
-		}
-	}
-	m.SegmentParams.WindSpeed = *windSpeed
-
-	windDirection := convertAssetAttribute(d.Get("wind_direction").(*schema.Set).List())
-	if windDirection == nil {
-		windDirection = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "wind_direction",
-			},
-		}
-	}
-	m.SegmentParams.WindDirection = *windDirection
 
 	altitude, err := convertAssetMetadata(d.Get("altitude").(*schema.Set).List())
 	if err != nil {

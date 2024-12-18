@@ -60,28 +60,27 @@ resource "splight_segment" "my_segment" {
     ]
   })
 
-  altitude {
-    value = jsonencode(1.1)
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  altitude {}
 
   azimuth {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   cumulative_distance {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   reference_sag {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   reference_temperature {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   span_length {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 }
 ```
@@ -91,13 +90,13 @@ resource "splight_segment" "my_segment" {
 
 ### Required
 
-- `name` (String) name of the resource
 - `altitude` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
 - `azimuth` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
 - `cumulative_distance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
-- reference_sag (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
-- reference_temperature (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
-- span_length (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))
+- `name` (String) name of the resource
+- `reference_sag` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
+- `reference_temperature` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
+- `span_length` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))
 
 ### Optional
 
@@ -117,7 +116,7 @@ resource "splight_segment" "my_segment" {
 <a id="nestedblock--altitude"></a>
 ### Nested Schema for `altitude`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -133,7 +132,7 @@ Read-Only:
 <a id="nestedblock--azimuth"></a>
 ### Nested Schema for `azimuth`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -149,7 +148,7 @@ Read-Only:
 <a id="nestedblock--cumulative_distance"></a>
 ### Nested Schema for `cumulative_distance`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -165,7 +164,7 @@ Read-Only:
 <a id="nestedblock--reference_sag"></a>
 ### Nested Schema for `reference_sag`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -181,7 +180,7 @@ Read-Only:
 <a id="nestedblock--reference_temperature"></a>
 ### Nested Schema for `reference_temperature`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -197,7 +196,7 @@ Read-Only:
 <a id="nestedblock--span_length"></a>
 ### Nested Schema for `span_length`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 

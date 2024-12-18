@@ -45,9 +45,8 @@ resource "splight_inverter" "my_inverter" {
     ]
   })
 
-  make {
-    value = jsonencode("Weiwei")
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  make {}
 
   model {
     value = jsonencode("Model A")

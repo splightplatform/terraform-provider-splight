@@ -9,17 +9,17 @@ import (
 
 type InverterParams struct {
 	AssetParams
-	AccumulatedEnergy     AssetAttribute `json:"accumulated_energy"`
-	ActivePower           AssetAttribute `json:"active_power"`
-	DailyEnergy           AssetAttribute `json:"daily_energy"`
-	RawDailyEnergy        AssetAttribute `json:"raw_daily_energy"`
-	Temperature           AssetAttribute `json:"temperature"`
-	SwitchStatus          AssetAttribute `json:"switch_status"`
-	Make                  AssetMetadata  `json:"make"`
-	Model                 AssetMetadata  `json:"model"`
-	SerialNumber          AssetMetadata  `json:"serial_number"`
-	MaxActivePower        AssetMetadata  `json:"max_active_power"`
-	EnergyMeasurementType AssetMetadata  `json:"energy_measurement_type"`
+	AccumulatedEnergy     *AssetAttribute `json:"accumulated_energy"`
+	ActivePower           *AssetAttribute `json:"active_power"`
+	DailyEnergy           *AssetAttribute `json:"daily_energy"`
+	RawDailyEnergy        *AssetAttribute `json:"raw_daily_energy"`
+	Temperature           *AssetAttribute `json:"temperature"`
+	SwitchStatus          *AssetAttribute `json:"switch_status"`
+	Make                  AssetMetadata   `json:"make"`
+	Model                 AssetMetadata   `json:"model"`
+	SerialNumber          AssetMetadata   `json:"serial_number"`
+	MaxActivePower        AssetMetadata   `json:"max_active_power"`
+	EnergyMeasurementType AssetMetadata   `json:"energy_measurement_type"`
 }
 
 type Inverter struct {
@@ -60,72 +60,6 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 			Kind:           kind,
 		},
 	}
-
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
-		}
-	}
-	m.InverterParams.ActivePower = *activePower
-
-	accumulatedEnergy := convertAssetAttribute(d.Get("accumulated_energy").(*schema.Set).List())
-	if accumulatedEnergy == nil {
-		accumulatedEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "accumulated_energy",
-			},
-		}
-	}
-	m.InverterParams.AccumulatedEnergy = *accumulatedEnergy
-
-	dailyEnergy := convertAssetAttribute(d.Get("daily_energy").(*schema.Set).List())
-	if dailyEnergy == nil {
-		dailyEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "daily_energy",
-			},
-		}
-	}
-	m.InverterParams.DailyEnergy = *dailyEnergy
-
-	rawDailyEnergy := convertAssetAttribute(d.Get("raw_daily_energy").(*schema.Set).List())
-	if rawDailyEnergy == nil {
-		rawDailyEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "raw_daily_energy",
-			},
-		}
-	}
-	m.InverterParams.RawDailyEnergy = *rawDailyEnergy
-
-	temperature := convertAssetAttribute(d.Get("temperature").(*schema.Set).List())
-	if temperature == nil {
-		temperature = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "temperature",
-			},
-		}
-	}
-	m.InverterParams.Temperature = *temperature
-
-	switchStatus := convertAssetAttribute(d.Get("switch_status").(*schema.Set).List())
-	if switchStatus == nil {
-		switchStatus = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "switch_status",
-			},
-		}
-	}
-	m.InverterParams.SwitchStatus = *switchStatus
 
 	make, err := convertAssetMetadata(d.Get("make").(*schema.Set).List())
 	if err != nil {

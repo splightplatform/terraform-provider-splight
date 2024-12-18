@@ -34,8 +34,26 @@ func (m *AssetMetadata) ToMap() map[string]any {
 		"asset": m.Asset,
 		"name":  m.Name,
 		"type":  m.Type,
-		"value": string(m.Value),
 		"unit":  m.Unit,
+	}
+
+	// NOTE: convert floats to ints without loosing decimals.
+	// This is done because API casts the values
+	var rawValue any
+	if err := json.Unmarshal(m.Value, &rawValue); err == nil {
+		// Check if the value is a float
+		if floatVal, ok := rawValue.(float64); ok {
+			// Check if the float can be converted to an integer without loss
+			if float64(int(floatVal)) == floatVal {
+				result["value"] = int(floatVal)
+			} else {
+				result["value"] = string(m.Value)
+			}
+		} else {
+			result["value"] = string(m.Value)
+		}
+	} else {
+		result["value"] = string(m.Value)
 	}
 
 	return result
@@ -46,17 +64,21 @@ func (m *AssetMetadata) ResourcePath() string {
 }
 
 func convertAssetMetadata(data []any) (*AssetMetadata, error) {
+	// Handle empty input
 	if len(data) == 0 {
-		return nil, nil
+		return &AssetMetadata{AssetMetadataParams: AssetMetadataParams{}}, nil
 	}
+
+	// Type assertion for metadata map
 	metadataMap := data[0].(map[string]any)
 
-	// Validate value JSON
+	// Extract value and validate JSON
 	valueStr := metadataMap["value"].(string)
 	if err := validateJSONString(valueStr); err != nil {
 		return nil, fmt.Errorf("metadata value must be JSON encoded")
 	}
 
+	// Construct and return AssetMetadata
 	return &AssetMetadata{
 		AssetMetadataParams: AssetMetadataParams{
 			Asset: metadataMap["asset"].(string),

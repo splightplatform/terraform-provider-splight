@@ -60,9 +60,8 @@ resource "splight_line" "my_line" {
     ]
   })
 
-  diameter {
-    value = jsonencode(1.1)
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  diameter {}
 
   absorptivity {
     value = jsonencode(1.1)
@@ -135,6 +134,18 @@ resource "splight_line" "my_line" {
   temperature_coeff_resistance {
     value = jsonencode(1.1)
   }
+
+  specific_heat {
+    value = jsonencode(1.1)
+  }
+
+  conductor_mass {
+    value = jsonencode(1.1)
+  }
+
+  thermal_elongation_coef {
+    value = jsonencode(1.1)
+  }
 }
 ```
 
@@ -147,6 +158,7 @@ resource "splight_line" "my_line" {
 - `atmosphere` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--atmosphere))
 - `capacitance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
 - `conductance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
+- `conductor_mass` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductor_mass))
 - `diameter` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--diameter))
 - `emissivity` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--emissivity))
 - `length` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--length))
@@ -161,10 +173,9 @@ resource "splight_line" "my_line" {
 - `reference_resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_resistance))
 - `resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--resistance))
 - `safety_margin_for_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
+- `specific_heat` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--specific_heat))
 - `susceptance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--susceptance))
 - `temperature_coeff_resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--temperature_coeff_resistance))
-- `specific_heat` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--specific_heat))
-- `conductor_mass` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductor_mass))
 - `thermal_elongation_coef` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--thermal_elongation_coef))
 
 ### Optional
@@ -179,6 +190,7 @@ resource "splight_line" "my_line" {
 - `active_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power))
 - `active_power_end` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power_end))
 - `ampacity` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--ampacity))
+- `contingency` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--contingency))
 - `current` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--current))
 - `current_r` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--current_r))
 - `current_s` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--current_s))
@@ -188,17 +200,16 @@ resource "splight_line" "my_line" {
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `max_temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--max_temperature))
 - `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
+- `switch_status_end` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_end))
+- `switch_status_start` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_start))
 - `voltage_rs` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_rs))
 - `voltage_st` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_st))
 - `voltage_tr` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_tr))
-- `contingency` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--contingency))
-- `switch_status_start` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_start))
-- `switch_status_end` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_end))
 
 <a id="nestedblock--absorptivity"></a>
 ### Nested Schema for `absorptivity`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -214,7 +225,7 @@ Read-Only:
 <a id="nestedblock--atmosphere"></a>
 ### Nested Schema for `atmosphere`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -230,7 +241,7 @@ Read-Only:
 <a id="nestedblock--capacitance"></a>
 ### Nested Schema for `capacitance`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -246,263 +257,7 @@ Read-Only:
 <a id="nestedblock--conductance"></a>
 ### Nested Schema for `conductance`
 
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--diameter"></a>
-### Nested Schema for `diameter`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--emissivity"></a>
-### Nested Schema for `emissivity`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--length"></a>
-### Nested Schema for `length`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--maximum_allowed_current"></a>
-### Nested Schema for `maximum_allowed_current`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--maximum_allowed_power"></a>
-### Nested Schema for `maximum_allowed_power`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--maximum_allowed_temperature"></a>
-### Nested Schema for `maximum_allowed_temperature`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--maximum_allowed_temperature_lte"></a>
-### Nested Schema for `maximum_allowed_temperature_lte`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--maximum_allowed_temperature_ste"></a>
-### Nested Schema for `maximum_allowed_temperature_ste`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--number_of_conductors"></a>
-### Nested Schema for `number_of_conductors`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--reactance"></a>
-### Nested Schema for `reactance`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--reference_resistance"></a>
-### Nested Schema for `reference_resistance`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--resistance"></a>
-### Nested Schema for `resistance`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--safety_margin_for_power"></a>
-### Nested Schema for `safety_margin_for_power`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--susceptance"></a>
-### Nested Schema for `susceptance`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--temperature_coeff_resistance"></a>
-### Nested Schema for `temperature_coeff_resistance`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--specific_heat"></a>
-### Nested Schema for `specific_heat`
-
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -518,7 +273,7 @@ Read-Only:
 <a id="nestedblock--conductor_mass"></a>
 ### Nested Schema for `conductor_mass`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -528,13 +283,269 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--diameter"></a>
+### Nested Schema for `diameter`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--emissivity"></a>
+### Nested Schema for `emissivity`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--length"></a>
+### Nested Schema for `length`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--maximum_allowed_current"></a>
+### Nested Schema for `maximum_allowed_current`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--maximum_allowed_power"></a>
+### Nested Schema for `maximum_allowed_power`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--maximum_allowed_temperature"></a>
+### Nested Schema for `maximum_allowed_temperature`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--maximum_allowed_temperature_lte"></a>
+### Nested Schema for `maximum_allowed_temperature_lte`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--maximum_allowed_temperature_ste"></a>
+### Nested Schema for `maximum_allowed_temperature_ste`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--number_of_conductors"></a>
+### Nested Schema for `number_of_conductors`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--reactance"></a>
+### Nested Schema for `reactance`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--reference_resistance"></a>
+### Nested Schema for `reference_resistance`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--resistance"></a>
+### Nested Schema for `resistance`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--safety_margin_for_power"></a>
+### Nested Schema for `safety_margin_for_power`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--specific_heat"></a>
+### Nested Schema for `specific_heat`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--susceptance"></a>
+### Nested Schema for `susceptance`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--temperature_coeff_resistance"></a>
+### Nested Schema for `temperature_coeff_resistance`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
 
 
 <a id="nestedblock--thermal_elongation_coef"></a>
 ### Nested Schema for `thermal_elongation_coef`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -544,7 +555,8 @@ Read-Only:
 - `id` (String) id of the resource
 - `name` (String) name of the resource
 - `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit
+- `unit` (String) unit of measure
+
 
 <a id="nestedblock--tags"></a>
 ### Nested Schema for `tags`
@@ -581,6 +593,18 @@ Read-Only:
 
 <a id="nestedatt--ampacity"></a>
 ### Nested Schema for `ampacity`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--contingency"></a>
+### Nested Schema for `contingency`
 
 Read-Only:
 
@@ -684,6 +708,30 @@ Read-Only:
 - `unit` (String)
 
 
+<a id="nestedatt--switch_status_end"></a>
+### Nested Schema for `switch_status_end`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status_start"></a>
+### Nested Schema for `switch_status_start`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
 <a id="nestedatt--voltage_rs"></a>
 ### Nested Schema for `voltage_rs`
 
@@ -718,43 +766,6 @@ Read-Only:
 - `name` (String)
 - `type` (String)
 - `unit` (String)
-
-
-<a id="nestedatt--contingency"></a>
-### Nested Schema for `contingency`
-
-Read-Only:
-
-- `asset` (String)
-- `id` (String)
-- `name` (String)
-- `type` (String)
-- `unit` (String)
-
-
-<a id="nestedatt--switch_status_start"></a>
-### Nested Schema for `switch_status_start`
-
-Read-Only:
-
-- `asset` (String)
-- `id` (String)
-- `name` (String)
-- `type` (String)
-- `unit` (String)
-
-
-<a id="nestedatt--switch_status_end"></a>
-### Nested Schema for `switch_status_end`
-
-Read-Only:
-
-- `asset` (String)
-- `id` (String)
-- `name` (String)
-- `type` (String)
-- `unit` (String)
-
 
 ## Import
 
