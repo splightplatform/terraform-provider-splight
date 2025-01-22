@@ -32,7 +32,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"active_power_lv": {
@@ -40,7 +40,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"reactive_power_hv": {
@@ -48,7 +48,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"reactive_power_lv": {
@@ -56,7 +56,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"active_power_loss": {
@@ -64,7 +64,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"reactive_power_loss": {
@@ -72,7 +72,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"current_hv": {
@@ -80,7 +80,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"current_lv": {
@@ -88,7 +88,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"voltage_hv": {
@@ -96,7 +96,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"voltage_lv": {
@@ -104,7 +104,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"contingency": {
@@ -112,7 +112,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"switch_status_lv": {
@@ -120,7 +120,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"switch_status_hv": {
@@ -128,7 +128,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"tap_pos": {
@@ -137,7 +137,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"xn_ohm": {
@@ -146,7 +146,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0"),
 			},
 		},
 		"standard_type": {
@@ -155,7 +155,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, ""),
 			},
 		},
 		"capacitance": {
@@ -164,7 +164,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "10.7"),
 			},
 		},
 		"conductance": {
@@ -173,7 +173,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.001"),
 			},
 		},
 		"maximum_allowed_current": {
@@ -182,7 +182,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "1.18"),
 			},
 		},
 		"maximum_allowed_power": {
@@ -191,7 +191,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "450"),
 			},
 		},
 		"reactance": {
@@ -200,7 +200,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "21.80042593"),
 			},
 		},
 		"resistance": {
@@ -209,7 +209,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "0.217500888"),
 			},
 		},
 		"safety_margin_for_power": {
@@ -218,7 +218,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "5"),
 			},
 		},
 		"tags": {

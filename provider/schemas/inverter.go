@@ -32,7 +32,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"active_power": {
@@ -40,7 +40,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"daily_energy": {
@@ -48,7 +48,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"raw_daily_energy": {
@@ -56,7 +56,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"temperature": {
@@ -64,7 +64,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"switch_status": {
@@ -72,7 +72,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"make": {
@@ -81,7 +81,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, ""),
 			},
 		},
 		"model": {
@@ -90,7 +90,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, ""),
 			},
 		},
 		"serial_number": {
@@ -99,7 +99,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, ""),
 			},
 		},
 		"max_active_power": {
@@ -108,7 +108,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "80"),
 			},
 		},
 		"energy_measurement_type": {
@@ -117,7 +117,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "daily"),
 			},
 		},
 		"tags": {

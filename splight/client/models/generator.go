@@ -9,12 +9,12 @@ import (
 
 type GeneratorParams struct {
 	AssetParams
-	ActivePower          AssetAttribute `json:"active_power"`
-	ReactivePower        AssetAttribute `json:"reactive_power"`
-	DailyEnergy          AssetAttribute `json:"daily_energy"`
-	DailyEmissionAvoided AssetAttribute `json:"daily_emission_avoided"`
-	MonthlyEnergy        AssetAttribute `json:"monthly_energy"`
-	CO2Coefficient       AssetMetadata  `json:"CO2_coefficient"`
+	ActivePower          *AssetAttribute `json:"active_power"`
+	ReactivePower        *AssetAttribute `json:"reactive_power"`
+	DailyEnergy          *AssetAttribute `json:"daily_energy"`
+	DailyEmissionAvoided *AssetAttribute `json:"daily_emission_avoided"`
+	MonthlyEnergy        *AssetAttribute `json:"monthly_energy"`
+	CO2Coefficient       AssetMetadata   `json:"CO2_coefficient"`
 }
 
 type Generator struct {
@@ -55,62 +55,6 @@ func (m *Generator) FromSchema(d *schema.ResourceData) error {
 			Kind:           kind,
 		},
 	}
-
-	// TODO: remove ALL of these sets when API fixes its contract
-	activePower := convertAssetAttribute(d.Get("active_power").(*schema.Set).List())
-	if activePower == nil {
-		activePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "active_power",
-			},
-		}
-	}
-	m.GeneratorParams.ActivePower = *activePower
-
-	reactivePower := convertAssetAttribute(d.Get("reactive_power").(*schema.Set).List())
-	if reactivePower == nil {
-		reactivePower = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "reactive_power",
-			},
-		}
-	}
-	m.GeneratorParams.ReactivePower = *reactivePower
-
-	dailyEnergy := convertAssetAttribute(d.Get("daily_energy").(*schema.Set).List())
-	if dailyEnergy == nil {
-		dailyEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "daily_energy",
-			},
-		}
-	}
-	m.GeneratorParams.DailyEnergy = *dailyEnergy
-
-	dailyEmissionAvoided := convertAssetAttribute(d.Get("daily_emission_avoided").(*schema.Set).List())
-	if dailyEmissionAvoided == nil {
-		dailyEmissionAvoided = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "daily_emission_avoided",
-			},
-		}
-	}
-	m.GeneratorParams.DailyEmissionAvoided = *dailyEmissionAvoided
-
-	monthlyEnergy := convertAssetAttribute(d.Get("monthly_energy").(*schema.Set).List())
-	if monthlyEnergy == nil {
-		monthlyEnergy = &AssetAttribute{
-			AssetAttributeParams: AssetAttributeParams{
-				Type: "Number",
-				Name: "monthly_energy",
-			},
-		}
-	}
-	m.GeneratorParams.MonthlyEnergy = *monthlyEnergy
 
 	CO2_coefficient, err := convertAssetMetadata(d.Get("co2_coefficient").(*schema.Set).List())
 	if err != nil {

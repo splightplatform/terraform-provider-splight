@@ -32,7 +32,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"wind_speed": {
@@ -40,7 +40,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"wind_direction": {
@@ -48,7 +48,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"altitude": {
@@ -57,7 +57,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "500"),
 			},
 		},
 		"azimuth": {
@@ -66,7 +66,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "90"),
 			},
 		},
 		"cumulative_distance": {
@@ -75,7 +75,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "300"),
 			},
 		},
 		"reference_sag": {
@@ -84,7 +84,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "2"),
 			},
 		},
 		"reference_temperature": {
@@ -93,7 +93,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "93"),
 			},
 		},
 		"span_length": {
@@ -102,7 +102,7 @@ func SchemaSegment() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "100"),
 			},
 		},
 		"tags": {

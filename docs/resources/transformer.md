@@ -6,7 +6,7 @@ description: |-
   
 ---
 
-# splight_ (Resource)
+# splight_transformer (Resource)
 
 
 
@@ -60,9 +60,8 @@ resource "splight_transformer" "my_transformer" {
     ]
   })
 
-  tap_pos {
-    value = jsonencode(0)
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  tap_pos {}
 
   xn_ohm {
     value = jsonencode(0)
@@ -107,17 +106,17 @@ resource "splight_transformer" "my_transformer" {
 
 ### Required
 
-- `name` (String) name of the resource
-- `tap_pos` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--tap_pos))
-- `xn_ohm` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--xn_ohm))
-- `standard_type` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--standard_type))
 - `capacitance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
 - `conductance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
 - `maximum_allowed_current` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_current))
 - `maximum_allowed_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_power))
+- `name` (String) name of the resource
 - `reactance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reactance))
 - `resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--resistance))
 - `safety_margin_for_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
+- `standard_type` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--standard_type))
+- `tap_pos` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--tap_pos))
+- `xn_ohm` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--xn_ohm))
 
 ### Optional
 
@@ -128,90 +127,26 @@ resource "splight_transformer" "my_transformer" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
-- `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `active_power_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power_hv))
-- `active_power_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power_lv))
-- `reactive_power_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_hv))
-- `reactive_power_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_lv))
 - `active_power_loss` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power_loss))
-- `reactive_power_loss` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_loss))
+- `active_power_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--active_power_lv))
+- `contingency` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--contingency))
 - `current_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--current_hv))
 - `current_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--current_lv))
+- `id` (String) The ID of this resource.
+- `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
+- `reactive_power_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_hv))
+- `reactive_power_loss` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_loss))
+- `reactive_power_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_lv))
+- `switch_status_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_hv))
+- `switch_status_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_lv))
 - `voltage_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_hv))
 - `voltage_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_lv))
-- `contingency` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--contingency))
-- `switch_status_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_lv))
-- `switch_status_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_hv))
-
-<a id="nestedblock--energy_measurement_type"></a>
-### Nested Schema for `energy_measurement_type`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--tap_pos"></a>
-### Nested Schema for `tap_pos`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--xn_ohm"></a>
-### Nested Schema for `xn_ohm`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--standard_type"></a>
-### Nested Schema for `standard_type`
-
-Required:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
 
 <a id="nestedblock--capacitance"></a>
 ### Nested Schema for `capacitance`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -227,7 +162,7 @@ Read-Only:
 <a id="nestedblock--conductance"></a>
 ### Nested Schema for `conductance`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -243,7 +178,7 @@ Read-Only:
 <a id="nestedblock--maximum_allowed_current"></a>
 ### Nested Schema for `maximum_allowed_current`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -259,7 +194,7 @@ Read-Only:
 <a id="nestedblock--maximum_allowed_power"></a>
 ### Nested Schema for `maximum_allowed_power`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -275,7 +210,7 @@ Read-Only:
 <a id="nestedblock--reactance"></a>
 ### Nested Schema for `reactance`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -291,7 +226,7 @@ Read-Only:
 <a id="nestedblock--resistance"></a>
 ### Nested Schema for `resistance`
 
-Required:
+Optional:
 
 - `value` (String) metadata value
 
@@ -307,7 +242,55 @@ Read-Only:
 <a id="nestedblock--safety_margin_for_power"></a>
 ### Nested Schema for `safety_margin_for_power`
 
-Required:
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--standard_type"></a>
+### Nested Schema for `standard_type`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--tap_pos"></a>
+### Nested Schema for `tap_pos`
+
+Optional:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--xn_ohm"></a>
+### Nested Schema for `xn_ohm`
+
+Optional:
 
 - `value` (String) metadata value
 
@@ -341,51 +324,6 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--active_power_lv"></a>
-### Nested Schema for `active_power_lv`
-
-Read-Only:
-
-- `asset` (String)
-- `id` (String)
-- `name` (String)
-- `type` (String)
-- `unit` (String)
-
-
-<a id="nestedatt--reactive_power_hv"></a>
-### Nested Schema for `reactive_power_hv`
-
-Read-Only:
-
-- `asset` (String)
-- `id` (String)
-- `name` (String)
-- `type` (String)
-- `unit` (String)
-
-
-<a id="nestedatt--kind"></a>
-### Nested Schema for `kind`
-
-Read-Only:
-
-- `id` (String)
-- `name` (String)
-
-
-<a id="nestedatt--reactive_power_lv"></a>
-### Nested Schema for `reactive_power_lv`
-
-Read-Only:
-
-- `asset` (String)
-- `id` (String)
-- `name` (String)
-- `type` (String)
-- `unit` (String)
-
-
 <a id="nestedatt--active_power_loss"></a>
 ### Nested Schema for `active_power_loss`
 
@@ -398,8 +336,20 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--reactive_power_loss"></a>
-### Nested Schema for `reactive_power_loss`
+<a id="nestedatt--active_power_lv"></a>
+### Nested Schema for `active_power_lv`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--contingency"></a>
+### Nested Schema for `contingency`
 
 Read-Only:
 
@@ -434,8 +384,17 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--voltage_hv"></a>
-### Nested Schema for `voltage_hv`
+<a id="nestedatt--kind"></a>
+### Nested Schema for `kind`
+
+Read-Only:
+
+- `id` (String)
+- `name` (String)
+
+
+<a id="nestedatt--reactive_power_hv"></a>
+### Nested Schema for `reactive_power_hv`
 
 Read-Only:
 
@@ -446,8 +405,8 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--voltage_lv"></a>
-### Nested Schema for `voltage_lv`
+<a id="nestedatt--reactive_power_loss"></a>
+### Nested Schema for `reactive_power_loss`
 
 Read-Only:
 
@@ -458,8 +417,20 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--contingency"></a>
-### Nested Schema for `contingency`
+<a id="nestedatt--reactive_power_lv"></a>
+### Nested Schema for `reactive_power_lv`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
+
+
+<a id="nestedatt--switch_status_hv"></a>
+### Nested Schema for `switch_status_hv`
 
 Read-Only:
 
@@ -482,8 +453,8 @@ Read-Only:
 - `unit` (String)
 
 
-<a id="nestedatt--switch_status_hv"></a>
-### Nested Schema for `switch_status_hv`
+<a id="nestedatt--voltage_hv"></a>
+### Nested Schema for `voltage_hv`
 
 Read-Only:
 
@@ -493,6 +464,17 @@ Read-Only:
 - `type` (String)
 - `unit` (String)
 
+
+<a id="nestedatt--voltage_lv"></a>
+### Nested Schema for `voltage_lv`
+
+Read-Only:
+
+- `asset` (String)
+- `id` (String)
+- `name` (String)
+- `type` (String)
+- `unit` (String)
 
 ## Import
 

@@ -32,7 +32,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"reactive_power": {
@@ -40,7 +40,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"daily_energy": {
@@ -48,7 +48,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"daily_emission_avoided": {
@@ -56,7 +56,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"monthly_energy": {
@@ -64,7 +64,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"switch_status": {
@@ -72,7 +72,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false),
+				Schema: schemaConstrainedAttribute(false, nil),
 			},
 		},
 		"co2_coefficient": {
@@ -81,7 +81,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true),
+				Schema: schemaConstrainedAttribute(true, "205"),
 			},
 		},
 		"tags": {

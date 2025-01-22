@@ -45,27 +45,26 @@ resource "splight_segment" "my_segment" {
     ]
   })
 
-  altitude {
-    value = jsonencode(1.1)
-  }
+  # You may leave some metadata values unset, in order to use the defaults 
+  altitude {}
 
   azimuth {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   cumulative_distance {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   reference_sag {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   reference_temperature {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 
   span_length {
-    value = jsonencode(1.1)
+    value = jsonencode(1)
   }
 }
