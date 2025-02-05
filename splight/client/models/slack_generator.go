@@ -25,7 +25,7 @@ func (m *SlackGenerator) GetParams() Params {
 }
 
 func (m *SlackGenerator) ResourcePath() string {
-	return "v2/engine/asset/slack_generators/"
+	return "v2/engine/asset/slack-generators/"
 }
 
 func (m *SlackGenerator) FromSchema(d *schema.ResourceData) error {
