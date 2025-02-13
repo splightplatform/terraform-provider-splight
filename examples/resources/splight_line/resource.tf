@@ -17,7 +17,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_line" "my_line" {
   name        = "My Line"
   description = "My Line Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -45,8 +48,10 @@ resource "splight_line" "my_line" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  diameter {}
+  # You may ommit some keys to use the default values from the API
+  diameter {
+    value = jsonencode(1.1)
+  }
 
   absorptivity {
     value = jsonencode(1.1)
