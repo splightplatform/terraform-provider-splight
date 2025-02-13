@@ -17,7 +17,9 @@ data "splight_tags" "my_tags" {}
 resource "splight_bus" "my_bus" {
   name        = "My Bus"
   description = "My Bus Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -45,9 +47,7 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  # nominal_voltage_kv {}
-
+  # You may ommit some keys to use the default values from the API
   nominal_voltage_kv {
     value = jsonencode(2.2)
   }

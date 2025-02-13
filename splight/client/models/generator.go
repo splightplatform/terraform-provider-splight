@@ -36,22 +36,35 @@ func (m *Generator) ResourcePath() string {
 
 func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
+
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry field contains %w", err)
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
 	}
 
-	geometry := json.RawMessage(geometryStr)
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
+	}
+
 	m.GeneratorParams = GeneratorParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       &geometry,
-			CustomTimezone: d.Get("timezone").(string),
+			Geometry:       geometry,
+			CustomTimezone: timezone,
 			Tags:           tags,
 			Kind:           kind,
 		},

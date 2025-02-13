@@ -25,6 +25,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
 		"active_power": {
@@ -78,6 +79,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 		"co2_coefficient": {
 			Type:        schema.TypeSet,
 			Optional:    true,
+			Computed:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
