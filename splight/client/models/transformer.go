@@ -9,28 +9,29 @@ import (
 
 type TransformerParams struct {
 	AssetParams
-	ActivePowerHV        *AssetAttribute `json:"active_power_hv"`
-	ActivePowerLV        *AssetAttribute `json:"active_power_lv"`
-	ReactivePowerHV      *AssetAttribute `json:"reactive_power_hv"`
-	ReactivePowerLV      *AssetAttribute `json:"reactive_power_lv"`
-	ActivePowerLoss      *AssetAttribute `json:"active_power_loss"`
-	ReactivePowerLoss    *AssetAttribute `json:"reactive_power_loss"`
-	CurrentHV            *AssetAttribute `json:"current_hv"`
-	CurrentLV            *AssetAttribute `json:"current_lv"`
-	VoltageHV            *AssetAttribute `json:"volatge_hv"`
-	VoltageLV            *AssetAttribute `json:"voltage_lv"`
-	Contingency          *AssetAttribute `json:"continency"`
-	SwitchStatusHV       *AssetAttribute `json:"switch_status_hv"`
-	SwitchStatusLV       *AssetAttribute `json:"switch_status_lv"`
-	TapPos               AssetMetadata   `json:"tap_pos"`
-	XnOhm                AssetMetadata   `json:"xn_ohm"`
-	StandardType         AssetMetadata   `json:"standard_type"`
-	Capacitance          AssetMetadata   `json:"capacitance"`
-	Conductance          AssetMetadata   `json:"conductance"`
-	MaximumAllowedPower  AssetMetadata   `json:"maximum_allowed_power"`
-	Reactance            AssetMetadata   `json:"reactance"`
-	Resistance           AssetMetadata   `json:"resistance"`
-	SafetyMarginForPower AssetMetadata   `json:"safety_margin_for_power"`
+	ActivePowerHV         *AssetAttribute `json:"active_power_hv"`
+	ActivePowerLV         *AssetAttribute `json:"active_power_lv"`
+	ReactivePowerHV       *AssetAttribute `json:"reactive_power_hv"`
+	ReactivePowerLV       *AssetAttribute `json:"reactive_power_lv"`
+	ActivePowerLoss       *AssetAttribute `json:"active_power_loss"`
+	ReactivePowerLoss     *AssetAttribute `json:"reactive_power_loss"`
+	CurrentHV             *AssetAttribute `json:"current_hv"`
+	CurrentLV             *AssetAttribute `json:"current_lv"`
+	VoltageHV             *AssetAttribute `json:"voltage_hv"`
+	VoltageLV             *AssetAttribute `json:"voltage_lv"`
+	Contingency           *AssetAttribute `json:"contingency"`
+	SwitchStatusHV        *AssetAttribute `json:"switch_status_hv"`
+	SwitchStatusLV        *AssetAttribute `json:"switch_status_lv"`
+	TapPos                AssetMetadata   `json:"tap_pos"`
+	XnOhm                 AssetMetadata   `json:"xn_ohm"`
+	StandardType          AssetMetadata   `json:"standard_type"`
+	Capacitance           AssetMetadata   `json:"capacitance"`
+	Conductance           AssetMetadata   `json:"conductance"`
+	MaximumAllowedCurrent AssetMetadata   `json:"maximum_allowed_current"`
+	MaximumAllowedPower   AssetMetadata   `json:"maximum_allowed_power"`
+	Reactance             AssetMetadata   `json:"reactance"`
+	Resistance            AssetMetadata   `json:"resistance"`
+	SafetyMarginForPower  AssetMetadata   `json:"safety_margin_for_power"`
 }
 
 type Transformer struct {
@@ -52,22 +53,35 @@ func (m *Transformer) ResourcePath() string {
 
 func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
+
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
 	}
 
-	geometry := json.RawMessage(geometryStr)
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
+	}
+
 	m.TransformerParams = TransformerParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       &geometry,
-			CustomTimezone: d.Get("timezone").(string),
+			Geometry:       geometry,
+			CustomTimezone: timezone,
 			Tags:           tags,
 			Kind:           kind,
 		},
@@ -81,7 +95,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		tapPos.Type = "String"
 	}
 	if tapPos.Name == "" {
-		tapPos.Name = "TapPos"
+		tapPos.Name = "tap_pos"
 	}
 	m.TransformerParams.TapPos = *tapPos
 
@@ -93,7 +107,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		xnOhm.Type = "String"
 	}
 	if xnOhm.Name == "" {
-		xnOhm.Name = "XnOhm"
+		xnOhm.Name = "xn_ohm"
 	}
 	m.TransformerParams.XnOhm = *xnOhm
 
@@ -105,7 +119,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		standardType.Type = "String"
 	}
 	if standardType.Name == "" {
-		standardType.Name = "StandardType"
+		standardType.Name = "standard_type"
 	}
 	m.TransformerParams.StandardType = *standardType
 
@@ -117,7 +131,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		capacitance.Type = "String"
 	}
 	if capacitance.Name == "" {
-		capacitance.Name = "Capacitance"
+		capacitance.Name = "capacitance"
 	}
 	m.TransformerParams.Capacitance = *capacitance
 
@@ -129,9 +143,21 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		conductance.Type = "String"
 	}
 	if conductance.Name == "" {
-		conductance.Name = "Conductance"
+		conductance.Name = "conductance"
 	}
 	m.TransformerParams.Conductance = *conductance
+
+	maximumAllowedCurrent, err := convertAssetMetadata(d.Get("maximum_allowed_current").(*schema.Set).List())
+	if err != nil {
+		return fmt.Errorf("invalid maximumAllowedCurrent metadata: %w", err)
+	}
+	if maximumAllowedCurrent.Type == "" {
+		maximumAllowedCurrent.Type = "String"
+	}
+	if maximumAllowedCurrent.Name == "" {
+		maximumAllowedCurrent.Name = "maximum_allowed_current"
+	}
+	m.TransformerParams.MaximumAllowedCurrent = *maximumAllowedCurrent
 
 	maximumAllowedPower, err := convertAssetMetadata(d.Get("maximum_allowed_power").(*schema.Set).List())
 	if err != nil {
@@ -141,7 +167,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		maximumAllowedPower.Type = "String"
 	}
 	if maximumAllowedPower.Name == "" {
-		maximumAllowedPower.Name = "MaximumAllowedPower"
+		maximumAllowedPower.Name = "maximum_allowed_power"
 	}
 	m.TransformerParams.MaximumAllowedPower = *maximumAllowedPower
 
@@ -153,7 +179,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		reactance.Type = "String"
 	}
 	if reactance.Name == "" {
-		reactance.Name = "Reactance"
+		reactance.Name = "reactance"
 	}
 	m.TransformerParams.Reactance = *reactance
 
@@ -165,7 +191,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		resistance.Type = "String"
 	}
 	if resistance.Name == "" {
-		resistance.Name = "Resistance"
+		resistance.Name = "resistance"
 	}
 	m.TransformerParams.Resistance = *resistance
 
@@ -177,7 +203,7 @@ func (m *Transformer) FromSchema(d *schema.ResourceData) error {
 		safetyMarginForPower.Type = "String"
 	}
 	if safetyMarginForPower.Name == "" {
-		safetyMarginForPower.Name = "SafetyMarginForPower"
+		safetyMarginForPower.Name = "safety_margin_for_power"
 	}
 	m.TransformerParams.SafetyMarginForPower = *safetyMarginForPower
 
@@ -256,7 +282,7 @@ func (m *Transformer) ToSchema(d *schema.ResourceData) error {
 		m.VoltageLV.ToMap(),
 	})
 
-	d.Set("continency", []map[string]any{
+	d.Set("contingency", []map[string]any{
 		m.Contingency.ToMap(),
 	})
 
@@ -282,6 +308,10 @@ func (m *Transformer) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("conductance", []map[string]any{
 		m.Conductance.ToMap(),
+	})
+
+	d.Set("maximum_allowed_current", []map[string]any{
+		m.MaximumAllowedCurrent.ToMap(),
 	})
 
 	d.Set("maximum_allowed_power", []map[string]any{
