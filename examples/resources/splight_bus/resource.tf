@@ -19,6 +19,7 @@ resource "splight_bus" "my_bus" {
   description = "My Bus Description"
 
   # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
   timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
