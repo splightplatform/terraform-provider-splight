@@ -42,11 +42,12 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
 	}
 
+	geometry := json.RawMessage(geometryStr)
 	m.BusParams = BusParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(geometryStr),
+			Geometry:       &geometry,
 			CustomTimezone: d.Get("timezone").(string),
 			Tags:           tags,
 			Kind:           kind,
@@ -73,7 +74,15 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
-	d.Set("geometry", string(m.AssetParams.Geometry))
+
+	var geometryStr string
+	if m.Geometry != nil {
+		geometryStr = string(*m.Geometry)
+	} else {
+		geometryStr = ""
+	}
+	d.Set("geometry", geometryStr)
+
 	d.Set("timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any
