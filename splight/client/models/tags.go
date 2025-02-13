@@ -7,7 +7,7 @@ type Tags struct {
 }
 
 func (m *Tags) ResourcePath() string {
-	return "v2/account/tags/"
+	return "v3/engine/tags/"
 }
 
 func (m *Tags) ToSchema(d *schema.ResourceData) error {

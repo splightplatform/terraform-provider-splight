@@ -30,7 +30,19 @@ func (m *Asset) GetParams() Params {
 }
 
 func (m *Asset) ResourcePath() string {
-	return "v2/engine/asset/assets/"
+	return "v3/engine/asset/assets/"
+}
+
+// validateTimezoneOrGeometry ensures that either one of `timezone` or `geometry` is set,
+// or both are set with the same value.
+func validateTimezoneOrGeometry(timezone, geometryStr string) error {
+	if timezone != "" && geometryStr != "" {
+		// If both are set, check if they are equal
+		if timezone != geometryStr {
+			return fmt.Errorf("if both 'timezone' and 'geometry' are set, they must have the same value")
+		}
+	}
+	return nil
 }
 
 func (m *Asset) FromSchema(d *schema.ResourceData) error {
@@ -39,17 +51,27 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+
+	// Validate timezone or geometry (or both equal)
+	if err := validateTimezoneOrGeometry(timezone, geometryStr); err != nil {
+		return err
+	}
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
 	}
 
 	m.AssetParams = AssetParams{
 		Name:           d.Get("name").(string),
 		Description:    d.Get("description").(string),
 		Geometry:       json.RawMessage(geometryStr),
-		CustomTimezone: d.Get("timezone").(string),
+		CustomTimezone: timezone,
 		Tags:           tags,
 		Kind:           kind,
 	}

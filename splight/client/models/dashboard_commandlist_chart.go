@@ -23,7 +23,7 @@ func (m *DashboardCommandListChart) GetParams() Params {
 }
 
 func (m *DashboardCommandListChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func (m *DashboardCommandListChart) FromSchema(d *schema.ResourceData) error {

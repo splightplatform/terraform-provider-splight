@@ -54,7 +54,7 @@ func (m *Component) GetParams() Params {
 }
 
 func (m *Component) ResourcePath() string {
-	return "v2/engine/component/components/"
+	return "v3/engine/component/components/"
 }
 
 func (m *Component) FromSchema(d *schema.ResourceData) error {

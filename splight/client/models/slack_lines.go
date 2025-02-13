@@ -7,7 +7,7 @@ type SlackLines struct {
 }
 
 func (m *SlackLines) ResourcePath() string {
-	return "v2/engine/asset/slack-lines/"
+	return "v3/engine/asset/slack-lines/"
 }
 
 func (m *SlackLines) ToSchema(d *schema.ResourceData) error {

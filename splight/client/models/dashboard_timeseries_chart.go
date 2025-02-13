@@ -32,7 +32,7 @@ func (m *DashboardTimeseriesChart) GetParams() Params {
 }
 
 func (m *DashboardTimeseriesChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func (m *DashboardTimeseriesChart) FromSchema(d *schema.ResourceData) error {

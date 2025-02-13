@@ -21,7 +21,7 @@ func (m *FileFolder) GetParams() Params {
 }
 
 func (m *FileFolder) ResourcePath() string {
-	return "v2/engine/file/folders/"
+	return "v3/engine/file/folders/"
 }
 
 func (m *FileFolder) FromSchema(d *schema.ResourceData) error {

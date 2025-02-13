@@ -22,7 +22,7 @@ func (m *DashboardTab) GetParams() Params {
 }
 
 func (m *DashboardTab) ResourcePath() string {
-	return "v2/engine/dashboard/tabs/"
+	return "v3/engine/dashboard/tabs/"
 }
 
 func (m *DashboardTab) FromSchema(d *schema.ResourceData) error {

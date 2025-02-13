@@ -36,7 +36,7 @@ func (m *Inverter) GetParams() Params {
 }
 
 func (m *Inverter) ResourcePath() string {
-	return "v2/engine/asset/inverters/"
+	return "v3/engine/asset/inverters/"
 }
 
 func (m *Inverter) FromSchema(d *schema.ResourceData) error {

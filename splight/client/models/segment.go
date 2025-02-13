@@ -34,7 +34,7 @@ func (m *Segment) GetParams() Params {
 }
 
 func (m *Segment) ResourcePath() string {
-	return "v2/engine/asset/segments/"
+	return "v3/engine/asset/segments/"
 }
 
 func validateJSONString(s string) error {

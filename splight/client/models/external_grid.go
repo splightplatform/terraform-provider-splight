@@ -25,7 +25,7 @@ func (m *ExternalGrid) GetParams() Params {
 }
 
 func (m *ExternalGrid) ResourcePath() string {
-	return "v2/engine/asset/external-grids/"
+	return "v3/engine/asset/external-grids/"
 }
 
 func (m *ExternalGrid) FromSchema(d *schema.ResourceData) error {

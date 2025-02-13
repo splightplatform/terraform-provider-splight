@@ -26,7 +26,7 @@ func (m *Grid) GetParams() Params {
 }
 
 func (m *Grid) ResourcePath() string {
-	return "v2/engine/asset/grids/"
+	return "v3/engine/asset/grids/"
 }
 
 func (m *Grid) FromSchema(d *schema.ResourceData) error {

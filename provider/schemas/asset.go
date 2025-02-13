@@ -49,7 +49,7 @@ func SchemaAsset() map[string]*schema.Schema {
 		},
 		"geometry": {
 			Type:             schema.TypeString,
-			Required:         true,
+			Optional:         true,
 			Description:      "GeoJSON GeomtryCollection",
 			DiffSuppressFunc: JSONStringEqualSupressFunc,
 		},

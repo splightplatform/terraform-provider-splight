@@ -23,7 +23,7 @@ func (m *DashboardTableChart) GetParams() Params {
 }
 
 func (m *DashboardTableChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func (m *DashboardTableChart) FromSchema(d *schema.ResourceData) error {

@@ -15,7 +15,7 @@ import (
 
 // RetrieveEmail fetches the email of the current user.
 func (c *Client) RetrieveEmail() (string, error) {
-	body, err := c.HttpRequest("v2/account/user/profile/", "GET", bytes.Buffer{})
+	body, err := c.HttpRequest("auth/account/user/profile/", "GET", bytes.Buffer{})
 	if err != nil {
 		return "", fmt.Errorf("error making profile request: %w", err)
 	}
@@ -26,7 +26,7 @@ func (c *Client) RetrieveEmail() (string, error) {
 		return "", fmt.Errorf("error decoding profile response: %w", err)
 	}
 
-	email, ok := profile["email"].(string)
+	email, ok := profile["name"].(string)
 	if !ok {
 		return "", fmt.Errorf("user email not found in profile response")
 	}

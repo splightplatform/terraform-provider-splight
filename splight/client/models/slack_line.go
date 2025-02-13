@@ -27,7 +27,7 @@ func (m *SlackLine) GetParams() Params {
 }
 
 func (m *SlackLine) ResourcePath() string {
-	return "v2/engine/asset/slack-lines/"
+	return "v3/engine/asset/slack-lines/"
 }
 
 func (m *SlackLine) FromSchema(d *schema.ResourceData) error {

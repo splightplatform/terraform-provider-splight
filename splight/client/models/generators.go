@@ -7,7 +7,7 @@ type Generators struct {
 }
 
 func (m *Generators) ResourcePath() string {
-	return "v2/engine/asset/generators/"
+	return "v3/engine/asset/generators/"
 }
 
 func (m *Generators) ToSchema(d *schema.ResourceData) error {

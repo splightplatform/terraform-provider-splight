@@ -60,7 +60,7 @@ func (m *AssetMetadata) ToMap() map[string]any {
 }
 
 func (m *AssetMetadata) ResourcePath() string {
-	return "v2/engine/asset/metadata/"
+	return "v3/engine/asset/metadata/"
 }
 
 func convertAssetMetadata(data []any) (*AssetMetadata, error) {

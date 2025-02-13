@@ -22,7 +22,7 @@ func (m *DashboardTextChart) GetParams() Params {
 }
 
 func (m *DashboardTextChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func (m *DashboardTextChart) FromSchema(d *schema.ResourceData) error {

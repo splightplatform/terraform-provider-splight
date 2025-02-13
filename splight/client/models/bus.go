@@ -28,7 +28,7 @@ func (m *Bus) GetParams() Params {
 }
 
 func (m *Bus) ResourcePath() string {
-	return "v2/engine/asset/buses/"
+	return "v3/engine/asset/buses/"
 }
 
 func (m *Bus) FromSchema(d *schema.ResourceData) error {

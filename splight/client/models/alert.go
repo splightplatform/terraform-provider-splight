@@ -60,7 +60,7 @@ func (m *Alert) GetParams() Params {
 }
 
 func (m *Alert) ResourcePath() string {
-	return "v2/engine/alert/alerts/"
+	return "v3/engine/alert/alerts/"
 }
 
 func (m *Alert) FromSchema(d *schema.ResourceData) error {

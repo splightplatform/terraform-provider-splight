@@ -31,7 +31,7 @@ func (m *Generator) GetParams() Params {
 }
 
 func (m *Generator) ResourcePath() string {
-	return "v2/engine/asset/generators/"
+	return "v3/engine/asset/generators/"
 }
 
 func (m *Generator) FromSchema(d *schema.ResourceData) error {

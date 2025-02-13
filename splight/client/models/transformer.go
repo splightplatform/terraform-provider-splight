@@ -47,7 +47,7 @@ func (m *Transformer) GetParams() Params {
 }
 
 func (m *Transformer) ResourcePath() string {
-	return "v2/engine/asset/transformers/"
+	return "v3/engine/asset/transformers/"
 }
 
 func (m *Transformer) FromSchema(d *schema.ResourceData) error {
