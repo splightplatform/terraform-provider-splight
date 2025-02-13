@@ -32,7 +32,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_slack_line" "my_line" {
   name        = "My Slack Line"
   description = "My Slack Line Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {

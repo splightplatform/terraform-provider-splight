@@ -32,7 +32,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_segment" "my_segment" {
   name        = "My Segment"
   description = "My Segment Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -60,8 +63,10 @@ resource "splight_segment" "my_segment" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  altitude {}
+  # You may ommit some keys to use the default values from the API
+  altitude {
+    value = jsonencode(400)
+  }
 
   azimuth {
     value = jsonencode(1)
@@ -90,18 +95,18 @@ resource "splight_segment" "my_segment" {
 
 ### Required
 
-- `altitude` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
-- `azimuth` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
-- `cumulative_distance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
 - `name` (String) name of the resource
-- `reference_sag` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
-- `reference_temperature` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
-- `span_length` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))
 
 ### Optional
 
+- `altitude` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
+- `azimuth` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
+- `cumulative_distance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `reference_sag` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
+- `reference_temperature` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
+- `span_length` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `timezone` (String) timezone that overrides location-based timezone of the resource
 
@@ -116,7 +121,7 @@ resource "splight_segment" "my_segment" {
 <a id="nestedblock--altitude"></a>
 ### Nested Schema for `altitude`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -132,7 +137,7 @@ Read-Only:
 <a id="nestedblock--azimuth"></a>
 ### Nested Schema for `azimuth`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -148,7 +153,7 @@ Read-Only:
 <a id="nestedblock--cumulative_distance"></a>
 ### Nested Schema for `cumulative_distance`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -164,7 +169,7 @@ Read-Only:
 <a id="nestedblock--reference_sag"></a>
 ### Nested Schema for `reference_sag`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -180,7 +185,7 @@ Read-Only:
 <a id="nestedblock--reference_temperature"></a>
 ### Nested Schema for `reference_temperature`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -196,7 +201,7 @@ Read-Only:
 <a id="nestedblock--span_length"></a>
 ### Nested Schema for `span_length`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 

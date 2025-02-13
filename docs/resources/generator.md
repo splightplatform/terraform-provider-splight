@@ -32,7 +32,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_generator" "my_generator" {
   name        = "My Generator"
   description = "My Generator Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -59,13 +62,6 @@ resource "splight_generator" "my_generator" {
       }
     ]
   })
-
-  # You may leave some metadata values unset, in order to use the defaults 
-  # co2_coefficient {}
-
-  co2_coefficient {
-    value = jsonencode(1.1)
-  }
 }
 ```
 
@@ -74,7 +70,6 @@ resource "splight_generator" "my_generator" {
 
 ### Required
 
-- `co2_coefficient` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--co2_coefficient))
 - `name` (String) name of the resource
 
 ### Optional
@@ -94,22 +89,6 @@ resource "splight_generator" "my_generator" {
 - `monthly_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--monthly_energy))
 - `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
 - `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status))
-
-<a id="nestedblock--co2_coefficient"></a>
-### Nested Schema for `co2_coefficient`
-
-Optional:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
 
 <a id="nestedblock--tags"></a>
 ### Nested Schema for `tags`

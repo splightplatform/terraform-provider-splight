@@ -83,7 +83,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		make.Type = "String"
 	}
 	if make.Name == "" {
-		make.Name = "Make"
+		make.Name = "make"
 	}
 	m.InverterParams.Make = *make
 
@@ -95,7 +95,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		model.Type = "String"
 	}
 	if model.Name == "" {
-		model.Name = "Model"
+		model.Name = "model"
 	}
 	m.InverterParams.Model = *model
 
@@ -107,7 +107,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		serialNumber.Type = "Number"
 	}
 	if serialNumber.Name == "" {
-		serialNumber.Name = "SerialNumber"
+		serialNumber.Name = "serial_number"
 	}
 	m.InverterParams.SerialNumber = *serialNumber
 
@@ -119,7 +119,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		maxActivePower.Type = "Number"
 	}
 	if maxActivePower.Name == "" {
-		maxActivePower.Name = "MaxActivePower"
+		maxActivePower.Name = "max_active_power"
 	}
 	m.InverterParams.MaxActivePower = *maxActivePower
 
@@ -131,7 +131,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		energyMeasurementType.Type = "String"
 	}
 	if energyMeasurementType.Name == "" {
-		energyMeasurementType.Name = "EnergyMeasurementType"
+		energyMeasurementType.Name = "energy_measurement_type"
 	}
 	m.InverterParams.EnergyMeasurementType = *energyMeasurementType
 

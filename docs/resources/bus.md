@@ -32,7 +32,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_bus" "my_bus" {
   name        = "My Bus"
   description = "My Bus Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -60,9 +63,7 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  # nominal_voltage_kv {}
-
+  # You may ommit some keys to use the default values from the API
   nominal_voltage_kv {
     value = jsonencode(2.2)
   }
@@ -75,12 +76,12 @@ resource "splight_bus" "my_bus" {
 ### Required
 
 - `name` (String) name of the resource
-- `nominal_voltage_kv` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage_kv))
 
 ### Optional
 
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `nominal_voltage_kv` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage_kv))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `timezone` (String) timezone that overrides location-based timezone of the resource
 
@@ -94,7 +95,7 @@ resource "splight_bus" "my_bus" {
 <a id="nestedblock--nominal_voltage_kv"></a>
 ### Nested Schema for `nominal_voltage_kv`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 

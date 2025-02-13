@@ -32,7 +32,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_transformer" "my_transformer" {
   name        = "My Transformer"
   description = "My Transformer Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -60,8 +63,10 @@ resource "splight_transformer" "my_transformer" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  tap_pos {}
+  # You may ommit some keys to use the default values from the API
+  tap_pos {
+    value = jsonencode(1)
+  }
 
   xn_ohm {
     value = jsonencode(0)
@@ -83,10 +88,6 @@ resource "splight_transformer" "my_transformer" {
     value = jsonencode(1.18)
   }
 
-  maximum_allowed_power {
-    value = jsonencode(450)
-  }
-
   reactance {
     value = jsonencode(21.8)
   }
@@ -106,24 +107,24 @@ resource "splight_transformer" "my_transformer" {
 
 ### Required
 
-- `capacitance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
-- `conductance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
-- `maximum_allowed_current` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_current))
-- `maximum_allowed_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_power))
 - `name` (String) name of the resource
-- `reactance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reactance))
-- `resistance` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--resistance))
-- `safety_margin_for_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
-- `standard_type` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--standard_type))
-- `tap_pos` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--tap_pos))
-- `xn_ohm` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--xn_ohm))
 
 ### Optional
 
+- `capacitance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
+- `conductance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `maximum_allowed_current` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_current))
+- `maximum_allowed_power` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_power))
+- `reactance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reactance))
+- `resistance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--resistance))
+- `safety_margin_for_power` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--safety_margin_for_power))
+- `standard_type` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--standard_type))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
+- `tap_pos` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--tap_pos))
 - `timezone` (String) timezone that overrides location-based timezone of the resource
+- `xn_ohm` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--xn_ohm))
 
 ### Read-Only
 
@@ -146,7 +147,7 @@ resource "splight_transformer" "my_transformer" {
 <a id="nestedblock--capacitance"></a>
 ### Nested Schema for `capacitance`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -162,7 +163,7 @@ Read-Only:
 <a id="nestedblock--conductance"></a>
 ### Nested Schema for `conductance`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -178,7 +179,7 @@ Read-Only:
 <a id="nestedblock--maximum_allowed_current"></a>
 ### Nested Schema for `maximum_allowed_current`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -194,7 +195,7 @@ Read-Only:
 <a id="nestedblock--maximum_allowed_power"></a>
 ### Nested Schema for `maximum_allowed_power`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -210,7 +211,7 @@ Read-Only:
 <a id="nestedblock--reactance"></a>
 ### Nested Schema for `reactance`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -226,7 +227,7 @@ Read-Only:
 <a id="nestedblock--resistance"></a>
 ### Nested Schema for `resistance`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -242,7 +243,7 @@ Read-Only:
 <a id="nestedblock--safety_margin_for_power"></a>
 ### Nested Schema for `safety_margin_for_power`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -258,39 +259,7 @@ Read-Only:
 <a id="nestedblock--standard_type"></a>
 ### Nested Schema for `standard_type`
 
-Optional:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--tap_pos"></a>
-### Nested Schema for `tap_pos`
-
-Optional:
-
-- `value` (String) metadata value
-
-Read-Only:
-
-- `asset` (String) reference to the asset to be linked to
-- `id` (String) id of the resource
-- `name` (String) name of the resource
-- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
-- `unit` (String) unit of measure
-
-
-<a id="nestedblock--xn_ohm"></a>
-### Nested Schema for `xn_ohm`
-
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -310,6 +279,38 @@ Required:
 
 - `id` (String) tag id
 - `name` (String) tag name
+
+
+<a id="nestedblock--tap_pos"></a>
+### Nested Schema for `tap_pos`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
+
+
+<a id="nestedblock--xn_ohm"></a>
+### Nested Schema for `xn_ohm`
+
+Required:
+
+- `value` (String) metadata value
+
+Read-Only:
+
+- `asset` (String) reference to the asset to be linked to
+- `id` (String) id of the resource
+- `name` (String) name of the resource
+- `type` (String) [String|Boolean|Number] type of the data to be ingested in this attribute
+- `unit` (String) unit of measure
 
 
 <a id="nestedatt--active_power_hv"></a>
