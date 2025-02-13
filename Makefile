@@ -10,7 +10,7 @@ RESET = \033[0m
 GCFLAGS := "all=-N -l"
 DEBUG_FLAGS := "-debug"
 
-.PHONY: default docs tidy provider debug snapshot clean testacc
+.PHONY: default docs tidy provider debug snapshot clean
 
 default: tidy provider
 
@@ -35,6 +35,3 @@ clean:
 clean-debug:
 	@rm -f $(DEBUG_BINARY)
 
-
-testacc:
-	TF_ACC=1 go test -v ./provider/tests/
