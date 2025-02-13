@@ -51,7 +51,7 @@ func (m *Function) GetParams() Params {
 }
 
 func (m *Function) ResourcePath() string {
-	return "v2/engine/function/functions/"
+	return "v3/engine/function/functions/"
 }
 
 func (m *Function) FromSchema(d *schema.ResourceData) error {

@@ -24,7 +24,7 @@ func (m *DashboardAssetListChart) GetParams() Params {
 }
 
 func (m *DashboardAssetListChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func (m *DashboardAssetListChart) FromSchema(d *schema.ResourceData) error {

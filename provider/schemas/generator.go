@@ -25,6 +25,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
 		"active_power": {
@@ -32,7 +33,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"reactive_power": {
@@ -40,7 +41,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"daily_energy": {
@@ -48,7 +49,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"daily_emission_avoided": {
@@ -56,7 +57,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"monthly_energy": {
@@ -64,7 +65,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"switch_status": {
@@ -72,16 +73,7 @@ func SchemaGenerator() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
-			},
-		},
-		"co2_coefficient": {
-			Type:        schema.TypeSet,
-			Required:    true,
-			MaxItems:    1,
-			Description: "attribute of the resource",
-			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "205"),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"tags": {

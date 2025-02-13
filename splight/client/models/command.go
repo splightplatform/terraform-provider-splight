@@ -22,7 +22,7 @@ func (m *Command) GetParams() Params {
 }
 
 func (m *Command) ResourcePath() string {
-	return "v2/engine/command/commands/"
+	return "v3/engine/command/commands/"
 }
 
 func (m *Command) FromSchema(d *schema.ResourceData) error {

@@ -25,6 +25,7 @@ func SchemaBus() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
 		"active_power": {
@@ -32,7 +33,7 @@ func SchemaBus() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"reactive_power": {
@@ -40,16 +41,17 @@ func SchemaBus() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"nominal_voltage_kv": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
+			Computed:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "0"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"tags": {

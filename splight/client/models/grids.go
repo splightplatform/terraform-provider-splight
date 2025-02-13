@@ -7,7 +7,7 @@ type Grids struct {
 }
 
 func (m *Grids) ResourcePath() string {
-	return "v2/engine/asset/grids/"
+	return "v3/engine/asset/grids/"
 }
 
 func (m *Grids) ToSchema(d *schema.ResourceData) error {

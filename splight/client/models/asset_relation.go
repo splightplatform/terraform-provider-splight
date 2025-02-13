@@ -26,7 +26,7 @@ func (m *AssetRelation) GetParams() Params {
 }
 
 func (m *AssetRelation) ResourcePath() string {
-	return "v2/engine/asset/relations/"
+	return "v3/engine/asset/relations/"
 }
 
 func (m *AssetRelation) FromSchema(d *schema.ResourceData) error {

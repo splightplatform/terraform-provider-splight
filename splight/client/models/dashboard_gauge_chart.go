@@ -23,7 +23,7 @@ func (m *DashboardGaugeChart) GetParams() Params {
 }
 
 func (m *DashboardGaugeChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func (m *DashboardGaugeChart) FromSchema(d *schema.ResourceData) error {

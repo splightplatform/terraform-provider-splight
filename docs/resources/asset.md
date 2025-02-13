@@ -35,7 +35,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_asset" "my_asset" {
   name        = "My Asset"
   description = "My Asset Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -76,12 +79,12 @@ resource "splight_asset" "my_asset" {
 
 ### Required
 
-- `geometry` (String) GeoJSON GeomtryCollection
 - `name` (String) name of the resource
 
 ### Optional
 
 - `description` (String) description of the resource
+- `geometry` (String) GeoJSON GeomtryCollection
 - `kind` (Block Set, Max: 1) kind of the resource (see [below for nested schema](#nestedblock--kind))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `timezone` (String) timezone of the resource (overriden by the location if set)

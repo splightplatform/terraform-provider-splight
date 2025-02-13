@@ -37,7 +37,7 @@ func (m *AssetAttribute) ToMap() map[string]any {
 }
 
 func (m *AssetAttribute) ResourcePath() string {
-	return "v2/engine/asset/attributes/"
+	return "v3/engine/asset/attributes/"
 }
 
 func convertAssetAttribute(data []any) *AssetAttribute {

@@ -54,7 +54,7 @@ func (m *Algorithm) GetParams() Params {
 }
 
 func (m *Algorithm) ResourcePath() string {
-	return "v2/engine/component/algorithms/"
+	return "v3/engine/component/algorithms/"
 }
 
 func (m *Algorithm) FromSchema(d *schema.ResourceData) error {

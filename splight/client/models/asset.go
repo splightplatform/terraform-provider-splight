@@ -8,12 +8,12 @@ import (
 )
 
 type AssetParams struct {
-	Name           string          `json:"name"`
-	Description    string          `json:"description"`
-	Geometry       json.RawMessage `json:"geometry"`
-	CustomTimezone string          `json:"timezone,omitempty"`
-	Tags           []QueryFilter   `json:"tags"`
-	Kind           *QueryFilter    `json:"kind"`
+	Name           string           `json:"name"`
+	Description    string           `json:"description"`
+	Geometry       *json.RawMessage `json:"geometry"`
+	CustomTimezone string           `json:"timezone,omitempty"`
+	Tags           []QueryFilter    `json:"tags"`
+	Kind           *QueryFilter     `json:"kind"`
 }
 
 type Asset struct {
@@ -30,7 +30,7 @@ func (m *Asset) GetParams() Params {
 }
 
 func (m *Asset) ResourcePath() string {
-	return "v2/engine/asset/assets/"
+	return "v3/engine/asset/assets/"
 }
 
 func (m *Asset) FromSchema(d *schema.ResourceData) error {
@@ -39,17 +39,30 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
+	}
+
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
 	}
 
 	m.AssetParams = AssetParams{
 		Name:           d.Get("name").(string),
 		Description:    d.Get("description").(string),
-		Geometry:       json.RawMessage(geometryStr),
-		CustomTimezone: d.Get("timezone").(string),
+		Geometry:       geometry,
+		CustomTimezone: timezone,
 		Tags:           tags,
 		Kind:           kind,
 	}
@@ -62,7 +75,15 @@ func (m *Asset) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.Name)
 	d.Set("description", m.Description)
-	d.Set("geometry", string(m.Geometry))
+
+	var geometryStr string
+	if m.Geometry != nil {
+		geometryStr = string(*m.Geometry)
+	} else {
+		geometryStr = ""
+	}
+	d.Set("geometry", geometryStr)
+
 	d.Set("timezone", m.CustomTimezone)
 
 	var tags []map[string]any

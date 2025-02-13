@@ -7,7 +7,7 @@ type ExternalGrids struct {
 }
 
 func (m *ExternalGrids) ResourcePath() string {
-	return "v2/engine/asset/external-grids/"
+	return "v3/engine/asset/external-grids/"
 }
 
 func (m *ExternalGrids) ToSchema(d *schema.ResourceData) error {

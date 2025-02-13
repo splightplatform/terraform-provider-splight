@@ -34,7 +34,7 @@ func (m *Action) GetParams() Params {
 }
 
 func (m *Action) ResourcePath() string {
-	return "v2/engine/asset/actions/"
+	return "v3/engine/asset/actions/"
 }
 
 func (m *Action) FromSchema(d *schema.ResourceData) error {

@@ -24,7 +24,7 @@ func (m *DashboardAlertEventsChart) GetParams() Params {
 }
 
 func (m *DashboardAlertEventsChart) ResourcePath() string {
-	return "v2/engine/dashboard/charts/"
+	return "v3/engine/dashboard/charts/"
 }
 
 func convertFilterStatus(d *schema.ResourceData, key string) []string {

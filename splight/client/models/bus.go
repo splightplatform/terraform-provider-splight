@@ -28,26 +28,40 @@ func (m *Bus) GetParams() Params {
 }
 
 func (m *Bus) ResourcePath() string {
-	return "v2/engine/asset/buses/"
+	return "v3/engine/asset/buses/"
 }
 
 func (m *Bus) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
+
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
+	}
+
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
 	}
 
 	m.BusParams = BusParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(geometryStr),
-			CustomTimezone: d.Get("timezone").(string),
+			Geometry:       geometry,
+			CustomTimezone: timezone,
 			Tags:           tags,
 			Kind:           kind,
 		},
@@ -73,7 +87,15 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
-	d.Set("geometry", string(m.AssetParams.Geometry))
+
+	var geometryStr string
+	if m.Geometry != nil {
+		geometryStr = string(*m.Geometry)
+	} else {
+		geometryStr = ""
+	}
+	d.Set("geometry", geometryStr)
+
 	d.Set("timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any

@@ -17,7 +17,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_inverter" "my_inverter" {
   name        = "My Inverter"
   description = "My Inverter Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -45,15 +48,17 @@ resource "splight_inverter" "my_inverter" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  make {}
+  # You may ommit some keys to use the default values from the API
+  make {
+    value = jsonencode("2.2")
+  }
 
   model {
     value = jsonencode("Model A")
   }
 
   serial_number {
-    value = jsonencode(1233440042)
+    value = jsonencode("1233440042")
   }
 
   max_active_power {

@@ -49,13 +49,14 @@ func SchemaAsset() map[string]*schema.Schema {
 		},
 		"geometry": {
 			Type:             schema.TypeString,
-			Required:         true,
+			Optional:         true,
 			Description:      "GeoJSON GeomtryCollection",
 			DiffSuppressFunc: JSONStringEqualSupressFunc,
 		},
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone of the resource (overriden by the location if set)",
 		},
 		"tags": {

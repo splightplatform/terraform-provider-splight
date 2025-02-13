@@ -25,6 +25,7 @@ func SchemaSlackLine() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
 		"switch_status_start": {
@@ -32,7 +33,7 @@ func SchemaSlackLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"switch_status_end": {
@@ -40,7 +41,7 @@ func SchemaSlackLine() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"tags": {

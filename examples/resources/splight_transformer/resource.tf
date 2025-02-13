@@ -17,7 +17,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_transformer" "my_transformer" {
   name        = "My Transformer"
   description = "My Transformer Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -45,8 +48,10 @@ resource "splight_transformer" "my_transformer" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  tap_pos {}
+  # You may ommit some keys to use the default values from the API
+  tap_pos {
+    value = jsonencode(1)
+  }
 
   xn_ohm {
     value = jsonencode(0)
@@ -66,10 +71,6 @@ resource "splight_transformer" "my_transformer" {
 
   maximum_allowed_current {
     value = jsonencode(1.18)
-  }
-
-  maximum_allowed_power {
-    value = jsonencode(450)
   }
 
   reactance {

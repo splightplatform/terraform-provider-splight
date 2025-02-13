@@ -36,26 +36,40 @@ func (m *Inverter) GetParams() Params {
 }
 
 func (m *Inverter) ResourcePath() string {
-	return "v2/engine/asset/inverters/"
+	return "v3/engine/asset/inverters/"
 }
 
 func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
+
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
+	}
+
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
 	}
 
 	m.InverterParams = InverterParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(geometryStr),
-			CustomTimezone: d.Get("timezone").(string),
+			Geometry:       geometry,
+			CustomTimezone: timezone,
 			Tags:           tags,
 			Kind:           kind,
 		},
@@ -69,7 +83,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		make.Type = "String"
 	}
 	if make.Name == "" {
-		make.Name = "Make"
+		make.Name = "make"
 	}
 	m.InverterParams.Make = *make
 
@@ -81,7 +95,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		model.Type = "String"
 	}
 	if model.Name == "" {
-		model.Name = "Model"
+		model.Name = "model"
 	}
 	m.InverterParams.Model = *model
 
@@ -93,7 +107,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		serialNumber.Type = "Number"
 	}
 	if serialNumber.Name == "" {
-		serialNumber.Name = "SerialNumber"
+		serialNumber.Name = "serial_number"
 	}
 	m.InverterParams.SerialNumber = *serialNumber
 
@@ -105,7 +119,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		maxActivePower.Type = "Number"
 	}
 	if maxActivePower.Name == "" {
-		maxActivePower.Name = "MaxActivePower"
+		maxActivePower.Name = "max_active_power"
 	}
 	m.InverterParams.MaxActivePower = *maxActivePower
 
@@ -117,7 +131,7 @@ func (m *Inverter) FromSchema(d *schema.ResourceData) error {
 		energyMeasurementType.Type = "String"
 	}
 	if energyMeasurementType.Name == "" {
-		energyMeasurementType.Name = "EnergyMeasurementType"
+		energyMeasurementType.Name = "energy_measurement_type"
 	}
 	m.InverterParams.EnergyMeasurementType = *energyMeasurementType
 
@@ -129,7 +143,15 @@ func (m *Inverter) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
-	d.Set("geometry", string(m.AssetParams.Geometry))
+
+	var geometryStr string
+	if m.Geometry != nil {
+		geometryStr = string(*m.Geometry)
+	} else {
+		geometryStr = ""
+	}
+	d.Set("geometry", geometryStr)
+
 	d.Set("timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any

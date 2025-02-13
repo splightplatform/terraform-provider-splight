@@ -113,7 +113,7 @@ func (m *Server) GetParams() Params {
 }
 
 func (m *Server) ResourcePath() string {
-	return "v2/engine/server/servers/"
+	return "v3/engine/server/servers/"
 }
 
 func (m *Server) FromSchema(d *schema.ResourceData) error {

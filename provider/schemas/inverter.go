@@ -25,6 +25,7 @@ func SchemaInverter() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
 		"accumulated_energy": {
@@ -32,7 +33,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"active_power": {
@@ -40,7 +41,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"daily_energy": {
@@ -48,7 +49,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"raw_daily_energy": {
@@ -56,7 +57,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"temperature": {
@@ -64,7 +65,7 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"switch_status": {
@@ -72,52 +73,52 @@ func SchemaInverter() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"make": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, ""),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"model": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, ""),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"serial_number": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, ""),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"max_active_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "80"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"energy_measurement_type": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "daily"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"tags": {

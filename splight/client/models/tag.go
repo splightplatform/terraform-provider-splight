@@ -22,7 +22,7 @@ func (m *Tag) GetParams() Params {
 }
 
 func (m *Tag) ResourcePath() string {
-	return "v2/account/tags/"
+	return "v3/engine/tags/"
 }
 
 func (m *Tag) FromSchema(d *schema.ResourceData) error {

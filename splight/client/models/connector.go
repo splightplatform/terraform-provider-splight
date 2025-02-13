@@ -97,7 +97,7 @@ func (m *Connector) GetParams() Params {
 }
 
 func (m *Connector) ResourcePath() string {
-	return "v2/engine/component/connectors/"
+	return "v3/engine/component/connectors/"
 }
 
 func (m *Connector) FromSchema(d *schema.ResourceData) error {

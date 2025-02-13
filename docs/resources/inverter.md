@@ -32,7 +32,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_inverter" "my_inverter" {
   name        = "My Inverter"
   description = "My Inverter Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -60,15 +63,17 @@ resource "splight_inverter" "my_inverter" {
     ]
   })
 
-  # You may leave some metadata values unset, in order to use the defaults 
-  make {}
+  # You may ommit some keys to use the default values from the API
+  make {
+    value = jsonencode("2.2")
+  }
 
   model {
     value = jsonencode("Model A")
   }
 
   serial_number {
-    value = jsonencode(1233440042)
+    value = jsonencode("1233440042")
   }
 
   max_active_power {
@@ -86,17 +91,17 @@ resource "splight_inverter" "my_inverter" {
 
 ### Required
 
-- `energy_measurement_type` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--energy_measurement_type))
-- `make` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--make))
-- `max_active_power` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--max_active_power))
-- `model` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--model))
 - `name` (String) name of the resource
-- `serial_number` (Block Set, Min: 1, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--serial_number))
 
 ### Optional
 
 - `description` (String) description of the resource
+- `energy_measurement_type` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--energy_measurement_type))
 - `geometry` (String) geo position and shape of the resource
+- `make` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--make))
+- `max_active_power` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--max_active_power))
+- `model` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--model))
+- `serial_number` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--serial_number))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `timezone` (String) timezone that overrides location-based timezone of the resource
 
@@ -114,7 +119,7 @@ resource "splight_inverter" "my_inverter" {
 <a id="nestedblock--energy_measurement_type"></a>
 ### Nested Schema for `energy_measurement_type`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -130,7 +135,7 @@ Read-Only:
 <a id="nestedblock--make"></a>
 ### Nested Schema for `make`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -146,7 +151,7 @@ Read-Only:
 <a id="nestedblock--max_active_power"></a>
 ### Nested Schema for `max_active_power`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -162,7 +167,7 @@ Read-Only:
 <a id="nestedblock--model"></a>
 ### Nested Schema for `model`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 
@@ -178,7 +183,7 @@ Read-Only:
 <a id="nestedblock--serial_number"></a>
 ### Nested Schema for `serial_number`
 
-Optional:
+Required:
 
 - `value` (String) metadata value
 

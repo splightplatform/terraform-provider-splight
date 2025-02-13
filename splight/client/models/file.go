@@ -35,7 +35,7 @@ func (m *File) GetParams() Params {
 }
 
 func (m *File) ResourcePath() string {
-	return "v2/engine/file/files/"
+	return "v3/engine/file/files/"
 }
 
 func MD5Checksum(filepath string) (string, error) {

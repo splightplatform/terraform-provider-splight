@@ -7,7 +7,7 @@ type AssetKinds struct {
 }
 
 func (m *AssetKinds) ResourcePath() string {
-	return "v2/engine/asset/kinds/"
+	return "v3/engine/asset/kinds/"
 }
 
 func (m *AssetKinds) ToSchema(d *schema.ResourceData) error {

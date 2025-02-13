@@ -30,7 +30,7 @@ func (m *ComponentRoutine) GetParams() Params {
 }
 
 func (m *ComponentRoutine) ResourcePath() string {
-	return "v2/engine/component/routines/"
+	return "v3/engine/component/routines/"
 }
 
 func (m *ComponentRoutine) FromSchema(d *schema.ResourceData) error {

@@ -14,7 +14,6 @@ type GeneratorParams struct {
 	DailyEnergy          *AssetAttribute `json:"daily_energy"`
 	DailyEmissionAvoided *AssetAttribute `json:"daily_emission_avoided"`
 	MonthlyEnergy        *AssetAttribute `json:"monthly_energy"`
-	CO2Coefficient       AssetMetadata   `json:"CO2_coefficient"`
 }
 
 type Generator struct {
@@ -31,42 +30,44 @@ func (m *Generator) GetParams() Params {
 }
 
 func (m *Generator) ResourcePath() string {
-	return "v2/engine/asset/generators/"
+	return "v3/engine/asset/generators/"
 }
 
 func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
+
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry field contains %w", err)
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
+	}
+
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
 	}
 
 	m.GeneratorParams = GeneratorParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       json.RawMessage(geometryStr),
-			CustomTimezone: d.Get("timezone").(string),
+			Geometry:       geometry,
+			CustomTimezone: timezone,
 			Tags:           tags,
 			Kind:           kind,
 		},
 	}
-
-	CO2_coefficient, err := convertAssetMetadata(d.Get("co2_coefficient").(*schema.Set).List())
-	if err != nil {
-		return fmt.Errorf("invalid CO2 coefficient metadata: %w", err)
-	}
-	if CO2_coefficient.Type == "" {
-		CO2_coefficient.Type = "Number"
-	}
-	if CO2_coefficient.Name == "" {
-		CO2_coefficient.Name = "co2_coefficient"
-	}
-	m.GeneratorParams.CO2Coefficient = *CO2_coefficient
 
 	return nil
 }
@@ -76,7 +77,15 @@ func (m *Generator) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
-	d.Set("geometry", string(m.AssetParams.Geometry))
+
+	var geometryStr string
+	if m.Geometry != nil {
+		geometryStr = string(*m.Geometry)
+	} else {
+		geometryStr = ""
+	}
+	d.Set("geometry", geometryStr)
+
 	d.Set("timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any
@@ -100,7 +109,6 @@ func (m *Generator) ToSchema(d *schema.ResourceData) error {
 	d.Set("daily_energy", []map[string]any{m.DailyEnergy.ToMap()})
 	d.Set("daily_emission_avoided", []map[string]any{m.DailyEmissionAvoided.ToMap()})
 	d.Set("monthly_energy", []map[string]any{m.MonthlyEnergy.ToMap()})
-	d.Set("co2_coefficient", []map[string]any{m.CO2Coefficient.ToMap()})
 
 	return nil
 }

@@ -21,7 +21,7 @@ func (m *Secret) GetParams() Params {
 }
 
 func (m *Secret) ResourcePath() string {
-	return "v2/engine/secret/secrets/"
+	return "v3/engine/secret/secrets/"
 }
 
 func (m *Secret) FromSchema(d *schema.ResourceData) error {

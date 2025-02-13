@@ -20,7 +20,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_asset" "my_asset" {
   name        = "My Asset"
   description = "My Asset Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {

@@ -23,7 +23,7 @@ func (m *Node) GetParams() Params {
 }
 
 func (m *Node) ResourcePath() string {
-	return "v2/engine/compute/nodes/all/"
+	return "v3/engine/compute/nodes/all/"
 }
 
 func (m *Node) FromSchema(d *schema.ResourceData) error {

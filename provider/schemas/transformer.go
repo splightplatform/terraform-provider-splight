@@ -25,6 +25,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 		"timezone": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 			Description: "timezone that overrides location-based timezone of the resource",
 		},
 		"active_power_hv": {
@@ -32,7 +33,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"active_power_lv": {
@@ -40,7 +41,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"reactive_power_hv": {
@@ -48,7 +49,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"reactive_power_lv": {
@@ -56,7 +57,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"active_power_loss": {
@@ -64,7 +65,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"reactive_power_loss": {
@@ -72,7 +73,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"current_hv": {
@@ -80,7 +81,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"current_lv": {
@@ -88,7 +89,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"voltage_hv": {
@@ -96,7 +97,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"voltage_lv": {
@@ -104,7 +105,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"contingency": {
@@ -112,7 +113,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"switch_status_lv": {
@@ -120,7 +121,7 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"switch_status_hv": {
@@ -128,97 +129,97 @@ func SchemaTransformer() map[string]*schema.Schema {
 			Computed:    true,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(false, nil),
+				Schema: schemaConstrainedAttribute(false),
 			},
 		},
 		"tap_pos": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "0"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"xn_ohm": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "0"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"standard_type": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, ""),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"capacitance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "10.7"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"conductance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "0.001"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"maximum_allowed_current": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "1.18"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"maximum_allowed_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "450"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"reactance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "21.80042593"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"resistance": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "0.217500888"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"safety_margin_for_power": {
 			Type:        schema.TypeSet,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "attribute of the resource",
 			Elem: &schema.Resource{
-				Schema: schemaConstrainedAttribute(true, "5"),
+				Schema: schemaConstrainedAttribute(true),
 			},
 		},
 		"tags": {

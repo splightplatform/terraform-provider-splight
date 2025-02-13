@@ -7,7 +7,7 @@ type Buses struct {
 }
 
 func (m *Buses) ResourcePath() string {
-	return "v2/engine/asset/buses/"
+	return "v3/engine/asset/buses/"
 }
 
 func (m *Buses) ToSchema(d *schema.ResourceData) error {

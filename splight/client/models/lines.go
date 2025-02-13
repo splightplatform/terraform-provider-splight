@@ -7,7 +7,7 @@ type Lines struct {
 }
 
 func (m *Lines) ResourcePath() string {
-	return "v2/engine/asset/lines/"
+	return "v3/engine/asset/lines/"
 }
 
 func (m *Lines) ToSchema(d *schema.ResourceData) error {
