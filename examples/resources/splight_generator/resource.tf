@@ -17,7 +17,10 @@ data "splight_tags" "my_tags" {}
 resource "splight_generator" "my_generator" {
   name        = "My Generator"
   description = "My Generator Description"
-  timezone    = "America/Los_Angeles"
+
+  # This is overridden by the GeoJSON location
+  # and will show perma diff if both are set
+  timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -44,11 +47,4 @@ resource "splight_generator" "my_generator" {
       }
     ]
   })
-
-  # You may leave some metadata values unset, in order to use the defaults 
-  # co2_coefficient {}
-
-  co2_coefficient {
-    value = jsonencode(1.1)
-  }
 }
