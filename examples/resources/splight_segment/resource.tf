@@ -14,6 +14,17 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
+# Create line for the relationship
+resource "splight_line" "my_line" {
+  name        = "My Line"
+  description = "My Line Description"
+}
+
+resource "splight_grid" "my_grid" {
+  name        = "My Grid"
+  description = "My Grid Description"
+}
+
 resource "splight_segment" "my_segment" {
   name        = "My Segment"
   description = "My Segment Description"
@@ -47,6 +58,10 @@ resource "splight_segment" "my_segment" {
       }
     ]
   })
+
+  # Set the relationships
+  line = splight_line.my_line.id
+  grid = splight_grid.my_grid.id
 
   # You may ommit some keys to use the default values from the API
   altitude {
