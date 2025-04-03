@@ -18,7 +18,7 @@ type SegmentParams struct {
 	ReferenceSag         AssetMetadata      `json:"reference_sag"`
 	ReferenceTemperature AssetMetadata      `json:"reference_temperature"`
 	SpanLength           AssetMetadata      `json:"span_length"`
-	Line                 *AssetRelationship `json:"line"`
+	Line                 *AssetRelationship `json:"line,omitempty"`
 }
 
 type ResourceId struct {
@@ -185,7 +185,11 @@ func (m *Segment) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
 
-	// TODO: set the rel asset id
+	if m.Line != nil {
+		d.Set("line", m.Line.RelatedAssetId.Id)
+	} else {
+		d.Set("line", "")
+	}
 
 	var geometryStr string
 	if m.Geometry != nil {
