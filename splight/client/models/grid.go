@@ -3,7 +3,6 @@ package models
 import (
 	"encoding/json"
 	"fmt"
-	"runtime"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -32,7 +31,6 @@ func (m *Grid) ResourcePath() string {
 func (m *Grid) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
-	runtime.Breakpoint()
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
