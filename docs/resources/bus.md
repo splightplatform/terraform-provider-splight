@@ -26,6 +26,11 @@ resource "splight_tag" "my_tag" {
   name = "My Tag"
 }
 
+resource "splight_grid" "my_grid" {
+  name        = "My Grid"
+  description = "My Grid Description"
+}
+
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
@@ -63,6 +68,9 @@ resource "splight_bus" "my_bus" {
     ]
   })
 
+  # Set the relationships
+  grid = splight_grid.my_grid.id
+
   # You may ommit some keys to use the default values from the API
   nominal_voltage_kv {
     value = jsonencode(2.2)
@@ -81,6 +89,7 @@ resource "splight_bus" "my_bus" {
 
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `grid` (String) id of the related Grid object
 - `nominal_voltage_kv` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage_kv))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `timezone` (String) timezone that overrides location-based timezone of the resource

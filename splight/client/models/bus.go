@@ -9,9 +9,10 @@ import (
 
 type BusParams struct {
 	AssetParams
-	ActivePower      *AssetAttribute `json:"active_power"`
-	ReactivePower    *AssetAttribute `json:"reactive_power"`
-	NominalVoltageKV AssetMetadata   `json:"nominal_voltage_kv"`
+	ActivePower      *AssetAttribute    `json:"active_power"`
+	ReactivePower    *AssetAttribute    `json:"reactive_power"`
+	NominalVoltageKV AssetMetadata      `json:"nominal_voltage_kv"`
+	Grid             *AssetRelationship `json:"grid,omitempty"`
 }
 
 type Bus struct {
@@ -40,6 +41,16 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 	// Get values of timezone and geometry
 	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
+	gridId := d.Get("grid").(string)
+
+	var gridRel *AssetRelationship = nil
+	if gridId != "" {
+		gridRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: gridId,
+			},
+		}
+	}
 
 	// Validate geometry JSON if it's set
 	if geometryStr != "" {
@@ -65,6 +76,7 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 			Tags:           tags,
 			Kind:           kind,
 		},
+		Grid: gridRel,
 	}
 
 	nominalVoltageKV, err := convertAssetMetadata(d.Get("nominal_voltage_kv").(*schema.Set).List())
@@ -88,6 +100,12 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
 
+	if m.Grid != nil {
+		d.Set("grid", m.Grid.RelatedAssetId.Id)
+	} else {
+		d.Set("grid", "")
+	}
+
 	var geometryStr string
 	if m.Geometry != nil {
 		geometryStr = string(*m.Geometry)
@@ -95,7 +113,6 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 		geometryStr = ""
 	}
 	d.Set("geometry", geometryStr)
-
 	d.Set("timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any
@@ -115,6 +132,5 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 	})
 
 	d.Set("nominal_voltage_kv", []map[string]any{m.NominalVoltageKV.ToMap()})
-
 	return nil
 }
