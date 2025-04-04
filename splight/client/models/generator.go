@@ -9,11 +9,13 @@ import (
 
 type GeneratorParams struct {
 	AssetParams
-	ActivePower          *AssetAttribute `json:"active_power"`
-	ReactivePower        *AssetAttribute `json:"reactive_power"`
-	DailyEnergy          *AssetAttribute `json:"daily_energy"`
-	DailyEmissionAvoided *AssetAttribute `json:"daily_emission_avoided"`
-	MonthlyEnergy        *AssetAttribute `json:"monthly_energy"`
+	ActivePower          *AssetAttribute    `json:"active_power"`
+	ReactivePower        *AssetAttribute    `json:"reactive_power"`
+	DailyEnergy          *AssetAttribute    `json:"daily_energy"`
+	DailyEmissionAvoided *AssetAttribute    `json:"daily_emission_avoided"`
+	MonthlyEnergy        *AssetAttribute    `json:"monthly_energy"`
+	Bus                  *AssetRelationship `json:"bus,omitempty"`
+	Grid                 *AssetRelationship `json:"grid,omitempty"`
 }
 
 type Generator struct {
@@ -42,6 +44,26 @@ func (m *Generator) FromSchema(d *schema.ResourceData) error {
 	// Get values of timezone and geometry
 	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
+	busId := d.Get("bus").(string)
+	gridId := d.Get("grid").(string)
+
+	var busRel *AssetRelationship = nil
+	if busId != "" {
+		busRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: busId,
+			},
+		}
+	}
+
+	var gridRel *AssetRelationship = nil
+	if gridId != "" {
+		gridRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: gridId,
+			},
+		}
+	}
 
 	// Validate geometry JSON if it's set
 	if geometryStr != "" {
@@ -67,6 +89,8 @@ func (m *Generator) FromSchema(d *schema.ResourceData) error {
 			Tags:           tags,
 			Kind:           kind,
 		},
+		Bus:  busRel,
+		Grid: gridRel,
 	}
 
 	return nil
@@ -77,6 +101,18 @@ func (m *Generator) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
+
+	if m.Bus != nil {
+		d.Set("bus", m.Bus.RelatedAssetId.Id)
+	} else {
+		d.Set("bus", "")
+	}
+
+	if m.Grid != nil {
+		d.Set("grid", m.Grid.RelatedAssetId.Id)
+	} else {
+		d.Set("grid", "")
+	}
 
 	var geometryStr string
 	if m.Geometry != nil {

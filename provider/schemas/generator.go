@@ -116,5 +116,15 @@ func SchemaGenerator() map[string]*schema.Schema {
 				},
 			},
 		},
+		"bus": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "id of the related Bus object",
+		},
+		"grid": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "id of the related Grid object",
+		},
 	}
 }
