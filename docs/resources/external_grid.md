@@ -26,6 +26,16 @@ resource "splight_tag" "my_tag" {
   name = "My Tag"
 }
 
+resource "splight_bus" "my_bus" {
+  name        = "My Bus"
+  description = "My Bus Description"
+}
+
+resource "splight_grid" "my_grid" {
+  name        = "My Grid"
+  description = "My Grid Description"
+}
+
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
@@ -59,6 +69,10 @@ resource "splight_external_grid" "my_external_grid" {
       }
     ]
   })
+
+  # Set the relationships
+  bus  = splight_bus.my_bus.id
+  grid = splight_grid.my_grid.id
 }
 ```
 
@@ -71,8 +85,10 @@ resource "splight_external_grid" "my_external_grid" {
 
 ### Optional
 
+- `bus` (String) id of the related Bus object
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `grid` (String) id of the related Grid object
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `timezone` (String) timezone that overrides location-based timezone of the resource
 

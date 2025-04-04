@@ -29,6 +29,16 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
+resource "splight_line" "my_line" {
+  name        = "My Line"
+  description = "My Line Description"
+}
+
+resource "splight_grid" "my_grid" {
+  name        = "My Grid"
+  description = "My Grid Description"
+}
+
 resource "splight_segment" "my_segment" {
   name        = "My Segment"
   description = "My Segment Description"
@@ -62,6 +72,10 @@ resource "splight_segment" "my_segment" {
       }
     ]
   })
+
+  # Set the relationships
+  line = splight_line.my_line.id
+  grid = splight_grid.my_grid.id
 
   # You may ommit some keys to use the default values from the API
   altitude {
@@ -104,6 +118,8 @@ resource "splight_segment" "my_segment" {
 - `cumulative_distance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
+- `grid` (String) id of the related Grid object
+- `line` (String) id of the related Line object
 - `reference_sag` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
 - `reference_temperature` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
 - `span_length` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))

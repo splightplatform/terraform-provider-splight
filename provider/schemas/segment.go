@@ -146,5 +146,15 @@ func SchemaSegment() map[string]*schema.Schema {
 				},
 			},
 		},
+		"line": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "id of the related Line object",
+		},
+		"grid": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "id of the related Grid object",
+		},
 	}
 }

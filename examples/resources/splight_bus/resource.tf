@@ -11,6 +11,11 @@ resource "splight_tag" "my_tag" {
   name = "My Tag"
 }
 
+resource "splight_grid" "my_grid" {
+  name        = "My Grid"
+  description = "My Grid Description"
+}
+
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
@@ -47,6 +52,9 @@ resource "splight_bus" "my_bus" {
       }
     ]
   })
+
+  # Set the relationships
+  grid = splight_grid.my_grid.id
 
   # You may ommit some keys to use the default values from the API
   nominal_voltage_kv {

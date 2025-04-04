@@ -94,5 +94,10 @@ func SchemaBus() map[string]*schema.Schema {
 				},
 			},
 		},
+		"grid": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "id of the related Grid object",
+		},
 	}
 }

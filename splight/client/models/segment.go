@@ -9,15 +9,25 @@ import (
 
 type SegmentParams struct {
 	AssetParams
-	Temperature          *AssetAttribute `json:"temperature"`
-	WindSpeed            *AssetAttribute `json:"wind_speed"`
-	WindDirection        *AssetAttribute `json:"wind_direction"`
-	Altitude             AssetMetadata   `json:"altitude"`
-	Azimuth              AssetMetadata   `json:"azimuth"`
-	CumulativeDistance   AssetMetadata   `json:"cumulative_distance"`
-	ReferenceSag         AssetMetadata   `json:"reference_sag"`
-	ReferenceTemperature AssetMetadata   `json:"reference_temperature"`
-	SpanLength           AssetMetadata   `json:"span_length"`
+	Temperature          *AssetAttribute    `json:"temperature"`
+	WindSpeed            *AssetAttribute    `json:"wind_speed"`
+	WindDirection        *AssetAttribute    `json:"wind_direction"`
+	Altitude             AssetMetadata      `json:"altitude"`
+	Azimuth              AssetMetadata      `json:"azimuth"`
+	CumulativeDistance   AssetMetadata      `json:"cumulative_distance"`
+	ReferenceSag         AssetMetadata      `json:"reference_sag"`
+	ReferenceTemperature AssetMetadata      `json:"reference_temperature"`
+	SpanLength           AssetMetadata      `json:"span_length"`
+	Line                 *AssetRelationship `json:"line,omitempty"`
+	Grid                 *AssetRelationship `json:"grid,omitempty"`
+}
+
+type ResourceId struct {
+	Id string `json:"id"`
+}
+
+type AssetRelationship struct {
+	RelatedAssetId ResourceId `json:"related_asset"`
 }
 
 type Segment struct {
@@ -57,6 +67,26 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	// Get values of timezone and geometry
 	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
+	lineId := d.Get("line").(string)
+	gridId := d.Get("grid").(string)
+
+	var lineRel *AssetRelationship = nil
+	if lineId != "" {
+		lineRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: lineId,
+			},
+		}
+	}
+
+	var gridRel *AssetRelationship = nil
+	if gridId != "" {
+		gridRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: gridId,
+			},
+		}
+	}
 
 	// Validate geometry JSON if it's set
 	if geometryStr != "" {
@@ -82,6 +112,8 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 			Tags:           tags,
 			Kind:           kind,
 		},
+		Line: lineRel,
+		Grid: gridRel,
 	}
 
 	altitude, err := convertAssetMetadata(d.Get("altitude").(*schema.Set).List())
@@ -164,6 +196,18 @@ func (m *Segment) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
+
+	if m.Line != nil {
+		d.Set("line", m.Line.RelatedAssetId.Id)
+	} else {
+		d.Set("line", "")
+	}
+
+	if m.Grid != nil {
+		d.Set("grid", m.Grid.RelatedAssetId.Id)
+	} else {
+		d.Set("grid", "")
+	}
 
 	var geometryStr string
 	if m.Geometry != nil {
