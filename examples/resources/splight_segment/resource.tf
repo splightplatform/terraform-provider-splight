@@ -14,7 +14,6 @@ resource "splight_tag" "my_tag" {
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
-# Create line for the relationship
 resource "splight_line" "my_line" {
   name        = "My Line"
   description = "My Line Description"
