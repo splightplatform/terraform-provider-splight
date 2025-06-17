@@ -11,6 +11,16 @@ resource "splight_tag" "my_tag" {
   name = "My Tag"
 }
 
+resource "splight_bus" "my_bus" {
+  name        = "My Bus"
+  description = "My Bus Description"
+}
+
+resource "splight_grid" "my_grid" {
+  name        = "My Grid"
+  description = "My Grid Description"
+}
+
 # Fetch tags
 data "splight_tags" "my_tags" {}
 
@@ -44,4 +54,8 @@ resource "splight_external_grid" "my_external_grid" {
       }
     ]
   })
+
+  # Set the relationships
+  bus  = splight_bus.my_bus.id
+  grid = splight_grid.my_grid.id
 }

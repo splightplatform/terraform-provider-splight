@@ -9,6 +9,16 @@ import (
 
 type ExternalGridParams struct {
 	AssetParams
+	Bus  *AssetRelationship `json:"bus,omitempty"`
+	Grid *AssetRelationship `json:"grid,omitempty"`
+}
+
+type ResourceId struct {
+	Id string `json:"id"`
+}
+
+type AssetRelationship struct {
+	RelatedAssetId ResourceId `json:"related_asset"`
 }
 
 type ExternalGrid struct {
@@ -34,22 +44,56 @@ func (m *ExternalGrid) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Validate geometry JSON
+	// Get values of timezone and geometry
+	timezone := d.Get("timezone").(string)
 	geometryStr := d.Get("geometry").(string)
-	if err := validateJSONString(geometryStr); err != nil {
-		return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+	busId := d.Get("bus").(string)
+	gridId := d.Get("grid").(string)
+
+	var busRel *AssetRelationship = nil
+	if busId != "" {
+		busRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: busId,
+			},
+		}
 	}
 
-	geometry := json.RawMessage(geometryStr)
+	var gridRel *AssetRelationship = nil
+	if gridId != "" {
+		gridRel = &AssetRelationship{
+			RelatedAssetId: ResourceId{
+				Id: gridId,
+			},
+		}
+	}
+
+	// Validate geometry JSON if it's set
+	if geometryStr != "" {
+		if err := validateJSONString(geometryStr); err != nil {
+			return fmt.Errorf("geometry must be a JSON encoded GeoJSON")
+		}
+	}
+
+	// Check if geometryStr is empty and handle accordingly
+	var geometry *json.RawMessage
+	if geometryStr != "" {
+		// Convert string to json.RawMessage
+		raw := json.RawMessage(geometryStr)
+		geometry = &raw
+	}
+
 	m.ExternalGridParams = ExternalGridParams{
 		AssetParams: AssetParams{
 			Name:           d.Get("name").(string),
 			Description:    d.Get("description").(string),
-			Geometry:       &geometry,
-			CustomTimezone: d.Get("timezone").(string),
+			Geometry:       geometry,
+			CustomTimezone: timezone,
 			Tags:           tags,
 			Kind:           kind,
 		},
+		Bus:  busRel,
+		Grid: gridRel,
 	}
 
 	return nil
@@ -60,6 +104,18 @@ func (m *ExternalGrid) ToSchema(d *schema.ResourceData) error {
 
 	d.Set("name", m.AssetParams.Name)
 	d.Set("description", m.AssetParams.Description)
+
+	if m.Bus != nil {
+		d.Set("bus", m.Bus.RelatedAssetId.Id)
+	} else {
+		d.Set("bus", "")
+	}
+
+	if m.Grid != nil {
+		d.Set("grid", m.Grid.RelatedAssetId.Id)
+	} else {
+		d.Set("grid", "")
+	}
 
 	var geometryStr string
 	if m.Geometry != nil {
