@@ -19,7 +19,7 @@ docs:
 
 tidy:
 	@go mod tidy
-	@gofumpt -w .
+	@go tool gofumpt -w .
 
 provider: tidy
 	@echo -e "$(GREEN)Building provider: $(BASE_NAME)$(RESET)"
@@ -27,7 +27,7 @@ provider: tidy
 
 debug: tidy
 	@go build -gcflags=$(GCFLAGS) -o $(DEBUG_BINARY)
-	@trap '$(MAKE) clean-debug' INT TERM EXIT; dlv exec $(DEBUG_BINARY) -- $(DEBUG_FLAGS)
+	@trap '$(MAKE) clean-debug' INT TERM EXIT; go tool dlv exec $(DEBUG_BINARY) -- $(DEBUG_FLAGS)
 
 clean:
 	@rm -f $(BASE_NAME) $(DEBUG_BINARY)

@@ -127,13 +127,14 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer, attempt int) 
 	req.Header.Add("User-Agent", c.userAgent)
 
 	statusCodeAccepted := http.StatusOK
-	if method == http.MethodDelete {
+	switch method {
+	case http.MethodDelete:
 		statusCodeAccepted = http.StatusNoContent
-	} else if method == http.MethodPost {
+	case http.MethodPost:
 		statusCodeAccepted = http.StatusCreated
 	}
 
-	tflog.Trace(c.context, "sending HTTP request", map[string]interface{}{
+	tflog.Trace(c.context, "sending HTTP request", map[string]any{
 		"path":      path,
 		"method":    method,
 		"body":      body.String(),
@@ -161,7 +162,7 @@ func (c *Client) doRequest(path, method string, body bytes.Buffer, attempt int) 
 	}
 
 	// Log the response details
-	tflog.Trace(c.context, "received HTTP response", map[string]interface{}{
+	tflog.Trace(c.context, "received HTTP response", map[string]any{
 		"path":       path,
 		"method":     method,
 		"statusCode": resp.StatusCode,

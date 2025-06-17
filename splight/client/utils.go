@@ -26,7 +26,7 @@ func (c *Client) RetrieveEmail() (string, error) {
 		return "", fmt.Errorf("error decoding profile response: %w", err)
 	}
 
-	email, ok := profile["name"].(string)
+	email, ok := profile["email"].(string)
 	if !ok {
 		return "", fmt.Errorf("user email not found in profile response")
 	}
@@ -122,7 +122,7 @@ func (c *Client) UploadFile(model *models.File) error {
 	uploadTime := time.Since(startTime)
 
 	// Step 7: Log successful upload with more context
-	tflog.Debug(c.context, "File uploaded successfully", map[string]interface{}{
+	tflog.Debug(c.context, "File uploaded successfully", map[string]any{
 		"filePath":   model.Path,
 		"fileSize":   fileSize,
 		"uploadURL":  uploadURL,
