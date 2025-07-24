@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"runtime"
 	"time"
@@ -43,24 +44,22 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 		context:    context,
 	}
 
-	// Retrieve the email to configure the User-Agent
-	email, err := client.RetrieveEmail()
+	// Retrieve a user identifier to configure the User-Agent
+	identifier, err := client.RetrieveUserIdentifier()
 	if err != nil {
 		return nil, err
 	}
 
 	// Get system details and default values
 	defaultInfo := map[string]string{
-		"email": email,
-		"OS":    runtime.GOOS,
-		"Arch":  runtime.GOARCH,
-		"Go":    runtime.Version(),
+		"user": identifier,
+		"OS":   runtime.GOOS,
+		"Arch": runtime.GOARCH,
+		"Go":   runtime.Version(),
 	}
 
 	// Merge default values with provided options
-	for key, value := range opts.ExtraInfo {
-		defaultInfo[key] = value
-	}
+	maps.Copy(defaultInfo, opts.ExtraInfo)
 
 	// Construct the User-Agent string
 	userAgent := fmt.Sprintf("%s/%s", opts.ProductName, opts.ProductVersion)
@@ -93,7 +92,7 @@ func (c *Client) HttpRequest(path, method string, body bytes.Buffer) (io.ReadClo
 			}
 		}
 
-		tflog.Trace(c.context, "retrying HTTP request on 503", map[string]interface{}{
+		tflog.Trace(c.context, "retrying HTTP request on 503", map[string]any{
 			"path":      path,
 			"method":    method,
 			"body":      body.String(),

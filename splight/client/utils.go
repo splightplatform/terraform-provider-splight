@@ -13,8 +13,8 @@ import (
 	"github.com/splightplatform/terraform-provider-splight/splight/client/models"
 )
 
-// RetrieveEmail fetches the email of the current user.
-func (c *Client) RetrieveEmail() (string, error) {
+// RetrieveUserIdentifier fetches the email or username of the current user.
+func (c *Client) RetrieveUserIdentifier() (string, error) {
 	body, err := c.HttpRequest("auth/account/user/profile/", "GET", bytes.Buffer{})
 	if err != nil {
 		return "", fmt.Errorf("error making profile request: %w", err)
@@ -28,7 +28,11 @@ func (c *Client) RetrieveEmail() (string, error) {
 
 	email, ok := profile["email"].(string)
 	if !ok {
-		return "", fmt.Errorf("user email not found in profile response")
+		username, ok := profile["username"].(string)
+		if !ok {
+			return "", fmt.Errorf("user email and username not found in profile response")
+		}
+		return username, nil
 	}
 	return email, nil
 }
