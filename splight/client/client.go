@@ -44,7 +44,7 @@ func NewClient(context context.Context, opts UserAgent) (*Client, error) {
 		context:    context,
 	}
 
-	// Retrieve a user identify to configure the User-Agent
+	// Retrieve a user identifier to configure the User-Agent
 	identifier, err := client.RetrieveUserIdentifier()
 	if err != nil {
 		return nil, err
