@@ -37,8 +37,8 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Get values of timezone and geometry
-	timezone := d.Get("timezone").(string)
+	// Get values of custom_timezone and geometry
+	custom_timezone := d.Get("custom_timezone").(string)
 	geometryStr := d.Get("geometry").(string)
 
 	// Validate geometry JSON if it's set
@@ -58,12 +58,13 @@ func (m *Bus) FromSchema(d *schema.ResourceData) error {
 
 	m.BusParams = BusParams{
 		AssetParams: AssetParams{
-			Name:           d.Get("name").(string),
-			Description:    d.Get("description").(string),
-			Geometry:       geometry,
-			CustomTimezone: timezone,
-			Tags:           tags,
-			Kind:           kind,
+			Name:              d.Get("name").(string),
+			Description:       d.Get("description").(string),
+			Geometry:          geometry,
+			CustomTimezone:    custom_timezone,
+			UseCustomTimezone: custom_timezone != "",
+			Tags:              tags,
+			Kind:              kind,
 		},
 	}
 
@@ -96,7 +97,8 @@ func (m *Bus) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("geometry", geometryStr)
 
-	d.Set("timezone", m.AssetParams.CustomTimezone)
+	d.Set("timezone", m.Timezone)
+	d.Set("custom_timezone", m.CustomTimezone)
 
 	var tags []map[string]any
 	for _, tag := range m.AssetParams.Tags {

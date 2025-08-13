@@ -88,3 +88,17 @@ To update the documentation, first manually update the examples. Then, run the f
 ```bash
 make docs
 ```
+
+### Integration Testing
+
+Test all resources against a non-production Splight organization:
+
+```bash
+# Test all resources
+TF_REATTACH_PROVIDERS='<reattach_output>' make integration-test-all
+
+# Test a specific resource
+TF_REATTACH_PROVIDERS='<reattach_output>' make integration-test-one RESOURCE=examples/resources/<splight_resource>/resource.tf
+```
+
+Important: Always test against development or staging environments, never production customer organizations.

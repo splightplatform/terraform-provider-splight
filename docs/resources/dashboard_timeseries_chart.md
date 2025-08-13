@@ -22,9 +22,9 @@ terraform {
 }
 
 resource "splight_asset" "AssetTest" {
-  name        = "AssetTest"
-  description = "Created with Terraform"
-  timezone    = "America/Los_Angeles"
+  name            = "AssetTest"
+  description     = "Created with Terraform"
+  custom_timezone = "America/Los_Angeles"
 
   geometry = jsonencode({
     type       = "GeometryCollection"
@@ -47,8 +47,7 @@ resource "splight_asset_attribute" "AttributeTest2" {
 }
 
 resource "splight_dashboard" "DashboardTest" {
-  name           = "DashboardTest"
-  related_assets = []
+  name = "DashboardTest"
 }
 
 resource "splight_dashboard_tab" "DashboardTabTest" {
@@ -303,6 +302,8 @@ Required:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_dashboard_timeseries_chart.<name> <dashboard_chart_id>

@@ -23,9 +23,9 @@ terraform {
 
 # Create an asset and an attribute to write the output
 resource "splight_asset" "my_asset" {
-  name        = "My Asset"
-  description = "My Asset Description"
-  timezone    = "America/Los_Angeles"
+  name            = "My Asset"
+  description     = "My Asset Description"
+  custom_timezone = "America/Los_Angeles"
 
   geometry = jsonencode({
     type = "GeometryCollection"
@@ -292,6 +292,8 @@ Required:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_component_routine.<name> <component_routine_id>

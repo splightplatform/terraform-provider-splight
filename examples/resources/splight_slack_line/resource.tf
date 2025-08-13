@@ -18,9 +18,8 @@ resource "splight_slack_line" "my_line" {
   name        = "My Slack Line"
   description = "My Slack Line Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {

@@ -24,9 +24,13 @@ func SchemaExternalGrid() map[string]*schema.Schema {
 		},
 		"timezone": {
 			Type:        schema.TypeString,
-			Optional:    true,
 			Computed:    true,
-			Description: "timezone that overrides location-based timezone of the resource",
+			Description: "timezone of the resource (set by the geo-location)",
+		},
+		"custom_timezone": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "custom timezone to use instead of the one computed from the geo-location",
 		},
 		"tags": {
 			Type:        schema.TypeSet,

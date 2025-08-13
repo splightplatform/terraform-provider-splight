@@ -33,9 +33,8 @@ resource "splight_generator" "my_generator" {
   name        = "My Generator"
   description = "My Generator Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -74,10 +73,10 @@ resource "splight_generator" "my_generator" {
 
 ### Optional
 
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 
@@ -89,6 +88,7 @@ resource "splight_generator" "my_generator" {
 - `monthly_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--monthly_energy))
 - `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
 - `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 
 <a id="nestedblock--tags"></a>
 ### Nested Schema for `tags`
@@ -182,6 +182,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_generator.<name> <generator_id>

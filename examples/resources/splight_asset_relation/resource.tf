@@ -11,8 +11,10 @@ data "splight_asset_kinds" "my_kinds" {}
 
 # Create a Segment
 resource "splight_asset" "my_segment" {
-  name     = "My Segment"
-  timezone = "America/Los_Angeles"
+  name = "My Segment"
+
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   kind {
     name = "Segment"
@@ -33,8 +35,10 @@ resource "splight_asset" "my_segment" {
 
 # Create a Line
 resource "splight_asset" "my_line" {
-  name     = "My Line"
-  timezone = "America/Los_Angeles"
+  name = "My Line"
+
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   kind {
     name = "Line"
