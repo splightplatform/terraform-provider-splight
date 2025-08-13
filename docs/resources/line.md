@@ -33,9 +33,8 @@ resource "splight_line" "my_line" {
   name        = "My Line"
   description = "My Line Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -168,6 +167,7 @@ resource "splight_line" "my_line" {
 - `capacitance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
 - `conductance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
 - `conductor_mass` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductor_mass))
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `diameter` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--diameter))
 - `emissivity` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--emissivity))
@@ -188,7 +188,6 @@ resource "splight_line" "my_line" {
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `temperature_coeff_resistance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--temperature_coeff_resistance))
 - `thermal_elongation_coef` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--thermal_elongation_coef))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 
@@ -207,6 +206,7 @@ resource "splight_line" "my_line" {
 - `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
 - `switch_status_end` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_end))
 - `switch_status_start` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_start))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 - `voltage_rs` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_rs))
 - `voltage_st` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_st))
 - `voltage_tr` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_tr))
@@ -775,6 +775,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_line.<name> <line_id>

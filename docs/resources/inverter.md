@@ -33,9 +33,8 @@ resource "splight_inverter" "my_inverter" {
   name        = "My Inverter"
   description = "My Inverter Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -95,6 +94,7 @@ resource "splight_inverter" "my_inverter" {
 
 ### Optional
 
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `energy_measurement_type` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--energy_measurement_type))
 - `geometry` (String) geo position and shape of the resource
@@ -103,7 +103,6 @@ resource "splight_inverter" "my_inverter" {
 - `model` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--model))
 - `serial_number` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--serial_number))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 
@@ -115,6 +114,7 @@ resource "splight_inverter" "my_inverter" {
 - `raw_daily_energy` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--raw_daily_energy))
 - `switch_status` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status))
 - `temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--temperature))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 
 <a id="nestedblock--energy_measurement_type"></a>
 ### Nested Schema for `energy_measurement_type`
@@ -288,6 +288,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_inverter.<name> <inverter_id>

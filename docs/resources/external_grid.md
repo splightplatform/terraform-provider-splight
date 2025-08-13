@@ -86,16 +86,17 @@ resource "splight_external_grid" "my_external_grid" {
 ### Optional
 
 - `bus` (String) id of the related Bus object
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `grid` (String) id of the related Grid object
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 
 <a id="nestedblock--tags"></a>
 ### Nested Schema for `tags`
@@ -117,6 +118,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_external_grid.<name> <external_grid_id>

@@ -33,9 +33,8 @@ resource "splight_bus" "my_bus" {
   name        = "My Bus"
   description = "My Bus Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -79,11 +78,11 @@ resource "splight_bus" "my_bus" {
 
 ### Optional
 
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `nominal_voltage_kv` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--nominal_voltage_kv))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 
@@ -91,6 +90,7 @@ resource "splight_bus" "my_bus" {
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `reactive_power` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 
 <a id="nestedblock--nominal_voltage_kv"></a>
 ### Nested Schema for `nominal_voltage_kv`
@@ -152,6 +152,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_bus.<name> <bus_id>

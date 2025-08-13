@@ -33,9 +33,8 @@ resource "splight_segment" "my_segment" {
   name        = "My Segment"
   description = "My Segment Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -102,19 +101,20 @@ resource "splight_segment" "my_segment" {
 - `altitude` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--altitude))
 - `azimuth` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--azimuth))
 - `cumulative_distance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--cumulative_distance))
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `reference_sag` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_sag))
 - `reference_temperature` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--reference_temperature))
 - `span_length` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--span_length))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 - `kind` (Set of Object) kind of the resource (see [below for nested schema](#nestedatt--kind))
 - `temperature` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--temperature))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 - `wind_direction` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--wind_direction))
 - `wind_speed` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--wind_speed))
 
@@ -270,6 +270,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_segment.<name> <segment_id>

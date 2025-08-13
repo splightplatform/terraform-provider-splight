@@ -26,8 +26,10 @@ data "splight_asset_kinds" "my_kinds" {}
 
 # Create a Segment
 resource "splight_asset" "my_segment" {
-  name     = "My Segment"
-  timezone = "America/Los_Angeles"
+  name = "My Segment"
+
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   kind {
     name = "Segment"
@@ -48,8 +50,10 @@ resource "splight_asset" "my_segment" {
 
 # Create a Line
 resource "splight_asset" "my_line" {
-  name     = "My Line"
-  timezone = "America/Los_Angeles"
+  name = "My Line"
+
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   kind {
     name = "Line"
@@ -135,6 +139,8 @@ Required:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_relation.<name> <relation_id>

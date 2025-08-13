@@ -33,9 +33,8 @@ resource "splight_transformer" "my_transformer" {
   name        = "My Transformer"
   description = "My Transformer Description"
 
-  # This is overridden by the GeoJSON location
-  # and will show perma diff if both are set
-  timezone = "America/Los_Angeles"
+  # This overrides the timezone computed from the geolocation
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {
@@ -113,6 +112,7 @@ resource "splight_transformer" "my_transformer" {
 
 - `capacitance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--capacitance))
 - `conductance` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--conductance))
+- `custom_timezone` (String) custom timezone to use instead of the one computed from the geo-location
 - `description` (String) description of the resource
 - `geometry` (String) geo position and shape of the resource
 - `maximum_allowed_current` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--maximum_allowed_current))
@@ -123,7 +123,6 @@ resource "splight_transformer" "my_transformer" {
 - `standard_type` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--standard_type))
 - `tags` (Block Set) tags of the resource (see [below for nested schema](#nestedblock--tags))
 - `tap_pos` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--tap_pos))
-- `timezone` (String) timezone that overrides location-based timezone of the resource
 - `xn_ohm` (Block Set, Max: 1) attribute of the resource (see [below for nested schema](#nestedblock--xn_ohm))
 
 ### Read-Only
@@ -141,6 +140,7 @@ resource "splight_transformer" "my_transformer" {
 - `reactive_power_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--reactive_power_lv))
 - `switch_status_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_hv))
 - `switch_status_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--switch_status_lv))
+- `timezone` (String) timezone of the resource (set by the geo-location)
 - `voltage_hv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_hv))
 - `voltage_lv` (Set of Object) attribute of the resource (see [below for nested schema](#nestedatt--voltage_lv))
 
@@ -480,6 +480,8 @@ Read-Only:
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 terraform import [options] splight_transformer.<name> <transformer_id>
