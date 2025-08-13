@@ -8,12 +8,14 @@ import (
 )
 
 type AssetParams struct {
-	Name           string           `json:"name"`
-	Description    string           `json:"description"`
-	Geometry       *json.RawMessage `json:"geometry"`
-	CustomTimezone string           `json:"timezone,omitempty"`
-	Tags           []QueryFilter    `json:"tags"`
-	Kind           *QueryFilter     `json:"kind"`
+	Name              string           `json:"name"`
+	Description       string           `json:"description"`
+	Geometry          *json.RawMessage `json:"geometry"`
+	Timezone          string           `json:"timezone,omitempty"`
+	CustomTimezone    string           `json:"custom_timezone,omitempty"`
+	UseCustomTimezone bool             `json:"use_custom_timezone"`
+	Tags              []QueryFilter    `json:"tags"`
+	Kind              *QueryFilter     `json:"kind"`
 }
 
 type Asset struct {
@@ -39,8 +41,8 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
-	// Get values of timezone and geometry
-	timezone := d.Get("timezone").(string)
+	// Get values of custom_timezone and geometry
+	custom_timezone := d.Get("custom_timezone").(string)
 	geometryStr := d.Get("geometry").(string)
 
 	// Validate geometry JSON if it's set
@@ -59,12 +61,13 @@ func (m *Asset) FromSchema(d *schema.ResourceData) error {
 	}
 
 	m.AssetParams = AssetParams{
-		Name:           d.Get("name").(string),
-		Description:    d.Get("description").(string),
-		Geometry:       geometry,
-		CustomTimezone: timezone,
-		Tags:           tags,
-		Kind:           kind,
+		Name:              d.Get("name").(string),
+		Description:       d.Get("description").(string),
+		Geometry:          geometry,
+		CustomTimezone:    custom_timezone,
+		UseCustomTimezone: custom_timezone != "",
+		Tags:              tags,
+		Kind:              kind,
 	}
 
 	return nil
@@ -84,7 +87,8 @@ func (m *Asset) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("geometry", geometryStr)
 
-	d.Set("timezone", m.CustomTimezone)
+	d.Set("timezone", m.Timezone)
+	d.Set("custom_timezone", m.CustomTimezone)
 
 	var tags []map[string]any
 	for _, tag := range m.AssetParams.Tags {
