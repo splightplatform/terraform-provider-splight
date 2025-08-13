@@ -47,8 +47,8 @@ setup-test-dir:
 	@mkdir -p $(TEST_DIR)
 
 
-# Alias to run a terraform command in the test directory
-# pointing to the local provider RPC server
+# Shortcut to run Terraform in the test directory,
+# using the local provider RPC server.
 TF_CMD := cd $(TEST_DIR) && TF_REATTACH_PROVIDERS='$(TF_REATTACH_PROVIDERS)' terraform
 
 # Execute terraform lifecycle for a single resource
