@@ -94,8 +94,8 @@ func convertAssetMetadata(data []any) (*AssetMetadata, error) {
 func (m *AssetMetadata) FromSchema(d *schema.ResourceData) error {
 	m.Id = d.Id()
 
-	// Validate geometry JSON
-	valueStr := d.Get("geometry").(string)
+	// Validate value JSON
+	valueStr := d.Get("value").(string)
 	if err := validateJSONString(valueStr); err != nil {
 		return fmt.Errorf("metadata value must be JSON encoded")
 	}

@@ -30,9 +30,9 @@ resource "splight_tag" "my_tag" {
 data "splight_tags" "my_tags" {}
 
 resource "splight_asset" "my_asset" {
-  name        = "My Asset"
-  description = "My Asset Description"
-  timezone    = "America/Los_Angeles"
+  name            = "My Asset"
+  description     = "My Asset Description"
+  custom_timezone = "America/Los_Angeles"
 
   geometry = jsonencode({
     type = "GeometryCollection"
@@ -52,9 +52,9 @@ resource "splight_asset_attribute" "my_attribute" {
 }
 
 resource "splight_asset" "my_target_asset" {
-  name        = "My Target Asset"
-  description = "My Target Asset Description"
-  timezone    = "America/Los_Angeles"
+  name            = "My Target Asset"
+  description     = "My Target Asset Description"
+  custom_timezone = "America/Los_Angeles"
 
   geometry = jsonencode({
     type = "GeometryCollection"

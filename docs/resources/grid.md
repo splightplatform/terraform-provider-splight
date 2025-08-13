@@ -30,9 +30,9 @@ resource "splight_tag" "my_tag" {
 data "splight_tags" "my_tags" {}
 
 resource "splight_grid" "my_grid" {
-  name        = "My Grid"
-  description = "My Grid Description"
-  timezone    = "America/Los_Angeles"
+  name            = "My Grid"
+  description     = "My Grid Description"
+  custom_timezone = "America/Los_Angeles"
 
   # Use an existing tag in the platform
   dynamic "tags" {

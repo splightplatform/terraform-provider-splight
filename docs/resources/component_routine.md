@@ -23,9 +23,9 @@ terraform {
 
 # Create an asset and an attribute to write the output
 resource "splight_asset" "my_asset" {
-  name        = "My Asset"
-  description = "My Asset Description"
-  timezone    = "America/Los_Angeles"
+  name            = "My Asset"
+  description     = "My Asset Description"
+  custom_timezone = "America/Los_Angeles"
 
   geometry = jsonencode({
     type = "GeometryCollection"
