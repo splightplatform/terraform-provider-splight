@@ -33,6 +33,8 @@ func (m *SlackGenerator) FromSchema(d *schema.ResourceData) error {
 	kind := convertSingleQueryFilter(d.Get("kind").(*schema.Set).List())
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
+	custom_timezone := d.Get("custom_timezone").(string)
+
 	// Validate geometry JSON
 	geometryStr := d.Get("geometry").(string)
 	if err := validateJSONString(geometryStr); err != nil {
@@ -42,12 +44,13 @@ func (m *SlackGenerator) FromSchema(d *schema.ResourceData) error {
 	geometry := json.RawMessage(geometryStr)
 	m.SlackGeneratorParams = SlackGeneratorParams{
 		AssetParams: AssetParams{
-			Name:           d.Get("name").(string),
-			Description:    d.Get("description").(string),
-			Geometry:       &geometry,
-			CustomTimezone: d.Get("timezone").(string),
-			Tags:           tags,
-			Kind:           kind,
+			Name:              d.Get("name").(string),
+			Description:       d.Get("description").(string),
+			Geometry:          &geometry,
+			CustomTimezone:    custom_timezone,
+			UseCustomTimezone: custom_timezone != "",
+			Tags:              tags,
+			Kind:              kind,
 		},
 	}
 
@@ -68,7 +71,8 @@ func (m *SlackGenerator) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("geometry", geometryStr)
 
-	d.Set("timezone", m.AssetParams.CustomTimezone)
+	d.Set("timezone", m.Timezone)
+	d.Set("custom_timezone", m.CustomTimezone)
 
 	var tags []map[string]any
 	for _, tag := range m.AssetParams.Tags {

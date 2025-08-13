@@ -55,7 +55,7 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 	tags := convertQueryFilters(d.Get("tags").(*schema.Set).List())
 
 	// Get values of timezone and geometry
-	timezone := d.Get("timezone").(string)
+	custom_timezone := d.Get("custom_timezone").(string)
 	geometryStr := d.Get("geometry").(string)
 
 	// Validate geometry JSON if it's set
@@ -75,12 +75,13 @@ func (m *Segment) FromSchema(d *schema.ResourceData) error {
 
 	m.SegmentParams = SegmentParams{
 		AssetParams: AssetParams{
-			Name:           d.Get("name").(string),
-			Description:    d.Get("description").(string),
-			Geometry:       geometry,
-			CustomTimezone: timezone,
-			Tags:           tags,
-			Kind:           kind,
+			Name:              d.Get("name").(string),
+			Description:       d.Get("description").(string),
+			Geometry:          geometry,
+			CustomTimezone:    custom_timezone,
+			UseCustomTimezone: custom_timezone != "",
+			Tags:              tags,
+			Kind:              kind,
 		},
 	}
 
@@ -173,7 +174,8 @@ func (m *Segment) ToSchema(d *schema.ResourceData) error {
 	}
 	d.Set("geometry", geometryStr)
 
-	d.Set("timezone", m.AssetParams.CustomTimezone)
+	d.Set("timezone", m.AssetParams.Timezone)
+	d.Set("custom_timezone", m.AssetParams.CustomTimezone)
 
 	var tags []map[string]any
 	for _, tag := range m.AssetParams.Tags {
