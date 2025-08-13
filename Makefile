@@ -2,10 +2,6 @@ SHELL := /bin/bash
 BASE_NAME := terraform-provider-splight
 DEBUG_BINARY := $(BASE_NAME)_debug
 
-# ANSI color codes
-GREEN = \033[0;32m
-RESET = \033[0m
-
 # Go build flags
 GCFLAGS := "all=-N -l"
 DEBUG_FLAGS := "-debug"
@@ -22,7 +18,6 @@ tidy:
 	@go tool gofumpt -w .
 
 provider: tidy
-	@echo -e "$(GREEN)Building provider: $(BASE_NAME)$(RESET)"
 	@go build -o $(BASE_NAME)
 
 debug: tidy
@@ -34,4 +29,3 @@ clean:
 
 clean-debug:
 	@rm -f $(DEBUG_BINARY)
-
