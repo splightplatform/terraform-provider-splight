@@ -14,6 +14,10 @@ brew install go terraform delve gofumpt
 
 ### Installation
 
+Bump the version in version file before pushing changes. Using the following format:
+
+` X.Y.Z ` eg `1.2.18`
+
 Run
 
 ```bash
